@@ -1,1 +1,1 @@
-print("Rojo live synchronization working")
+print("DIRECT POWERSHELL CHANGE")
