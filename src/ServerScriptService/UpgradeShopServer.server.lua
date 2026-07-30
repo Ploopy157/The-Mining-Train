@@ -939,7 +939,7 @@ PurchaseUpgrade.OnServerInvoke = function(
 		else
 			OreInfoEvent:FireClient(
 				Player,
-				"Upgrade purchased � train returned to station"
+				"Upgrade purchased - Train returned to station"
 			)
 		end
 	end
