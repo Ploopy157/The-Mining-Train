@@ -1,0 +1,33 @@
+# Roblox Studio temporary and autosave files
+*.rbxl.lock
+*.rbxlx.lock
+*.autosave
+*.tmp
+*.temp
+
+# Rojo generated sourcemaps
+sourcemap.json
+
+# Wally packages
+Packages/
+ServerPackages/
+
+# Tooling
+node_modules/
+aftman.exe
+rojo.exe
+
+# Operating system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Visual Studio Code local settings
+.vscode/
+
+# Logs
+*.log
+
+# Backup files
+*.bak
+*.backup
