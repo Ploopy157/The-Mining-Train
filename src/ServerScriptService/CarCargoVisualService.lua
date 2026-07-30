@@ -1,6 +1,7 @@
 local CarCargoVisualService = {}
 
-local EmptySlotTransparency = 0.75
+local EmptySlotTransparency = 0.85
+local EmptySlotColor = Color3.new(110,110,110)
 local OccupiedSlotTransparency = 0
 local LockedSlotTransparency = 1
 
@@ -154,7 +155,7 @@ local function SaveDefaultAppearance(Object)
 
 	Object:SetAttribute(
 		"CargoDefaultColor",
-		Object.Color
+		EmptySlotColor
 	)
 
 	Object:SetAttribute(

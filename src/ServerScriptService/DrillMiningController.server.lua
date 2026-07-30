@@ -88,7 +88,6 @@ local function SelectTouchingOre(DrillBit)
 	if #TouchingOres == 0 then
 		return nil
 	end
-	print(TouchingOres[#TouchingOres])
 	return TouchingOres[1]
 end
 
@@ -165,7 +164,6 @@ local function UpdateDrill(
 
 	if not DrillBit
 		or not DrillBit:IsA("BasePart") then
-			print("COULD NOT FIND DRILL BIT")
 		return
 	end
 

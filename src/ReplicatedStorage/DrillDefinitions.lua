@@ -32,8 +32,8 @@ DrillDefinitions.Data = {
 		Tier = 1,
 		PurchaseCost = 2500,
 
-		Damage = 2,
-		Speed = 1.5,
+		Damage = 4,
+		Speed = 1,
 
 		Width = 1,
 		Height = 2,
@@ -49,8 +49,8 @@ DrillDefinitions.Data = {
 		Tier = 2,
 		PurchaseCost = 15000,
 
-		Damage = 5,
-		Speed = 1.1,
+		Damage = 10,
+		Speed = 0.5,
 
 		Width = 3,
 		Height = 2,
@@ -66,8 +66,8 @@ DrillDefinitions.Data = {
 		Tier = 3,
 		PurchaseCost = 75000,
 
-		Damage = 12,
-		Speed = 0.8,
+		Damage = 24,
+		Speed = 0.25,
 
 		Width = 3,
 		Height = 3,
@@ -83,8 +83,8 @@ DrillDefinitions.Data = {
 		Tier = 4,
 		PurchaseCost = 350000,
 
-		Damage = 30,
-		Speed = 0.55,
+		Damage = 48,
+		Speed = 0.25,
 
 		Width = 5,
 		Height = 3,
@@ -100,8 +100,8 @@ DrillDefinitions.Data = {
 		Tier = 5,
 		PurchaseCost = 1500000,
 
-		Damage = 70,
-		Speed = 0.35,
+		Damage = 100,
+		Speed = 0.1,
 
 		Width = 5,
 		Height = 5,

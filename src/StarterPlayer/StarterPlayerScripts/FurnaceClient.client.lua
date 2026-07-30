@@ -282,7 +282,7 @@ local function Render(State)
 
 				MakeRow(
 					string.format(
-						"%s  %d/4 | Coal %d | $%d",
+						"%s  %d/5 | Coal %d | $%d",
 						Entry.Name,
 						Entry.Quantity,
 						Entry.CoalRequired,
