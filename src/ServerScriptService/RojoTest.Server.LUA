@@ -1,1 +1,1 @@
-print("Rojo live synchronization works13245")
+print("Rojo live synchronization working")
