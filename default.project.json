@@ -1,0 +1,16 @@
+{
+	"name": "TheMiningTrain",
+	"servePort": 34872,
+
+	"tree": {
+		"$className": "DataModel",
+
+		"ServerScriptService": {
+			"$className": "ServerScriptService",
+
+			"RojoTest": {
+				"$path": "src/ServerScriptService/RojoTest.server.lua"
+			}
+		}
+	}
+}

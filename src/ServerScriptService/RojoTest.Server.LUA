@@ -1,0 +1,1 @@
+print("Rojo live synchronization works")

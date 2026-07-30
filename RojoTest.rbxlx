@@ -1,0 +1,14 @@
+<roblox version="4">
+  <Item class="ServerScriptService" referent="0">
+    <Properties>
+      <string name="Name">ServerScriptService</string>
+    </Properties>
+    <Item class="Script" referent="1">
+      <Properties>
+        <string name="Name">RojoTest</string>
+        <token name="RunContext">0</token>
+        <string name="Source">print("Rojo is connected to The Mining Train")</string>
+      </Properties>
+    </Item>
+  </Item>
+</roblox>
