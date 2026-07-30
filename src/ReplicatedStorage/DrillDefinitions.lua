@@ -1,5 +1,4 @@
 local DrillDefinitions = {}
---Testing Changes
 DrillDefinitions.Order = {
 	"NoDrill",
 	"Drill1x2",
