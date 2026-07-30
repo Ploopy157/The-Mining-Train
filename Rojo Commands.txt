@@ -1,0 +1,9 @@
+.lua - Module Script
+.server.lua - server Script
+.client.lua - local Script
+
+Start Server:  rojo serve default.project.json
+
+Stop Server: Ctrl+C
+
+
