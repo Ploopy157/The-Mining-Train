@@ -137,8 +137,8 @@ local UpgradeDefinitions = {
 		Description = "Processes ores into ingots more quickly.",
 		Category = "Furnace",
 
-		BaseCost = 400,
-		CostGrowth = 1.55,
+		BaseCost = 300,
+		CostGrowth = 1.2,
 		MaximumLevel = 25,
 
 		BaseValue = 1,
