@@ -10,7 +10,7 @@ local StationTemplate =
 local StationService = {}
 
 local StationSpacing = 100
-local StationsPerRow = 10
+local StationsPerRow = 8
 local PlayerStations = {}
 
 ---------------------------------------------------------------------

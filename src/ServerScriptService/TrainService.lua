@@ -1,3 +1,4 @@
+local CarGap = 1
 local ReplicatedStorage =
 	game:GetService("ReplicatedStorage")
 
@@ -289,14 +290,14 @@ end
 local function GetCarGap(
 	SpawnOrigin
 )
-	local Gap =
-		SpawnOrigin:GetAttribute(
-			"CarGap"
-		)
+	local Gap = CarGap
+	-- 	SpawnOrigin:GetAttribute(
+	-- 		"CarGap"
+	-- 	)
 
-	if typeof(Gap) ~= "number" then
-		return 0.25
-	end
+	-- if typeof(Gap) ~= "number" then
+	-- 	return 0.25
+	-- end
 
 	return math.max(Gap, 0)
 end
