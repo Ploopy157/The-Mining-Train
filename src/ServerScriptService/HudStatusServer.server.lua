@@ -73,10 +73,7 @@ GetHudStatus.OnServerInvoke =
 				) or 2
 		end
 
-		local BagLoad =
-			GetInventoryLoad(
-				Data.Inventory
-			)
+		local BagLoad = PlayerDataService.GetBackpackLoad(Player)
 
 		local TrainLoad = 0
 		local TrainCapacity = 0

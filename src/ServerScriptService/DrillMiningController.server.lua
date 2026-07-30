@@ -22,9 +22,6 @@ local DrillMiningEvent =
 		"DrillMiningEvent"
 	)
 
-local RandomGenerator =
-	Random.new()
-
 local MineOverlapParameters =
 	OverlapParams.new()
 
@@ -91,13 +88,8 @@ local function SelectTouchingOre(DrillBit)
 	if #TouchingOres == 0 then
 		return nil
 	end
-
-	return TouchingOres[
-		RandomGenerator:NextInteger(
-			1,
-			#TouchingOres
-		)
-	]
+	print(TouchingOres[#TouchingOres])
+	return TouchingOres[1]
 end
 
 local function UpdateDrill(

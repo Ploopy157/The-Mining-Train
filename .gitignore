@@ -31,3 +31,5 @@ desktop.ini
 # Backup files
 *.bak
 *.backup
+#ChatGPT Token
+pat.txt

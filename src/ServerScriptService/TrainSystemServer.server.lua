@@ -116,6 +116,10 @@ Players.PlayerAdded:Connect(
 	end
 )
 
+Players.PlayerRemoving:Connect(function(Player)
+	TrainService.DestroyPlayerTrain(Player)
+end)
+
 for _, Player in Players:GetPlayers() do
 	task.spawn(
 		SpawnWhenReady,
