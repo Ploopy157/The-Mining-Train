@@ -16,6 +16,9 @@ local FurnaceUpdated = FurnaceRemotes:WaitForChild("FurnaceUpdated")
 
 local CurrentMode = "Load"
 local CurrentState
+local ActiveQueueLabel
+local ActiveQueueEntry
+local ActiveFinishTime
 local SelectedOreName
 
 local Gui = Instance.new("ScreenGui")
@@ -237,6 +240,8 @@ local function MakeRow(Text, ButtonText, Callback, IsSelected)
 
 		Button.Activated:Connect(Callback)
 	end
+
+	return Label
 end
 
 local function Render(State)
@@ -245,6 +250,9 @@ local function Render(State)
 	end
 
 	CurrentState = State
+	ActiveQueueLabel = nil
+	ActiveQueueEntry = nil
+	ActiveFinishTime = nil
 	ClearRows()
 
 	if CurrentMode == "Load" then
@@ -311,32 +319,32 @@ local function Render(State)
 			MakeRow("The furnace queue is empty.", nil)
 		else
 			for _, Entry in State.Queue do
-				local TimeText = Entry.IsActive
-					and string.format(" | %.0fs", Entry.Remaining)
-					or ""
+				local Remaining = math.max(tonumber(Entry.Remaining) or 0, 0)
+				local TimeText = Entry.IsActive and string.format(" - %ds", math.ceil(Remaining)) or ""
 
-				MakeRow(
+				local Label = MakeRow(
 					Entry.OreName
 						.. " -> "
 						.. Entry.IngotName
 						.. TimeText,
 					"REMOVE",
 					function()
-						local Success, Result =
-							RemoveQueueItem:InvokeServer(
-								Entry.Index
-							)
+						local Success, Result = RemoveQueueItem:InvokeServer(Entry.Index)
 
 						if Success then
-							Status.Text =
-								"Process returned to your bag."
-
+							Status.Text = "Returned " .. Result.Removed .. " and reserved coal."
 							Render(Result.State)
 						else
 							Status.Text = tostring(Result)
 						end
 					end
 				)
+
+				if Entry.IsActive then
+					ActiveQueueLabel = Label
+					ActiveQueueEntry = Entry
+					ActiveFinishTime = os.clock() + Remaining
+				end
 			end
 		end
 	else
@@ -467,6 +475,31 @@ Action.Activated:Connect(function()
 		else
 			Status.Text = tostring(Result)
 		end
+	end
+end)
+
+task.spawn(function()
+	while true do
+		task.wait(0.1)
+
+		if not Gui.Enabled
+			or CurrentMode ~= "Queue"
+			or not ActiveQueueLabel
+			or not ActiveQueueLabel.Parent
+			or not ActiveQueueEntry
+			or not ActiveFinishTime then
+
+			continue
+		end
+
+		local Remaining = math.max(ActiveFinishTime - os.clock(), 0)
+
+		ActiveQueueLabel.Text = string.format(
+			"%s -> %s - %ds",
+			ActiveQueueEntry.OreName,
+			ActiveQueueEntry.IngotName,
+			math.ceil(Remaining)
+		)
 	end
 end)
 
