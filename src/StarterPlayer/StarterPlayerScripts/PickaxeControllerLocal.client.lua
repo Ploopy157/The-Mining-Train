@@ -1,26 +1,24 @@
-local Players =
-	game:GetService("Players")
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 
-local ReplicatedStorage =
-	game:GetService("ReplicatedStorage")
+local Player = Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
+local InfoGui = PlayerGui:WaitForChild("HighLightInfo")
+local InfoLabel = InfoGui:WaitForChild("TextLabel")
+local Mouse = Player:GetMouse()
 
-local RunService =
-	game:GetService("RunService")
-
-local Player =
-	Players.LocalPlayer
-
-
-local InfoUI = Player.PlayerGui:WaitForChild("HighLightInfo").TextLabel
-local Mouse =
-	Player:GetMouse()
-
-local MiningEvent =
-	ReplicatedStorage:WaitForChild(
-		"Mining Event"
-	)
+local MiningEvent = ReplicatedStorage:WaitForChild("Mining Event")
 
 local MaximumClickDistance = 10
+
+-- The animation finishes before the full cooldown completes,
+-- giving each swing a shorter visual recovery.
+local AnimationDurationRatio = 0.85
+
+-- The pickaxe contacts the block at this point in the cooldown.
+-- Keep this aligned with the animation's visual impact frame.
+local HitDelayRatio = 0.75
 
 local EquippedTool = nil
 local HitSound = nil
@@ -32,101 +30,83 @@ local StopSwinging = false
 local HitDebounce = false
 
 local ToolConnections = {}
+local CharacterConnections = {}
 
 ---------------------------------------------------------------------
--- DEFINE HIGHLIGHT
+-- TARGET HIGHLIGHT
 ---------------------------------------------------------------------
-local TargetHighlight =
-	Instance.new("Highlight")
 
-TargetHighlight.Name =
-	"MiningTargetHighlight"
+local TargetHighlight = Instance.new("Highlight")
 
+TargetHighlight.Name = "MiningTargetHighlight"
 TargetHighlight.FillTransparency = 1
 TargetHighlight.OutlineTransparency = 0
-TargetHighlight.DepthMode =
-	Enum.HighlightDepthMode.Occluded
-
+TargetHighlight.DepthMode = Enum.HighlightDepthMode.Occluded
 TargetHighlight.Enabled = false
-TargetHighlight.Parent =
-	Player:WaitForChild("PlayerGui")
-
-
+TargetHighlight.Parent = PlayerGui
 
 local function IsValidMiningTarget(Target)
 	if not EquippedTool then
 		return false
 	end
 
-	if not Target
-		or not Target:IsA("BasePart") then
-
+	if not Target or not Target:IsA("BasePart") then
 		return false
 	end
 
-	if not Target:GetAttribute("Ore") then
+	if Target:GetAttribute("Ore") ~= true then
 		return false
 	end
 
-	local Character =
-		Player.Character
+	local Character = Player.Character
 
 	if not Character then
 		return false
 	end
 
-	local HumanoidRootPart =
-		Character:FindFirstChild(
-			"HumanoidRootPart"
-		)
+	local HumanoidRootPart = Character:FindFirstChild("HumanoidRootPart")
 
 	if not HumanoidRootPart then
 		return false
 	end
 
-	local Distance =
-		(
-			HumanoidRootPart.Position
-			- Target.Position
-		).Magnitude
+	local Distance = (HumanoidRootPart.Position - Target.Position).Magnitude
 
 	return Distance <= MaximumClickDistance
 end
 
-
-
 local function UpdateTargetHighlight()
-	local Target =
-		Mouse.Target
+	local Target = Mouse.Target
 
 	if IsValidMiningTarget(Target) then
-		TargetHighlight.Adornee =
-			Target
+		TargetHighlight.Adornee = Target
+		TargetHighlight.Enabled = true
 
-		TargetHighlight.Enabled =
-			true
-		
-		local InfoString = ((Target.Name).." | ".. Target:GetAttribute("Health").." | Value: $"..(Target:GetAttribute("Value")))
-		InfoUI.Text = InfoString
-		InfoUI.Parent.Enabled = true
+		local Health = Target:GetAttribute("Health")
+		local Value = Target:GetAttribute("Value")
+
+		InfoLabel.Text = string.format(
+			"%s | %s | Value: $%s",
+			Target.Name,
+			tostring(Health or "?"),
+			tostring(Value or 0)
+		)
+
+		InfoGui.Enabled = true
 	else
-		TargetHighlight.Enabled =
-			false
-
-		TargetHighlight.Adornee =
-			nil
-		
-		InfoUI.Parent.Enabled = false
+		TargetHighlight.Enabled = false
+		TargetHighlight.Adornee = nil
+		InfoGui.Enabled = false
 	end
 end
-RunService.RenderStepped:Connect(
-	UpdateTargetHighlight
-)
 
 local function ClearTargetHighlight()
 	TargetHighlight.Enabled = false
 	TargetHighlight.Adornee = nil
+	InfoGui.Enabled = false
 end
+
+RunService.RenderStepped:Connect(UpdateTargetHighlight)
 
 ---------------------------------------------------------------------
 -- CONNECTION MANAGEMENT
@@ -140,13 +120,21 @@ local function DisconnectToolConnections()
 	table.clear(ToolConnections)
 end
 
+local function DisconnectCharacterConnections()
+	for _, Connection in CharacterConnections do
+		Connection:Disconnect()
+	end
+
+	table.clear(CharacterConnections)
+end
+
 local function StopCurrentSwing()
 	StopSwinging = true
 	Swinging = false
 	HitDebounce = false
 
 	if AnimationTrack then
-		AnimationTrack:Stop()
+		AnimationTrack:Stop(0.05)
 	end
 end
 
@@ -170,12 +158,10 @@ local function IsPickaxe(Tool)
 		return false
 	end
 
-	-- Recommended attribute for identifying pickaxes.
 	if Tool:GetAttribute("IsPickaxe") == true then
 		return true
 	end
 
-	-- Compatibility with existing pickaxes.
 	return Tool:GetAttribute("Damage") ~= nil
 		and Tool:GetAttribute("Cooldown") ~= nil
 end
@@ -185,60 +171,41 @@ local function GetCooldown()
 		return 1
 	end
 
-	local Cooldown =
-		EquippedTool:GetAttribute(
-			"Cooldown"
-		)
+	local Cooldown = EquippedTool:GetAttribute("Cooldown")
 
-	if typeof(Cooldown) ~= "number"
-		or Cooldown <= 0 then
-
+	if typeof(Cooldown) ~= "number" or Cooldown <= 0 then
 		return 1
 	end
 
 	return Cooldown
 end
 
-
-
 ---------------------------------------------------------------------
 -- ANIMATION
 ---------------------------------------------------------------------
 
 local function LoadAnimation()
-	if not EquippedTool
-		or not SwingAnimation then
-
+	if not EquippedTool or not SwingAnimation then
 		return
 	end
 
-	local Character =
-		Player.Character
+	local Character = Player.Character
 
 	if not Character then
 		return
 	end
 
-	local Humanoid =
-		Character:FindFirstChildOfClass(
-			"Humanoid"
-		)
+	local Humanoid = Character:FindFirstChildOfClass("Humanoid")
 
 	if not Humanoid then
 		return
 	end
 
-	local Animator =
-		Humanoid:FindFirstChildOfClass(
-			"Animator"
-		)
+	local Animator = Humanoid:FindFirstChildOfClass("Animator")
 
 	if not Animator then
-		Animator =
-			Instance.new("Animator")
-
-		Animator.Parent =
-			Humanoid
+		Animator = Instance.new("Animator")
+		Animator.Parent = Humanoid
 	end
 
 	if AnimationTrack then
@@ -246,13 +213,38 @@ local function LoadAnimation()
 		AnimationTrack = nil
 	end
 
-	AnimationTrack =
-		Animator:LoadAnimation(
-			SwingAnimation
-		)
+	AnimationTrack = Animator:LoadAnimation(SwingAnimation)
+	AnimationTrack.Priority = Enum.AnimationPriority.Action
+	AnimationTrack.Looped = false
+end
 
-	AnimationTrack.Priority =
-		Enum.AnimationPriority.Action
+local function PlaySwingAnimation(Cooldown)
+	if not AnimationTrack then
+		return
+	end
+
+	local AnimationLength = AnimationTrack.Length
+	local AnimationDuration = math.max(
+		Cooldown * AnimationDurationRatio,
+		0.05
+	)
+
+	local PlaybackSpeed = 1
+
+	if AnimationLength > 0 then
+		PlaybackSpeed = AnimationLength / AnimationDuration
+	end
+
+	local FadeTime = math.min(
+		0.04,
+		Cooldown * 0.05
+	)
+
+	AnimationTrack:Play(
+		FadeTime,
+		1,
+		PlaybackSpeed
+	)
 end
 
 ---------------------------------------------------------------------
@@ -260,8 +252,6 @@ end
 ---------------------------------------------------------------------
 
 local function TryMineTarget(Target)
-	
-	
 	if not EquippedTool
 		or not Target
 		or HitDebounce then
@@ -273,115 +263,69 @@ local function TryMineTarget(Target)
 		return
 	end
 
-	if not Target:GetAttribute("Ore") then
+	if Target:GetAttribute("Ore") ~= true then
 		return
 	end
 
-	local Character =
-		Player.Character
+	local Character = Player.Character
 
 	if not Character then
 		return
 	end
 
-	local HumanoidRootPart =
-		Character:FindFirstChild(
-			"HumanoidRootPart"
-		)
+	local HumanoidRootPart = Character:FindFirstChild("HumanoidRootPart")
 
 	if not HumanoidRootPart then
 		return
 	end
 
-	local Distance =
-		(
-			HumanoidRootPart.Position
-			- Target.Position
-		).Magnitude
+	local Distance = (HumanoidRootPart.Position - Target.Position).Magnitude
 
-	if Distance >
-		MaximumClickDistance then
-
+	if Distance > MaximumClickDistance then
 		return
 	end
 
 	HitDebounce = true
 
-	
-	MiningEvent:FireServer(
-		Target,
-		true
-	)
+	MiningEvent:FireServer(Target)
 
-	local ToolAtHit =
-		EquippedTool
+	local ToolAtHit = EquippedTool
+	local Cooldown = GetCooldown()
 
-	task.delay(
-		GetCooldown(),
-		function()
-			-- Do not alter the debounce for a newly equipped tool.
-			if EquippedTool == ToolAtHit then
-				HitDebounce = false
-			end
+	task.delay(Cooldown, function()
+		-- Do not modify the debounce belonging to a newly equipped tool.
+		if EquippedTool == ToolAtHit then
+			HitDebounce = false
 		end
-	)
+	end)
 end
 
 local function StartSwinging()
-	if Swinging
-		or not EquippedTool then
-
+	if Swinging or not EquippedTool then
 		return
 	end
 
 	Swinging = true
 	StopSwinging = false
 
-	local ActiveTool =
-		EquippedTool
+	local ActiveTool = EquippedTool
 
 	while Swinging
 		and not StopSwinging
 		and EquippedTool == ActiveTool
-		and ActiveTool.Parent
-		== Player.Character do
+		and ActiveTool.Parent == Player.Character do
 
-		local ClickedTarget =
-			Mouse.Target
+		local ClickedTarget = Mouse.Target
+		local Cooldown = GetCooldown()
+		local HitDelay = Cooldown * HitDelayRatio
+		local RecoveryDelay = math.max(Cooldown - HitDelay, 0)
 
-		local Cooldown =
-			GetCooldown()
-
-		local HitDelay =
-			Cooldown * 0.75
-
-		local RecoveryDelay =
-			math.max(
-				Cooldown - HitDelay,
-				0
-			)
-
-		if AnimationTrack then
-			local AnimationLength =
-				AnimationTrack.Length
-
-			if AnimationLength > 0 then
-				local PlaybackSpeed =
-					AnimationLength
-					/ Cooldown
-
-				AnimationTrack:Play()
-				AnimationTrack:AdjustSpeed(
-					PlaybackSpeed
-				)
-			else
-				AnimationTrack:Play()
-			end
-		end
+		PlaySwingAnimation(Cooldown)
 
 		task.wait(HitDelay)
-		-- Complete the current swing even if the player
-		-- released the mouse during the animation.
+
+		-- Complete the current swing after mouse release, unless the
+		-- pickaxe was unequipped or the character changed.
 		if EquippedTool ~= ActiveTool
 			or ActiveTool.Parent ~= Player.Character then
 
@@ -392,17 +336,18 @@ local function StartSwinging()
 			HitSound:Play()
 		end
 
-		TryMineTarget(
-			ClickedTarget
-		)
+		TryMineTarget(ClickedTarget)
 
-		task.wait(
-			RecoveryDelay
-		)
+		task.wait(RecoveryDelay)
 	end
 
 	if AnimationTrack then
-		AnimationTrack:Stop()
+		local FadeTime = math.min(
+			0.04,
+			GetCooldown() * 0.05
+		)
+
+		AnimationTrack:Stop(FadeTime)
 	end
 
 	Swinging = false
@@ -414,9 +359,6 @@ end
 ---------------------------------------------------------------------
 
 local function EquipTool(Tool)
-	-- Rest of EquipTool...
-	
-	 
 	if Tool == EquippedTool then
 		return
 	end
@@ -428,36 +370,22 @@ local function EquipTool(Tool)
 	end
 
 	EquippedTool = Tool
+	HitSound = Tool:FindFirstChild("HitSound")
+	SwingAnimation = Tool:FindFirstChild("SwingAnim")
 
-	HitSound =
-		Tool:FindFirstChild(
-			"HitSound"
-		)
-
-	SwingAnimation =
-		Tool:FindFirstChild(
-			"SwingAnim"
-		)
-
-	if not HitSound
-		or not HitSound:IsA("Sound") then
-
+	if not HitSound or not HitSound:IsA("Sound") then
 		warn(
 			Tool:GetFullName(),
-			"does not contain a HitSound."
+			"does not contain a valid HitSound."
 		)
 
 		HitSound = nil
 	end
 
-	if not SwingAnimation
-		or not SwingAnimation:IsA(
-			"Animation"
-		) then
-
+	if not SwingAnimation or not SwingAnimation:IsA("Animation") then
 		warn(
 			Tool:GetFullName(),
-			"does not contain a SwingAnim."
+			"does not contain a valid SwingAnim."
 		)
 
 		SwingAnimation = nil
@@ -467,35 +395,27 @@ local function EquipTool(Tool)
 
 	table.insert(
 		ToolConnections,
-		Tool.Activated:Connect(
-			StartSwinging
-		)
+		Tool.Activated:Connect(StartSwinging)
 	)
 
 	table.insert(
 		ToolConnections,
-		Tool.Deactivated:Connect(
-			function()
-				StopSwinging = true
-			end
-		)
+		Tool.Deactivated:Connect(function()
+			StopSwinging = true
+		end)
 	)
 
 	table.insert(
 		ToolConnections,
-		Tool.AncestryChanged:Connect(
-			function()
-				if EquippedTool ~= Tool then
-					return
-				end
-
-				if Tool.Parent
-					~= Player.Character then
-
-					ClearEquippedTool()
-				end
+		Tool.AncestryChanged:Connect(function()
+			if EquippedTool ~= Tool then
+				return
 			end
-		)
+
+			if Tool.Parent ~= Player.Character then
+				ClearEquippedTool()
+			end
+		end)
 	)
 end
 
@@ -503,40 +423,26 @@ end
 -- CHARACTER SETUP
 ---------------------------------------------------------------------
 
-local CharacterConnections = {}
-
-local function DisconnectCharacterConnections()
-	for _, Connection in CharacterConnections do
-		Connection:Disconnect()
-	end
-
-	table.clear(CharacterConnections)
-end
-
 local function SetUpCharacter(Character)
 	ClearEquippedTool()
 	DisconnectCharacterConnections()
 
 	table.insert(
 		CharacterConnections,
-		Character.ChildAdded:Connect(
-			function(Child)
-				if IsPickaxe(Child) then
-					EquipTool(Child)
-				end
+		Character.ChildAdded:Connect(function(Child)
+			if IsPickaxe(Child) then
+				EquipTool(Child)
 			end
-		)
+		end)
 	)
 
 	table.insert(
 		CharacterConnections,
-		Character.ChildRemoved:Connect(
-			function(Child)
-				if Child == EquippedTool then
-					ClearEquippedTool()
-				end
+		Character.ChildRemoved:Connect(function(Child)
+			if Child == EquippedTool then
+				ClearEquippedTool()
 			end
-		)
+		end)
 	)
 
 	for _, Child in Character:GetChildren() do
@@ -547,19 +453,13 @@ local function SetUpCharacter(Character)
 	end
 end
 
-Player.CharacterAdded:Connect(
-	SetUpCharacter
-)
+Player.CharacterAdded:Connect(SetUpCharacter)
 
-Player.CharacterRemoving:Connect(
-	function()
-		ClearEquippedTool()
-		DisconnectCharacterConnections()
-	end
-)
+Player.CharacterRemoving:Connect(function()
+	ClearEquippedTool()
+	DisconnectCharacterConnections()
+end)
 
 if Player.Character then
-	SetUpCharacter(
-		Player.Character
-	)
+	SetUpCharacter(Player.Character)
 end
