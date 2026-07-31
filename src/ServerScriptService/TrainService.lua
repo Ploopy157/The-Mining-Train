@@ -1035,13 +1035,13 @@ function TrainService.SpawnPlayerTrain(
 			"Your station needs a TrainSpawnOrigin Part."
 	end
 
-	local TrainModel,
-		BuildError =
+local TrainModel, BuildError =
 		BuildPlayerTrain(
-				Player,
-				Data,
-				SpawnOrigin
-			)
+			Player,
+			Data,
+			TrainSpawnOrigin,
+			DrillSpawnOrigin
+		)
 
 	if not TrainModel then
 		return false,
