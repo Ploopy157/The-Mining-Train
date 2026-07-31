@@ -818,20 +818,36 @@ local function BuildPlayerTrain(
 			CarLength
 	end
 
-	-----------------------------------------------------------------
-	-- LOCOMOTIVE: ALWAYS IN FRONT OF THE ORE CARS
-	-----------------------------------------------------------------
+-----------------------------------------------------------------
+-- LOCOMOTIVE: PUSHCART BEHIND CARS, POWERED LOCOMOTIVES IN FRONT
+-----------------------------------------------------------------
+
+	local LocomotiveId =
+		PreparedData.Train.LocomotiveId
+		or "PushCart"
 
 	local LocomotiveLength =
 		GetTrainLength(
 			Locomotive
 		)
 
-	if PreviousLength then
-		TotalOffset +=
-			PreviousLength / 2
+	local LocomotiveOffset
+
+	if LocomotiveId == "PushCart" then
+		LocomotiveOffset = -(
+			(FirstCarLength or 0) / 2
 			+ CarGap
 			+ LocomotiveLength / 2
+		)
+	else
+		if PreviousLength then
+			TotalOffset +=
+				PreviousLength / 2
+				+ CarGap
+				+ LocomotiveLength / 2
+		end
+
+		LocomotiveOffset = TotalOffset
 	end
 
 	Locomotive.Parent = TrainModel
@@ -841,7 +857,7 @@ local function BuildPlayerTrain(
 		* CFrame.new(
 			0,
 			0,
-			TotalOffset * Direction
+			LocomotiveOffset * Direction
 		)
 
 	local LocomotivePositioned, LocomotivePositionError =
@@ -863,10 +879,6 @@ local function BuildPlayerTrain(
 	-----------------------------------------------------------------
 	-- DRILL: OPTIONAL, AND ONLY IN FRONT OF NON-PUSHCART LOCOMOTIVES
 	-----------------------------------------------------------------
-
-	local LocomotiveId =
-		PreparedData.Train.LocomotiveId
-		or "PushCart"
 
 	if LocomotiveId ~= "PushCart" then
 		local DrillModel, DrillResult =
