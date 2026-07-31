@@ -29,13 +29,15 @@ local DrillService = {}
 local function GetSavedDrillId(Data)
 	if typeof(Data) ~= "table"
 		or typeof(Data.Train) ~= "table"
-		or typeof(Data.Train.DrillId)
-			~= "string" then
+		or typeof(Data.Train.DrillId) ~= "string"
+		or Data.Train.DrillId == "" then
 
-		return "StarterDrill"
+		return "NoDrill"
 	end
 
-	return Data.Train.DrillId
+	return DrillDefinitions.NormalizeId(
+		Data.Train.DrillId
+	)
 end
 
 local function GetSpeedMultiplier(Data)
@@ -71,23 +73,29 @@ function DrillService.GetStats(Data)
 		GetSavedDrillId(Data)
 
 	local Definition =
+	DrillDefinitions.Get(
+		DrillId
+	)
+
+if not Definition then
+	warn(
+		"Unknown saved drill ID",
+		tostring(DrillId),
+		"- falling back to NoDrill."
+	)
+
+	DrillId = "NoDrill"
+
+	Definition =
 		DrillDefinitions.Get(
 			DrillId
 		)
+end
 
-	if not Definition then
-		DrillId = "StarterDrill"
-
-		Definition =
-			DrillDefinitions.Get(
-				DrillId
-			)
-	end
-
-	if not Definition then
-		return nil,
-			"StarterDrill definition was not found."
-	end
+if not Definition then
+	return nil,
+		"NoDrill definition was not found."
+end
 
 	local Damage =
 		tonumber(
@@ -110,9 +118,12 @@ function DrillService.GetStats(Data)
 	return {
 		DrillId = DrillId,
 
-		DisplayName =
-			Definition.DisplayName
-			or DrillId,
+	IsUnlocked =
+		Definition.IsUnlocked ~= false,
+
+	DisplayName =
+		Definition.DisplayName
+		or DrillId,
 
 		Damage =
 			math.max(
