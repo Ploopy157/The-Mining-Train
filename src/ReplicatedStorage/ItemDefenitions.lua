@@ -616,82 +616,161 @@ ItemDefenitions.Lights = {
 	["1"] = {
 		["TemplateId"] = "1",
 		["Name"] = "Unlit Helmet",
-		["Tier"] = 1,
-		["LightColor"] = Color3.fromRGB(255, 222, 170),
 		["DisplayName"] = "Unlit Helmet",
+		["Tier"] = 1,
+
 		["Color"] = Color3.fromRGB(255, 197, 97),
-		["Brightness"] = 1,
-		["Range"] = 8,
+		["LightColor"] = Color3.fromRGB(255, 222, 170),
+
+		["PointBrightness"] = 0,
+		["PointRange"] = 0,
+
+		["SpotBrightness"] = 0,
+		["SpotRange"] = 0,
+		["SpotAngle"] = 70,
+
+		["SurfaceBrightness"] = 0,
+		["SurfaceRange"] = 0,
 	},
+
 	["2"] = {
 		["TemplateId"] = "2",
 		["Name"] = "Candle Lamp",
-		["Tier"] = 2,
-		["LightColor"] = Color3.fromRGB(255, 190, 105),
 		["DisplayName"] = "Candle Lamp",
+		["Tier"] = 2,
+
 		["Color"] = Color3.fromRGB(255, 197, 97),
-		["Brightness"] = 1.5,
-		["Range"] = 16,
+		["LightColor"] = Color3.fromRGB(255, 190, 105),
+
+		["PointBrightness"] = 0.35,
+		["PointRange"] = 8,
+
+		["SpotBrightness"] = 0.8,
+		["SpotRange"] = 14,
+		["SpotAngle"] = 65,
+
+		["SurfaceBrightness"] = 0.35,
+		["SurfaceRange"] = 8,
 	},
+
 	["3"] = {
 		["TemplateId"] = "3",
 		["Name"] = "Oil Lamp",
-		["Tier"] = 3,
-		["LightColor"] = Color3.fromRGB(255, 207, 135),
 		["DisplayName"] = "Oil Lamp",
+		["Tier"] = 3,
+
 		["Color"] = Color3.fromRGB(255, 197, 97),
-		["Brightness"] = 1.7999999523162842,
-		["Range"] = 24,
+		["LightColor"] = Color3.fromRGB(255, 207, 135),
+
+		["PointBrightness"] = 0.45,
+		["PointRange"] = 10,
+
+		["SpotBrightness"] = 1.1,
+		["SpotRange"] = 22,
+		["SpotAngle"] = 68,
+
+		["SurfaceBrightness"] = 0.45,
+		["SurfaceRange"] = 10,
 	},
+
 	["4"] = {
 		["TemplateId"] = "4",
 		["Name"] = "Carbide Lamp",
-		["Tier"] = 4,
-		["LightColor"] = Color3.fromRGB(255, 229, 185),
 		["DisplayName"] = "Carbide Lamp",
+		["Tier"] = 4,
+
 		["Color"] = Color3.fromRGB(255, 197, 97),
-		["Brightness"] = 2,
-		["Range"] = 32,
+		["LightColor"] = Color3.fromRGB(255, 229, 185),
+
+		["PointBrightness"] = 0.55,
+		["PointRange"] = 12,
+
+		["SpotBrightness"] = 1.5,
+		["SpotRange"] = 30,
+		["SpotAngle"] = 72,
+
+		["SurfaceBrightness"] = 0.55,
+		["SurfaceRange"] = 12,
 	},
+
 	["5"] = {
 		["TemplateId"] = "5",
 		["Name"] = "Electric Headlamp",
-		["Tier"] = 5,
-		["LightColor"] = Color3.fromRGB(231, 241, 255),
 		["DisplayName"] = "Electric Headlamp",
+		["Tier"] = 5,
+
 		["Color"] = Color3.fromRGB(255, 197, 97),
-		["Brightness"] = 2,
-		["Range"] = 40,
+		["LightColor"] = Color3.fromRGB(231, 241, 255),
+
+		["PointBrightness"] = 0.6,
+		["PointRange"] = 14,
+
+		["SpotBrightness"] = 1.9,
+		["SpotRange"] = 38,
+		["SpotAngle"] = 76,
+
+		["SurfaceBrightness"] = 0.6,
+		["SurfaceRange"] = 14,
 	},
+
 	["6"] = {
 		["TemplateId"] = "6",
 		["Name"] = "High-Power Headlamp",
-		["Tier"] = 6,
-		["LightColor"] = Color3.fromRGB(216, 232, 255),
 		["DisplayName"] = "High-Power Headlamp",
+		["Tier"] = 6,
+
 		["Color"] = Color3.fromRGB(255, 197, 97),
-		["Brightness"] = 2,
-		["Range"] = 48,
+		["LightColor"] = Color3.fromRGB(216, 232, 255),
+
+		["PointBrightness"] = 0.65,
+		["PointRange"] = 15,
+
+		["SpotBrightness"] = 2.4,
+		["SpotRange"] = 46,
+		["SpotAngle"] = 80,
+
+		["SurfaceBrightness"] = 0.65,
+		["SurfaceRange"] = 15,
 	},
+
 	["7"] = {
 		["TemplateId"] = "7",
 		["Name"] = "Arc Lamp",
-		["Tier"] = 7,
-		["LightColor"] = Color3.fromRGB(196, 220, 255),
 		["DisplayName"] = "Arc Lamp",
+		["Tier"] = 7,
+
 		["Color"] = Color3.fromRGB(255, 197, 97),
-		["Brightness"] = 2,
-		["Range"] = 56,
+		["LightColor"] = Color3.fromRGB(196, 220, 255),
+
+		["PointBrightness"] = 0.7,
+		["PointRange"] = 17,
+
+		["SpotBrightness"] = 3,
+		["SpotRange"] = 55,
+		["SpotAngle"] = 83,
+
+		["SurfaceBrightness"] = 0.7,
+		["SurfaceRange"] = 17,
 	},
+
 	["8"] = {
 		["TemplateId"] = "8",
 		["Name"] = "Abyss Lamp",
-		["Tier"] = 8,
-		["LightColor"] = Color3.fromRGB(164, 235, 255),
 		["DisplayName"] = "Abyss Lamp",
+		["Tier"] = 8,
+
 		["Color"] = Color3.fromRGB(255, 197, 97),
-		["Brightness"] = 2,
-		["Range"] = 64,
+		["LightColor"] = Color3.fromRGB(164, 235, 255),
+
+		["PointBrightness"] = 0.75,
+		["PointRange"] = 18,
+
+		["SpotBrightness"] = 3.5,
+		["SpotRange"] = 64,
+		["SpotAngle"] = 85,
+
+		["SurfaceBrightness"] = 0.75,
+		["SurfaceRange"] = 18,
 	},
 }
 
