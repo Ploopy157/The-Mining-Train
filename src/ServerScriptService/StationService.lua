@@ -267,6 +267,30 @@ function StationService.GetTrainSpawnOrigin(Player)
 	return nil
 end
 
+function StationService.GetDrillSpawnOrigin(Player)
+	local Station =
+		StationService.GetPlayerStation(Player)
+		or StationService.AssignStation(Player)
+
+	if not Station then
+		return nil
+	end
+
+	local SpawnOrigin =
+		Station:FindFirstChild(
+			"DrillSpawnOrigin",
+			true
+		)
+
+	if SpawnOrigin
+		and SpawnOrigin:IsA("BasePart") then
+
+		return SpawnOrigin
+	end
+
+	return nil
+end
+
 function StationService.GetPlayerSpawn(Player)
 	local Station =
 		StationService.GetPlayerStation(Player)

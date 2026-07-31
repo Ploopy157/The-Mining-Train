@@ -711,7 +711,8 @@ end
 local function BuildPlayerTrain(
 	Player,
 	Data,
-	SpawnOrigin
+	TrainSpawnOrigin,
+	DrillSpawnOrigin
 )
 	local PreparedData, EffectiveCapacity =
 		PrepareTrainData(
@@ -746,12 +747,12 @@ local function BuildPlayerTrain(
 
 	local Direction =
 		GetCarDirection(
-			SpawnOrigin
+			TrainSpawnOrigin
 		)
 
 	local CarGap =
 		GetCarGap(
-			SpawnOrigin
+			TrainSpawnOrigin
 		)
 
 	local TotalOffset = 0
@@ -793,7 +794,7 @@ local function BuildPlayerTrain(
 		end
 
 		local CarPrimaryCFrame =
-			SpawnOrigin.CFrame
+			TrainSpawnOrigin.CFrame
 			* CFrame.new(
 				0,
 				0,
@@ -836,7 +837,7 @@ local function BuildPlayerTrain(
 	Locomotive.Parent = TrainModel
 
 	local LocomotivePrimaryCFrame =
-		SpawnOrigin.CFrame
+		TrainSpawnOrigin.CFrame
 		* CFrame.new(
 			0,
 			0,
@@ -877,23 +878,17 @@ local function BuildPlayerTrain(
 		if DrillModel then
 			DrillModel.Parent = TrainModel
 
-			local DrillLength =
-				GetTrainLength(
-					DrillModel
-				)
+			if not DrillSpawnOrigin
+				or not DrillSpawnOrigin:IsA("BasePart") then
 
-			TotalOffset +=
-				PreviousLength / 2
-				+ CarGap
-				+ DrillLength / 2
+				TrainModel:Destroy()
+
+				return nil,
+					"Your station needs a DrillSpawnOrigin Part."
+			end
 
 			local DrillPrimaryCFrame =
-				SpawnOrigin.CFrame
-				* CFrame.new(
-					0,
-					0,
-					TotalOffset * Direction
-				)
+				DrillSpawnOrigin.CFrame
 
 			local DrillPositioned, DrillPositionError =
 				PivotModelByPrimaryPart(
@@ -1024,16 +1019,17 @@ function TrainService.SpawnPlayerTrain(
 			"Player train is already spawned."
 	end
 
-	local SpawnOrigin =
-		StationService
-		.GetTrainSpawnOrigin(
+	local TrainSpawnOrigin =
+		StationService.GetTrainSpawnOrigin(
 			Player
 		)
 
-	if not SpawnOrigin
-		or not SpawnOrigin:IsA(
-			"BasePart"
-		) then
+	local DrillSpawnOrigin =
+		StationService.GetDrillSpawnOrigin(
+			Player
+		)
+	if not TrainSpawnOrigin
+		or not TrainSpawnOrigin:IsA("BasePart") then
 
 		return false,
 			"Your station needs a TrainSpawnOrigin Part."
@@ -1042,10 +1038,10 @@ function TrainService.SpawnPlayerTrain(
 	local TrainModel,
 		BuildError =
 		BuildPlayerTrain(
-			Player,
-			Data,
-			SpawnOrigin
-		)
+				Player,
+				Data,
+				SpawnOrigin
+			)
 
 	if not TrainModel then
 		return false,

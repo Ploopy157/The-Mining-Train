@@ -417,8 +417,98 @@ function TrainInventoryService.Transfer(Player, Direction, CarId, OreName, Reque
 		Overview = TrainInventoryService.GetOverview(Player),
 	}
 end
+local function GetVehicleModel(Object, TrainModel)
+	local Current = Object
 
-function TrainInventoryService.AddOreToAvailableCar(Player, OreName, Quantity)
+	while Current and Current.Parent ~= TrainModel do
+		Current = Current.Parent
+	end
+
+	if Current and Current:IsA("Model") then
+		return Current
+	end
+
+	return nil
+end
+
+local function GetCoupledVehicleModels(DrillModel)
+	local TrainModel = DrillModel and DrillModel.Parent
+
+	if not DrillModel
+		or not DrillModel:IsA("Model")
+		or not TrainModel
+		or not TrainModel:IsA("Model")
+		or not TrainModel:IsDescendantOf(Workspace) then
+
+		return {}
+	end
+
+	local ConnectedModels = {}
+	local PendingModels = {DrillModel}
+	local NextPendingIndex = 1
+
+	ConnectedModels[DrillModel] = true
+
+	while NextPendingIndex <= #PendingModels do
+		local VehicleModel = PendingModels[NextPendingIndex]
+		NextPendingIndex += 1
+
+		for _, Object in VehicleModel:GetDescendants() do
+			if not Object:IsA("BasePart")
+				or Object.Name ~= "RoGaugeCoupler" then
+
+				continue
+			end
+
+			local CoupledTo = Object:FindFirstChild("CoupledTo")
+
+			if not CoupledTo
+				or not CoupledTo:IsA("ObjectValue")
+				or not CoupledTo.Value then
+
+				continue
+			end
+
+			local OtherVehicle =
+				GetVehicleModel(
+					CoupledTo.Value,
+					TrainModel
+				)
+
+			if OtherVehicle
+				and not ConnectedModels[OtherVehicle] then
+
+				ConnectedModels[OtherVehicle] = true
+				table.insert(PendingModels, OtherVehicle)
+			end
+		end
+	end
+
+	return ConnectedModels
+end
+
+local function GetCoupledCarIds(DrillModel)
+	local CoupledCarIds = {}
+
+	for VehicleModel in GetCoupledVehicleModels(DrillModel) do
+		local CarId = VehicleModel:GetAttribute("CarId")
+
+		if typeof(CarId) == "string"
+			and CarId ~= "" then
+
+			CoupledCarIds[CarId] = true
+		end
+	end
+
+	return CoupledCarIds
+end
+
+function TrainInventoryService.AddOreToAvailableCar(
+	Player,
+	OreName,
+	Quantity,
+	DrillModel
+)
 	local Data = EnsureTrainData(Player)
 
 	if not Data then
@@ -432,24 +522,74 @@ function TrainInventoryService.AddOreToAvailableCar(Player, OreName, Quantity)
 		return false, 0, "Invalid ore deposit request."
 	end
 
+	if not DrillModel
+		or not DrillModel:IsA("Model") then
+
+		return false, 0, "Drill model was not provided."
+	end
+
+	if DrillModel:GetAttribute("OwnerUserId")
+		~= Player.UserId then
+
+		return false, 0, "Drill ownership is invalid."
+	end
+
 	Quantity = math.floor(Quantity)
 
 	if Quantity <= 0 then
 		return false, 0, "Invalid ore quantity."
 	end
 
+	local CoupledCarIds =
+		GetCoupledCarIds(DrillModel)
+
+	local HasCoupledCar = false
+
+	for _ in CoupledCarIds do
+		HasCoupledCar = true
+		break
+	end
+
+	if not HasCoupledCar then
+		return false, 0, "NoCoupledCars"
+	end
+
 	local RemainingQuantity = Quantity
 	local AmountAdded = 0
 
 	for _, CarData in Data.Train.Cars do
+		if not CoupledCarIds[CarData.CarId] then
+			continue
+		end
+
 		local Inventory = CarData.Inventory
-		local Capacity = math.max(math.floor(tonumber(CarData.Capacity) or 0), 0)
-		local CurrentLoad = GetInventoryLoad(Inventory)
-		local AvailableSpace = math.max(Capacity - CurrentLoad, 0)
-		local CarAmount = math.min(RemainingQuantity, AvailableSpace)
+		local Capacity = math.max(
+			math.floor(
+				tonumber(CarData.Capacity) or 0
+			),
+			0
+		)
+
+		local CurrentLoad =
+			GetInventoryLoad(Inventory)
+
+		local AvailableSpace =
+			math.max(
+				Capacity - CurrentLoad,
+				0
+			)
+
+		local CarAmount =
+			math.min(
+				RemainingQuantity,
+				AvailableSpace
+			)
 
 		if CarAmount > 0 then
-			Inventory[OreName] = (Inventory[OreName] or 0) + CarAmount
+			Inventory[OreName] =
+				(Inventory[OreName] or 0)
+				+ CarAmount
+
 			AmountAdded += CarAmount
 			RemainingQuantity -= CarAmount
 		end
@@ -460,16 +600,23 @@ function TrainInventoryService.AddOreToAvailableCar(Player, OreName, Quantity)
 	end
 
 	if AmountAdded <= 0 then
-		return false, 0, "TrainFull"
+		return false, 0, "CoupledCarsFull"
 	end
 
 	if typeof(Data.Stats) == "table"
-		and typeof(Data.Stats.TotalOreMined) == "number" then
+		and typeof(Data.Stats.TotalOreMined)
+			== "number" then
 
 		Data.Stats.TotalOreMined += AmountAdded
 	end
 
-	return RemainingQuantity <= 0, AmountAdded, RemainingQuantity <= 0 and nil or "TrainPartiallyFull"
+	if RemainingQuantity > 0 then
+		return false,
+			AmountAdded,
+			"CoupledCarsPartiallyFull"
+	end
+
+	return true, AmountAdded
 end
 
 return TrainInventoryService

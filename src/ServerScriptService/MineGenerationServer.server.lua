@@ -456,7 +456,8 @@ local function MineOre(Player, Ore, DrillDamage, DrillModel, DrillBit)
 			TrainInventoryService.AddOreToAvailableCar(
 				Player,
 				OreName,
-				OreQuantity
+				OreQuantity,
+				DrillModel
 			)
 	else
 		AddedSuccessfully =
