@@ -79,98 +79,76 @@ local function GetTouchingOres(DrillBit)
 	return TouchingOres
 end
 
-local function SelectTouchingOre(DrillBit)
-	local TouchingOres =
-		GetTouchingOres(
-			DrillBit
-		)
+local function UpdateDrillSound(DrillBit, IsDrilling)
+	local DrillSound = DrillBit:FindFirstChild("DrillSound")
 
-	if #TouchingOres == 0 then
-		return nil
+	if not DrillSound or not DrillSound:IsA("Sound") then
+		return
 	end
-	return TouchingOres[1]
+
+	DrillSound.Looped = true
+
+	if IsDrilling then
+		if not DrillSound.Playing then
+			DrillSound:Play()
+		end
+	elseif DrillSound.Playing then
+		DrillSound:Stop()
+	end
 end
 
-local function UpdateDrill(
-	
-	DrillModel,
-	CurrentTime
-)
-	if not DrillModel:IsDescendantOf(
-		SpawnedTrains
-	) then
+local function UpdateDrill(DrillModel, CurrentTime)
+	if not DrillModel:IsDescendantOf(SpawnedTrains) then
 		NextMineTimes[DrillModel] = nil
 		return
 	end
 
-	local NextMineTime =
-		NextMineTimes[DrillModel]
-		or 0
+	local DrillBit = DrillModel:FindFirstChild("DrillBit", true)
+
+	if not DrillBit or not DrillBit:IsA("BasePart") then
+		return
+	end
+
+	local TouchingOres = GetTouchingOres(DrillBit)
+	local IsDrilling = #TouchingOres > 0
+
+	UpdateDrillSound(DrillBit, IsDrilling)
+
+	if not IsDrilling then
+		return
+	end
+
+	local NextMineTime = NextMineTimes[DrillModel] or 0
 
 	if CurrentTime < NextMineTime then
 		return
 	end
 
 	local Speed =
-		tonumber(
-			DrillModel:GetAttribute(
-				"Speed"
-			)
-		)
-		or tonumber(
-			DrillModel:GetAttribute(
-				"DrillSpeed"
-			)
-		)
+		tonumber(DrillModel:GetAttribute("Speed"))
+		or tonumber(DrillModel:GetAttribute("DrillSpeed"))
 		or 1
 
-	Speed =
-		math.max(
-			Speed,
-			MinimumSpeed
-		)
+	Speed = math.max(Speed, MinimumSpeed)
 
 	-- Schedule first so an error cannot create a rapid retry loop.
-	NextMineTimes[DrillModel] =
-		CurrentTime + Speed
+	NextMineTimes[DrillModel] = CurrentTime + Speed
 
-	local Damage =
-		tonumber(
-			DrillModel:GetAttribute(
-				"Damage"
-			)
-		)
+	local Damage = tonumber(
+		DrillModel:GetAttribute("Damage")
+	)
 
-	if not Damage
-		or Damage <= 0 then
-
+	if not Damage or Damage <= 0 then
 		return
 	end
 
-	local Player =
-		GetOwner(
-			DrillModel
-		)
+	local Player = GetOwner(DrillModel)
 
 	if not Player then
 		return
 	end
 
-	local DrillBit =
-		DrillModel:FindFirstChild(
-			"DrillBit",
-			true
-		)
-
-	if not DrillBit
-		or not DrillBit:IsA("BasePart") then
-		return
-	end
-
-	local Ore =
-		SelectTouchingOre(
-			DrillBit
-		)
+	local Ore = TouchingOres[1]
 
 	if not Ore then
 		return

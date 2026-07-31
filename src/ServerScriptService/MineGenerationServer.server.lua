@@ -12,8 +12,11 @@ local PickaxeService = require(ServerScriptService:WaitForChild("PickaxeService"
 local TrainInventoryService = require(ServerScriptService:WaitForChild("TrainInventoryService"))
 local DrillFilterService = require(ServerScriptService:WaitForChild("DrillFilterService"))
 local OreTemplates = ServerStorage:WaitForChild("Ores")
+local SoundsFolder = ServerStorage:WaitForChild("Sounds")
+local BlockBreakSoundTemplate = SoundsFolder:WaitForChild("BlockBreakSound")
 local MineFolder = Workspace:WaitForChild("MineContents")
 local SpawnedTrains = Workspace:WaitForChild("SpawnedTrains")
+
 
 local BlockSize = 4
 local MinimumMineX = 53
@@ -325,6 +328,20 @@ local function GetPickaxeDamage(Player)
 	return PickaxeStats.Damage
 end
 
+local function AttachBlockBreakSound(Ore)
+	if not BlockBreakSoundTemplate:IsA("Sound") then
+		warn("ServerStorage.Sounds.BlockBreakSound must be a Sound.")
+		return
+	end
+
+	local BreakSound = BlockBreakSoundTemplate:Clone()
+
+	BreakSound.Name = "BlockBreakSound"
+	BreakSound.Looped = false
+	BreakSound.PlayOnRemove = true
+	BreakSound.Parent = Ore
+end
+
 local function DestroyMinedOre(Ore)
 	if not Ore or not Ore.Parent then
 		return false
@@ -337,6 +354,8 @@ local function DestroyMinedOre(Ore)
 
 	MinedCells[GridKey] = true
 	OccupiedCells[GridKey] = nil
+
+	AttachBlockBreakSound(Ore)
 	Ore:Destroy()
 
 	local GenerationSucceeded, GenerationError = pcall(
