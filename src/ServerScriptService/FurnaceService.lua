@@ -258,14 +258,14 @@ local function StartFirstItem(Data, CurrentTime)
 	local FirstItem = Data.Furnace.Queue[1]
 
 	if not FirstItem or FirstItem.StartedAt then
-		return
+		return false
 	end
 
 	local Definition = ItemDefenitions.Ingots[FirstItem.IngotName]
 
 	if not Definition then
 		table.remove(Data.Furnace.Queue, 1)
-		return
+		return true
 	end
 
 	local Duration = math.max(
@@ -275,6 +275,8 @@ local function StartFirstItem(Data, CurrentTime)
 
 	FirstItem.StartedAt = CurrentTime
 	FirstItem.FinishesAt = CurrentTime + Duration
+
+	return true
 end
 
 function FurnaceService.Process(Player)
@@ -285,7 +287,7 @@ function FurnaceService.Process(Player)
 	end
 
 	local CurrentTime = os.time()
-	StartFirstItem(Data, CurrentTime)
+	local StateChanged = StartFirstItem(Data, CurrentTime)
 
 	while true do
 		local FirstItem = Data.Furnace.Queue[1]
@@ -308,10 +310,14 @@ function FurnaceService.Process(Player)
 			+ 1
 
 		Data.Stats.IngotsSmelted += 1
-		StartFirstItem(Data, CurrentTime)
+		StateChanged = true
+
+		if StartFirstItem(Data, CurrentTime) then
+			StateChanged = true
+		end
 	end
 
-	return true
+	return StateChanged
 end
 
 function FurnaceService.GetState(Player)

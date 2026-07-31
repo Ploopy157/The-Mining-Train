@@ -172,7 +172,15 @@ task.spawn(function()
 		task.wait(1)
 
 		for _, Player in Players:GetPlayers() do
-			FurnaceService.Process(Player)
+			local StateChanged = FurnaceService.Process(Player)
+
+			if StateChanged then
+				local State = FurnaceService.GetState(Player)
+
+				if State then
+					FurnaceUpdated:FireClient(Player, State)
+				end
+			end
 		end
 	end
 end)
