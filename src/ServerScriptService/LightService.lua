@@ -4,7 +4,7 @@ local ServerStorage = game:GetService("ServerStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
 local PlayerDataService = require(ServerScriptService:WaitForChild("PlayerDataService"))
-local ItemDefenitions = require(ReplicatedStorage:WaitForChild("ItemDefenitions"))
+local ItemDefinitions = require(ReplicatedStorage:WaitForChild("ItemDefinitions"))
 
 local LightsFolder = ServerStorage:WaitForChild("Lights")
 
@@ -30,11 +30,11 @@ local function GetLightLevel(Player)
 end
 
 local function GetLightDefinition(TemplateId)
-	if typeof(ItemDefenitions.Lights) ~= "table" then
+	if typeof(ItemDefinitions.Lights) ~= "table" then
 		return nil
 	end
 
-	return ItemDefenitions.Lights[tostring(TemplateId)]
+	return ItemDefinitions.Lights[tostring(TemplateId)]
 end
 
 local function RemoveExistingLamp(Character)

@@ -1,12 +1,30 @@
 local ServerStorage = game:GetService("ServerStorage")
 
 local PickaxeService = {}
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerStorage = game:GetService("ServerStorage")
+
+local ItemDefinitions = require(
+	ReplicatedStorage:WaitForChild("ItemDefinitions")
+)
 
 local PickaxeTemplates =
 	ServerStorage:WaitForChild("Pickaxes")
 
 local MinimumTemplateId = 1
 local MaximumTemplateId = #PickaxeTemplates:GetChildren()
+
+local function GetPickaxeDefinition(TemplateId)
+	local PickaxeDefinitions = ItemDefinitions.Pickaxes
+
+	if typeof(PickaxeDefinitions) ~= "table" then
+		return nil
+	end
+
+	return PickaxeDefinitions[
+		tostring(TemplateId)
+	]
+end
 
 local function NormalizeTemplateId(TemplateId)
 	TemplateId =
@@ -31,7 +49,7 @@ local function IsPlayerPickaxe(Object)
 		) == "number"
 end
 
-local function ValidateTemplate(Template)
+local function ValidateTemplate(Template, TemplateId)
 	if not Template then
 		return false,
 			"Pickaxe template was not found."
@@ -43,40 +61,53 @@ local function ValidateTemplate(Template)
 				.. " is not a Tool."
 	end
 
-	local DisplayName =
-		Template:GetAttribute("Name")
+	local Definition =
+		GetPickaxeDefinition(TemplateId)
 
-	local Damage =
-		Template:GetAttribute("Damage")
-
-	local Cooldown =
-		Template:GetAttribute("Cooldown")
-
-	if typeof(DisplayName) ~= "string"
-		or DisplayName == "" then
-
+	if not Definition then
 		return false,
-			Template:GetFullName()
-				.. " has an invalid Name attribute."
+			"Pickaxe definition "
+				.. tostring(TemplateId)
+				.. " was not found."
 	end
 
-	if typeof(Damage) ~= "number"
-		or Damage <= 0 then
+	if typeof(Definition.Name) ~= "string"
+		or Definition.Name == "" then
 
 		return false,
-			Template:GetFullName()
-				.. " has an invalid Damage attribute."
+			"Pickaxe definition "
+				.. tostring(TemplateId)
+				.. " has an invalid Name."
 	end
 
-	if typeof(Cooldown) ~= "number"
-		or Cooldown <= 0 then
+	if typeof(Definition.Damage) ~= "number"
+		or Definition.Damage <= 0 then
 
 		return false,
-			Template:GetFullName()
-				.. " has an invalid Cooldown attribute."
+			"Pickaxe definition "
+				.. tostring(TemplateId)
+				.. " has invalid Damage."
 	end
 
-	return true
+	if typeof(Definition.Cooldown) ~= "number"
+		or Definition.Cooldown <= 0 then
+
+		return false,
+			"Pickaxe definition "
+				.. tostring(TemplateId)
+				.. " has an invalid Cooldown."
+	end
+
+	if typeof(Definition.Range) ~= "number"
+		or Definition.Range <= 0 then
+
+		return false,
+			"Pickaxe definition "
+				.. tostring(TemplateId)
+				.. " has an invalid Range."
+	end
+
+	return true, Definition
 end
 
 local function RemovePickaxesFromContainer(
@@ -182,13 +213,17 @@ function PickaxeService.GivePickaxe(
 			TemplateId
 		)
 
-	local IsValid, ValidationError =
-		ValidateTemplate(Template)
+	local IsValid, DefinitionOrError =
+	ValidateTemplate(
+		Template,
+		TemplateId
+	)
 
 	if not IsValid then
-		return false, ValidationError
+		return false, DefinitionOrError
 	end
 
+	local Definition = DefinitionOrError
 	PickaxeService.RemovePlayerPickaxes(
 		Player
 	)
@@ -196,14 +231,34 @@ function PickaxeService.GivePickaxe(
 	local Pickaxe = Template:Clone()
 
 	Pickaxe:SetAttribute(
-		"PickaxeTemplateId",
-		TemplateId
-	)
+	"PickaxeTemplateId",
+	TemplateId
+)
 
-	Pickaxe.Name =
-		Template:GetAttribute("Name")
+Pickaxe:SetAttribute(
+	"IsPickaxe",
+	true
+)
 
-	Pickaxe.Parent = Backpack
+Pickaxe:SetAttribute(
+	"Damage",
+	Definition.Damage
+)
+
+Pickaxe:SetAttribute(
+	"Cooldown",
+	Definition.Cooldown
+)
+
+Pickaxe:SetAttribute(
+	"Range",
+	Definition.Range
+)
+
+Pickaxe.Name =
+	Definition.Name
+
+Pickaxe.Parent = Backpack
 
 	return true, Pickaxe
 end
@@ -227,9 +282,7 @@ function PickaxeService.GetEquippedPickaxe(
 	return nil
 end
 
-function PickaxeService.GetEquippedStats(
-	Player
-)
+function PickaxeService.GetEquippedStats(Player)
 	local Pickaxe =
 		PickaxeService.GetEquippedPickaxe(
 			Player
@@ -250,23 +303,32 @@ function PickaxeService.GetEquippedStats(
 			TemplateId
 		)
 
-	local IsValid, ValidationError =
-		ValidateTemplate(Template)
+	local IsValid, DefinitionOrError =
+		ValidateTemplate(
+			Template,
+			TemplateId
+		)
 
 	if not IsValid then
-		return nil, ValidationError
+		return nil, DefinitionOrError
 	end
+
+	local Definition = DefinitionOrError
 
 	return {
 		TemplateId = TemplateId,
 		DisplayName =
-			Template:GetAttribute("Name"),
+			Definition.DisplayName
+			or Definition.Name,
 
 		Damage =
-			Template:GetAttribute("Damage"),
+			Definition.Damage,
 
 		Cooldown =
-			Template:GetAttribute("Cooldown"),
+			Definition.Cooldown,
+
+		Range =
+			Definition.Range,
 	}
 end
 

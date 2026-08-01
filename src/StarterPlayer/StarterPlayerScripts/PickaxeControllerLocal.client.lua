@@ -45,6 +45,34 @@ TargetHighlight.DepthMode = Enum.HighlightDepthMode.Occluded
 TargetHighlight.Enabled = false
 TargetHighlight.Parent = PlayerGui
 
+local function GetCooldown()
+	if not EquippedTool then
+		return 1
+	end
+
+	local Cooldown = EquippedTool:GetAttribute("Cooldown")
+
+	if typeof(Cooldown) ~= "number" or Cooldown <= 0 then
+		return 1
+	end
+
+	return Cooldown
+end
+
+local function GetRange()
+	if not EquippedTool then
+		return DefaultPickaxeRange
+	end
+
+	local Range = EquippedTool:GetAttribute("Range")
+
+	if typeof(Range) ~= "number" or Range <= 0 then
+		return DefaultPickaxeRange
+	end
+
+	return Range
+end
+
 local function IsValidMiningTarget(Target)
 	if not EquippedTool then
 		return false
@@ -72,7 +100,7 @@ local function IsValidMiningTarget(Target)
 
 	local Distance = (HumanoidRootPart.Position - Target.Position).Magnitude
 
-	return Distance <= MaximumClickDistance
+	return Distance <= GetRange()
 end
 
 local function UpdateTargetHighlight()
@@ -166,19 +194,7 @@ local function IsPickaxe(Tool)
 		and Tool:GetAttribute("Cooldown") ~= nil
 end
 
-local function GetCooldown()
-	if not EquippedTool then
-		return 1
-	end
 
-	local Cooldown = EquippedTool:GetAttribute("Cooldown")
-
-	if typeof(Cooldown) ~= "number" or Cooldown <= 0 then
-		return 1
-	end
-
-	return Cooldown
-end
 
 ---------------------------------------------------------------------
 -- ANIMATION
@@ -281,9 +297,9 @@ local function TryMineTarget(Target)
 
 	local Distance = (HumanoidRootPart.Position - Target.Position).Magnitude
 
-	if Distance > MaximumClickDistance then
-		return
-	end
+	if Distance > GetRange() then
+	return
+end
 
 	HitDebounce = true
 

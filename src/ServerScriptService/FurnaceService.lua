@@ -2,7 +2,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 local Workspace = game:GetService("Workspace")
 
-local ItemDefenitions = require(ReplicatedStorage:WaitForChild("ItemDefenitions"))
+local ItemDefinitions = require(ReplicatedStorage:WaitForChild("ItemDefinitions"))
 local PlayerDataService = require(ServerScriptService:WaitForChild("PlayerDataService"))
 local StationService = require(ServerScriptService:WaitForChild("StationService"))
 
@@ -100,7 +100,7 @@ local function GetSpeedMultiplier(Data)
 end
 
 local function FindIngotForOre(OreName)
-	return ItemDefenitions.GetIngotForOre(OreName)
+	return ItemDefinitions.GetIngotForOre(OreName)
 end
 
 local function FindCarDataById(Data, CarId)
@@ -261,7 +261,7 @@ local function StartFirstItem(Data, CurrentTime)
 		return false
 	end
 
-	local Definition = ItemDefenitions.Ingots[FirstItem.IngotName]
+	local Definition = ItemDefinitions.Ingots[FirstItem.IngotName]
 
 	if not Definition then
 		table.remove(Data.Furnace.Queue, 1)
@@ -336,7 +336,7 @@ function FurnaceService.GetState(Player)
 	local Queue = {}
 	local Finished = {}
 
-	for OreName in ItemDefenitions.Ores do
+	for OreName in ItemDefinitions.Ores do
 		local IngotDefinition = FindIngotForOre(OreName)
 
 		if IngotDefinition then
@@ -382,8 +382,8 @@ function FurnaceService.GetState(Player)
 			table.insert(Finished, {
 				Name = IngotName,
 				Quantity = Quantity,
-				Value = ItemDefenitions.Ingots[IngotName]
-					and ItemDefenitions.Ingots[IngotName].Value
+				Value = ItemDefinitions.Ingots[IngotName]
+					and ItemDefinitions.Ingots[IngotName].Value
 					or 0,
 			})
 		end

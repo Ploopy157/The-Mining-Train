@@ -5,8 +5,8 @@ local ServerStorage = game:GetService("ServerStorage")
 local GetInventory = ReplicatedStorage:WaitForChild("GetInventory")
 local OreTemplates = ServerStorage:WaitForChild("Ores")
 
-local ItemDefenitions = require(
-	ReplicatedStorage:WaitForChild("ItemDefenitions")
+local ItemDefinitions = require(
+	ReplicatedStorage:WaitForChild("ItemDefinitions")
 )
 
 local PlayerDataService = require(
@@ -15,7 +15,7 @@ local PlayerDataService = require(
 
 local function GetItemValue(ItemName)
 	local IngotDefinition =
-		ItemDefenitions.Ingots[ItemName]
+		ItemDefinitions.Ingots[ItemName]
 
 	if IngotDefinition then
 		return math.max(

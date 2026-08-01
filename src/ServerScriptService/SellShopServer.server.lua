@@ -11,8 +11,8 @@ local TrainInventoryService = require(
 	ServerScriptService:WaitForChild("TrainInventoryService")
 )
 
-local ItemDefenitions = require(
-	ReplicatedStorage:WaitForChild("ItemDefenitions")
+local ItemDefinitions = require(
+	ReplicatedStorage:WaitForChild("ItemDefinitions")
 )
 
 local OreTemplates =
@@ -50,7 +50,7 @@ local MaximumShopDistance = 15
 
 local function GetItemValue(ItemName)
 	local IngotDefinition =
-		ItemDefenitions.Ingots[ItemName]
+		ItemDefinitions.Ingots[ItemName]
 
 	if IngotDefinition then
 		local IngotValue =
@@ -438,7 +438,7 @@ local function BuildShopData(Player)
 			Value = Value,
 			TotalValue = ItemTotalValue,
 			ItemType =
-				ItemDefenitions.Ingots[ItemName]
+				ItemDefinitions.Ingots[ItemName]
 				and "Ingot"
 				or "Ore",
 		})
@@ -641,7 +641,7 @@ local function CountSellableItem(
 		+ (Data.Inventory[ItemName] or 0)
 
 	-- Ingot names do not exist in train inventories, but raw ores do.
-	if not ItemDefenitions.Ingots[ItemName] then
+	if not ItemDefinitions.Ingots[ItemName] then
 		local EligibleCars =
 			GetEligibleCarData(Player)
 
@@ -743,7 +743,7 @@ SellOre.OnServerInvoke = function(
 	EnsureStats(Data)
 
 	local IngotDefinition =
-		ItemDefenitions.Ingots[ItemName]
+		ItemDefinitions.Ingots[ItemName]
 
 	local OreTemplate =
 		OreTemplates:FindFirstChild(ItemName)
