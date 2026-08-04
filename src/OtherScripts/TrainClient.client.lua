@@ -58,7 +58,7 @@
 		TransferControls:WaitForChild("DepositAllButton")
 	
 	local WithdrawAllButton = 
-		TransferFrame:WaitForChild("WithdrawAllButton")
+		TransferControls:WaitForChild("WithdrawAllButton")
 	
 	local WithdrawAllInProgress = false
 
@@ -351,8 +351,9 @@
 	end
 
 	local function RefreshTransferMenu(
-		ShouldRefreshOverview
-	)
+        ShouldRefreshOverview,
+        PreserveMessage
+    )
 		if ShouldRefreshOverview ~= false then
 			local Success =
 				RefreshOverview()
@@ -424,8 +425,10 @@
 		SelectedOreName = nil
 		SelectedSource = nil
 
-		MessageLabel.Text =
-			"Select an ore and transfer it."
+		if not PreserveMessage then
+            MessageLabel.Text =
+                "Select an ore and transfer it."
+        end
 	end
 
 local function PerformTransfer(Direction)
@@ -518,13 +521,125 @@ local function PerformTransfer(Direction)
 	SelectedOreName = nil
 	SelectedSource = nil
 
-	if Result.Overview then
-		RefreshTransferMenu(
-			Result.Overview
-		)
-	else
-		RefreshTransferMenu()
+	if typeof(Result.Overview) == "table" then
+        CurrentOverview = Result.Overview
+        RefreshTransferMenu(false, true)
+    else
+        RefreshTransferMenu(true, true)
+    end
+end
+
+local function PerformWithdrawAll()
+	if WithdrawAllInProgress then
+		return
 	end
+
+	if not SelectedCarId then
+		MessageLabel.Text = "No car selected."
+		return
+	end
+
+	local CarData = GetSelectedCar()
+
+	if not CarData then
+		MessageLabel.Text = "Car not found."
+		return
+	end
+
+	if CarData.Load <= 0 then
+		MessageLabel.Text = "This car is empty."
+		return
+	end
+
+	if not CurrentOverview or not CurrentOverview.Backpack then
+		MessageLabel.Text = "Backpack data is unavailable."
+		return
+	end
+
+	local Backpack = CurrentOverview.Backpack
+	local RemainingBackpackSpace = math.max(
+		Backpack.Capacity - Backpack.Load,
+		0
+	)
+
+	if RemainingBackpackSpace <= 0 then
+		MessageLabel.Text = "Your backpack is full."
+		return
+	end
+
+	WithdrawAllInProgress = true
+
+	WithdrawAllButton.Active = false
+	WithdrawAllButton.AutoButtonColor = false
+
+	local OriginalText = WithdrawAllButton.Text
+	WithdrawAllButton.Text = "Withdrawing..."
+
+	local RequestSucceeded, TransferSucceeded, Result =
+		pcall(function()
+			return TransferCarOre:InvokeServer(
+				"CarToBackpackAll",
+				SelectedCarId,
+				"",
+				0
+			)
+		end)
+
+	WithdrawAllInProgress = false
+
+	WithdrawAllButton.Active = true
+	WithdrawAllButton.AutoButtonColor = true
+	WithdrawAllButton.Text = OriginalText
+
+	if not RequestSucceeded then
+		warn(
+			"Withdraw All request failed:",
+			TransferSucceeded
+		)
+
+		MessageLabel.Text = "Withdraw request failed."
+		return
+	end
+
+	if not TransferSucceeded then
+		MessageLabel.Text = tostring(
+			Result or "Nothing could be withdrawn."
+		)
+
+		return
+	end
+
+	if typeof(Result) ~= "table" then
+		MessageLabel.Text = "Invalid withdrawal response."
+		return
+	end
+
+	local Transferred = math.max(
+		math.floor(
+			tonumber(Result.Transferred) or 0
+		),
+		0
+	)
+
+	if Result.Message then
+		MessageLabel.Text = tostring(Result.Message)
+	else
+		MessageLabel.Text = string.format(
+			"Withdrew %d ore%s from the car.",
+			Transferred,
+			Transferred == 1 and "" or "s"
+		)
+	end
+
+	SelectedOreName = nil
+	SelectedSource = nil
+
+	if typeof(Result.Overview) == "table" then
+        CurrentOverview = Result.Overview
+        RefreshTransferMenu(false, true)
+    else
+        RefreshTransferMenu(true, true)
+    end
 end
 
 	TrainButton.Activated:Connect(function()
@@ -546,6 +661,9 @@ end
 	WithdrawButton.Activated:Connect(function()
 		PerformTransfer("CarToBackpack")
 	end)
+
+    WithdrawAllButton.Activated:Connect(
+	PerformWithdrawAll)
 
 	DepositAllButton.Activated:Connect(function()
 		if not SelectedCarId then

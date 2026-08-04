@@ -26,6 +26,7 @@ Gui.Name = "FurnaceGui"
 Gui.ResetOnSpawn = false
 Gui.Enabled = false
 Gui.Parent = PlayerGui
+Gui.DisplayOrder = 10
 
 local Frame = Instance.new("Frame")
 Frame.AnchorPoint = Vector2.new(0.5, 0.5)
