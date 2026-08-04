@@ -13,17 +13,35 @@ local function GetFilter(Data)
 	return Data.Train.DrillDestroyOres
 end
 
-function DrillFilterService.GetOreNames()
-	local Names = {}
+function DrillFilterService.GetOreEntries()
+	local Entries = {}
 
 	for _, Template in OreTemplates:GetChildren() do
-		if Template:IsA("BasePart") and Template:GetAttribute("IsStone") ~= true then
-			table.insert(Names, Template.Name)
+		if not Template:IsA("BasePart") then
+			continue
 		end
+
+		if Template:GetAttribute("IsStone") == true then
+			continue
+		end
+
+		local Value = tonumber(Template:GetAttribute("Value")) or 0
+
+		table.insert(Entries, {
+			Name = Template.Name,
+			Value = Value,
+		})
 	end
 
-	table.sort(Names)
-	return Names
+	table.sort(Entries, function(First, Second)
+		if First.Value == Second.Value then
+			return First.Name < Second.Name
+		end
+
+		return First.Value < Second.Value
+	end)
+
+	return Entries
 end
 
 function DrillFilterService.IsValidOre(OreName)
@@ -67,10 +85,11 @@ function DrillFilterService.GetClientData(Player)
 	local Filter = GetFilter(Data)
 	local Entries = {}
 
-	for _, OreName in DrillFilterService.GetOreNames() do
+	for _, OreEntry in DrillFilterService.GetOreEntries() do
 		table.insert(Entries, {
-			Name = OreName,
-			Destroy = Filter[OreName] == true,
+			Name = OreEntry.Name,
+			Value = OreEntry.Value,
+			Destroy = Filter[OreEntry.Name] == true,
 		})
 	end
 

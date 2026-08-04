@@ -102,6 +102,7 @@ Scroll.CanvasSize = UDim2.new()
 Scroll.Parent = Panel
 
 local Layout = Instance.new("UIListLayout")
+Layout.SortOrder = Enum.SortOrder.LayoutOrder
 Layout.Padding = UDim.new(0, 7)
 Layout.Parent = Scroll
 
@@ -125,6 +126,28 @@ local function MakeButton(Text)
 	return Button
 end
 
+local function FormatMoney(Value)
+	Value = math.floor(tonumber(Value) or 0)
+
+	local Formatted = tostring(Value)
+
+	while true do
+		local Updated, Replacements = string.gsub(
+			Formatted,
+			"^(-?%d+)(%d%d%d)",
+			"%1,%2"
+		)
+
+		Formatted = Updated
+
+		if Replacements == 0 then
+			break
+		end
+	end
+
+	return "$" .. Formatted
+end
+
 local function AddRow(Entry, Order)
 	local Row = Instance.new("Frame")
 	Row.Name = Entry.Name
@@ -138,19 +161,32 @@ local function AddRow(Entry, Order)
 	RowCorner.CornerRadius = UDim.new(0, 8)
 	RowCorner.Parent = Row
 
+	local OreContainer = Instance.new("Frame")
+	OreContainer.Size = UDim2.new(0.5, 0, 1, 0)
+	OreContainer.BackgroundTransparency = 1
+	OreContainer.Parent = Row
+
 	local Label = Instance.new("TextLabel")
-	Label.Size = UDim2.new(0.5, 0, 1, 0)
+	Label.Position = UDim2.fromOffset(12, 3)
+	Label.Size = UDim2.new(1, -16, 0, 22)
 	Label.BackgroundTransparency = 1
 	Label.Text = Entry.Name
 	Label.TextColor3 = Color3.new(1, 1, 1)
 	Label.TextSize = 16
 	Label.TextXAlignment = Enum.TextXAlignment.Left
 	Label.Font = Enum.Font.Gotham
-	Label.Parent = Row
+	Label.Parent = OreContainer
 
-	local Padding = Instance.new("UIPadding")
-	Padding.PaddingLeft = UDim.new(0, 12)
-	Padding.Parent = Label
+	local Price = Instance.new("TextLabel")
+	Price.Position = UDim2.fromOffset(12, 23)
+	Price.Size = UDim2.new(1, -16, 0, 17)
+	Price.BackgroundTransparency = 1
+	Price.Text = FormatMoney(Entry.Value) .. " raw"
+	Price.TextColor3 = Color3.fromRGB(180, 205, 180)
+	Price.TextSize = 12
+	Price.TextXAlignment = Enum.TextXAlignment.Left
+	Price.Font = Enum.Font.Gotham
+	Price.Parent = OreContainer
 
 	local Keep = MakeButton("Keep")
 	Keep.Position = UDim2.new(0.5, 4, 0, 5)

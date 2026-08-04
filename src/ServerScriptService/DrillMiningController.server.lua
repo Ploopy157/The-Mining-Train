@@ -36,6 +36,7 @@ local NextMineTimes = {}
 
 local MinimumSpeed = 0.05
 local ScanInterval = 0.05
+local DrillPadding = Vector3.new(0.05, 0, 0.05)
 
 local function GetOwner(DrillModel)
 	local OwnerUserId =
@@ -74,10 +75,12 @@ local function GetTouchingOres(DrillBits)
 	local SeenOres = {}
 
 	for _, DrillBit in DrillBits do
-		local TouchingParts = Workspace:GetPartsInPart(
-			DrillBit,
-			MineOverlapParameters
-		)
+
+local TouchingParts = Workspace:GetPartBoundsInBox(
+	DrillBit.CFrame,
+	DrillBit.Size + DrillPadding,
+	MineOverlapParameters
+)
 
 		for _, Part in TouchingParts do
 			if not Part:IsA("BasePart") then

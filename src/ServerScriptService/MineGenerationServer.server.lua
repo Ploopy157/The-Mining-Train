@@ -21,14 +21,14 @@ local SpawnedTrains = Workspace:WaitForChild("SpawnedTrains")
 
 local BlockSize = 4
 local MinimumMineX = 53
-local MinimumMineY = 0.05
+local MinimumMineY = -260
 local MaximumMineY = 30
 local MaximumMineDepth = 5024
 local MaximumMiningDistance = 15
 local MineDepthAxis = "X"
 local MineDepthDirection = 1
 
-local MineResetInterval = 45 * 60 --(45 minutes)
+local MineResetInterval = 5 * 60 --(45 minutes)
 local MineResetWarningTimes = {
 	[1800] = "The mine will reset in 30 minutes!",
 	[1200] = "The mine will reset in 20 minutes!",
