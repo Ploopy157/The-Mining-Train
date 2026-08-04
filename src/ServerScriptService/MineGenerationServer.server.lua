@@ -29,12 +29,20 @@ local MaximumMiningDistance = 15
 local MineDepthAxis = "X"
 local MineDepthDirection = 1
 
-local MineResetInterval = 2 * 60 --(45 minutes)
+local MineResetInterval = 45 * 60 --(45 minutes)
 local MineResetWarningTimes = {
+	[1800] = "The mine will reset in 30 minutes!",
+	[1200] = "The mine will reset in 20 minutes!",
+	[600] = "The mine will reset in 10 minutes!",
 	[300] = "The mine will reset in 5 minutes!",
 	[60] = "The mine will reset in 1 minute!",
 	[30] = "The mine will reset in 30 seconds!",
-	[10] = "The mine will reset in 10 seconds: Players and trains will return to their stations."",
+	[10] = "The mine will reset in 10 seconds: Players and trains will return to their stations.",
+	[5] = "5",
+	[4] = "4",
+	[3] = "3",
+	[2] = "2",
+	[1] = "1",
 }
 
 -- The first pre-placed block establishes the mine grid origin.
