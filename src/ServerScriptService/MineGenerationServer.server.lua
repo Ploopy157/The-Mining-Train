@@ -11,6 +11,8 @@ local PlayerDataService = require(ServerScriptService:WaitForChild("PlayerDataSe
 local PickaxeService = require(ServerScriptService:WaitForChild("PickaxeService"))
 local TrainInventoryService = require(ServerScriptService:WaitForChild("TrainInventoryService"))
 local DrillFilterService = require(ServerScriptService:WaitForChild("DrillFilterService"))
+local StationService = require(ServerScriptService:WaitForChild("StationService"))
+local TrainService = require(ServerScriptService:WaitForChild("TrainService"))
 local OreTemplates = ServerStorage:WaitForChild("Ores")
 local SoundsFolder = ServerStorage:WaitForChild("Sounds")
 local BlockBreakSoundTemplate = SoundsFolder:WaitForChild("BlockBreakSound")
@@ -20,21 +22,38 @@ local SpawnedTrains = Workspace:WaitForChild("SpawnedTrains")
 
 local BlockSize = 4
 local MinimumMineX = 53
-local MinimumMineY = -260
+local MinimumMineY = 0.05
 local MaximumMineY = 30
 local MaximumMineDepth = 5024
 local MaximumMiningDistance = 15
 local MineDepthAxis = "X"
 local MineDepthDirection = 1
 
+local MineResetInterval = 2 * 60 --(45 minutes)
+local MineResetWarningTimes = {
+	[300] = "The mine will reset in 5 minutes!",
+	[60] = "The mine will reset in 1 minute!",
+	[30] = "The mine will reset in 30 seconds!",
+	[10] = "The mine will reset in 10 seconds: Players and trains will return to their stations."",
+}
+
 -- The first pre-placed block establishes the mine grid origin.
 local FirstBlock = MineFolder:FindFirstChildWhichIsA("BasePart", true)
 assert(FirstBlock, "MineContents must contain at least one pre-placed mine block.")
 
 local GridOrigin = FirstBlock.Position
+
+local InitialMineTemplate = Instance.new("Folder")
+InitialMineTemplate.Name = "InitialMineTemplate"
+
+for _, Object in MineFolder:GetChildren() do
+	Object:Clone().Parent = InitialMineTemplate
+end
+
 local LastMineTimes = {}
 local OccupiedCells = {}
 local MinedCells = {}
+local MineResetInProgress = false
 
 local NeighborDirections = {
 	Vector3.new(1, 0, 0),
@@ -96,6 +115,154 @@ local function RegisterExistingBlocks()
 			Object:SetAttribute("GridKey", GridKey)
 		end
 	end
+end
+
+local function ClearCellTracking()
+	table.clear(OccupiedCells)
+	table.clear(MinedCells)
+	table.clear(LastMineTimes)
+end
+
+local function ClearMineContents()
+	for _, Object in MineFolder:GetChildren() do
+		Object:Destroy()
+	end
+end
+
+local function RestoreInitialMine()
+	for _, Template in InitialMineTemplate:GetChildren() do
+		Template:Clone().Parent = MineFolder
+	end
+
+	RegisterExistingBlocks()
+end
+
+--Teleport plaeyers to the station when the mine resets
+local function TeleportPlayerToStation(Player)
+	if not Player or not Player.Parent then
+		return false, "Player is no longer connected."
+	end
+
+	local Character = Player.Character
+
+	if not Character then
+		return false, "Player does not currently have a character."
+	end
+
+	local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+	local PlayerSpawn = StationService.GetPlayerSpawn(Player)
+
+	if not PlayerSpawn or not PlayerSpawn:IsA("BasePart") then
+		return false, "The player's station does not have a valid spawn part."
+	end
+
+	if Humanoid then
+		Humanoid.Sit = false
+	end
+
+	for _, Object in Character:GetDescendants() do
+		if Object:IsA("BasePart") then
+			Object.AssemblyLinearVelocity = Vector3.zero
+			Object.AssemblyAngularVelocity = Vector3.zero
+		end
+	end
+
+	Character:PivotTo(PlayerSpawn.CFrame * CFrame.new(0, 4, 0))
+
+	return true
+end
+--Reset train when the mine resets
+local function ResetPlayerTrain(Player)
+	if not Player or not Player.Parent then
+		return false, "Player is no longer connected."
+	end
+
+	local ExistingTrain = TrainService.GetPlayerTrain(Player)
+
+	if ExistingTrain then
+		return TrainService.RebuildPlayerTrain(Player)
+	end
+
+	return TrainService.SpawnPlayerTrain(Player)
+end
+
+local function ReturnPlayersAndTrainsToStations()
+	local PlayersToReset = Players:GetPlayers()
+
+	-- Move players first so nobody remains seated in a train that is rebuilt.
+	for _, Player in PlayersToReset do
+		local Teleported, TeleportError = TeleportPlayerToStation(Player)
+
+		if not Teleported then
+			warn(
+				"[MineReset] Could not teleport",
+				Player.Name,
+				TeleportError
+			)
+		end
+	end
+
+	-- Give seat welds and character physics a moment to update.
+	task.wait(0.25)
+
+	for _, Player in PlayersToReset do
+		if not Player.Parent then
+			continue
+		end
+
+		local ResetSuccessfully, ResetResult = ResetPlayerTrain(Player)
+
+		if not ResetSuccessfully then
+			warn(
+				"[MineReset] Could not reset train for",
+				Player.Name,
+				ResetResult
+			)
+
+			OreInfoEvent:FireClient(
+				Player,
+				"Your train could not be returned to its station."
+			)
+		end
+	end
+end
+
+local function ResetMine()
+	if MineResetInProgress then
+		return false
+	end
+
+	MineResetInProgress = true
+	Workspace:SetAttribute("MineResetInProgress", true)
+
+	OreInfoEvent:FireAllClients("The mine is resetting! Returning everyone to their stations.")
+
+	local ResetSucceeded, ResetError = xpcall(function()
+		ReturnPlayersAndTrainsToStations()
+
+		ClearMineContents()
+		ClearCellTracking()
+		RestoreInitialMine()
+	end, debug.traceback)
+
+	Workspace:SetAttribute("MineResetInProgress", false)
+	MineResetInProgress = false
+
+	if not ResetSucceeded then
+		warn("[MineReset] Reset failed:", ResetError)
+
+		OreInfoEvent:FireAllClients(
+			"The mine reset encountered an error."
+		)
+
+		return false
+	end
+
+	OreInfoEvent:FireAllClients(
+		"The mine has been restored and all trains have returned!"
+	)
+
+	return true
 end
 
 local function GetMineDepth(WorldPosition)
@@ -376,6 +543,9 @@ local function DestroyMinedOre(Ore)
 end
 
 local function MineOre(Player, Ore, DrillDamage, DrillModel, DrillBit)
+	if MineResetInProgress then
+		return
+	end
 	if not Player or not Player:IsA("Player") then
 		return
 	end
@@ -494,6 +664,32 @@ local function MineOre(Player, Ore, DrillDamage, DrillModel, DrillBit)
 end
 
 RegisterExistingBlocks()
+
+task.spawn(function()
+	while true do
+		local ResetAt = Workspace:GetServerTimeNow() + MineResetInterval
+		local SentWarnings = {}
+
+		Workspace:SetAttribute("NextMineResetTime", ResetAt)
+
+		while Workspace:GetServerTimeNow() < ResetAt do
+			local SecondsRemaining = math.ceil(
+				ResetAt - Workspace:GetServerTimeNow()
+			)
+
+			for WarningTime, Message in MineResetWarningTimes do
+				if SecondsRemaining <= WarningTime and not SentWarnings[WarningTime] then
+					SentWarnings[WarningTime] = true
+					OreInfoEvent:FireAllClients(Message)
+				end
+			end
+
+			task.wait(1)
+		end
+
+		ResetMine()
+	end
+end)
 
 MiningEvent.OnServerEvent:Connect(function(Player, Ore)
 	MineOre(Player, Ore)
