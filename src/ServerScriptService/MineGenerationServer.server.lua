@@ -451,6 +451,23 @@ local function IsDrillTouchingOre(DrillBit, Ore)
 	return false
 end
 
+local function IsValidDrillBit(DrillModel, DrillBit)
+	if not DrillModel or not DrillModel:IsA("Model") then
+		return false
+	end
+
+	if not DrillBit or not DrillBit:IsA("BasePart") then
+		return false
+	end
+
+	if not DrillBit:IsDescendantOf(DrillModel) then
+		return false
+	end
+
+	return DrillBit.Name == "DrillBit"
+		or DrillBit.Name == "LowerDrillBit"
+end
+
 local function ValidateDrillHit(Player, Ore, Damage, DrillModel, DrillBit)
 	if typeof(Damage) ~= "number" or Damage <= 0 then
 		return false
@@ -468,7 +485,7 @@ local function ValidateDrillHit(Player, Ore, Damage, DrillModel, DrillBit)
 		return false
 	end
 
-	if not DrillBit or not DrillBit:IsDescendantOf(DrillModel) then
+	if not IsValidDrillBit(DrillModel, DrillBit) then
 		return false
 	end
 

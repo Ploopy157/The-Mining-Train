@@ -52,31 +52,72 @@ local function GetOwner(DrillModel)
 	)
 end
 
-local function GetTouchingOres(DrillBit)
-	local TouchingOres = {}
+local function GetDrillBits(DrillModel)
+	local DrillBits = {}
 
-	local TouchingParts =
-		Workspace:GetPartsInPart(
+	for _, DrillBitName in {
+		"DrillBit",
+		"LowerDrillBit",
+	} do
+		local DrillBit = DrillModel:FindFirstChild(DrillBitName, true)
+
+		if DrillBit and DrillBit:IsA("BasePart") then
+			table.insert(DrillBits, DrillBit)
+		end
+	end
+
+	return DrillBits
+end
+
+local function GetTouchingOres(DrillBits)
+	local TouchingOres = {}
+	local SeenOres = {}
+
+	for _, DrillBit in DrillBits do
+		local TouchingParts = Workspace:GetPartsInPart(
 			DrillBit,
 			MineOverlapParameters
 		)
 
-	for _, Part in TouchingParts do
-		if Part:IsA("BasePart")
-			and Part:GetAttribute("Ore")
-				== true
-			and not Part:GetAttribute(
-				"BeingDestroyed"
-			) then
+		for _, Part in TouchingParts do
+			if not Part:IsA("BasePart") then
+				continue
+			end
 
-			table.insert(
-				TouchingOres,
-				Part
-			)
+			if Part:GetAttribute("Ore") ~= true then
+				continue
+			end
+
+			if Part:GetAttribute("BeingDestroyed") then
+				continue
+			end
+
+			if SeenOres[Part] then
+				continue
+			end
+
+			SeenOres[Part] = true
+
+			table.insert(TouchingOres, {
+				Ore = Part,
+				DrillBit = DrillBit,
+			})
 		end
 	end
 
 	return TouchingOres
+end
+
+local function GetLowestTouchingOre(TouchingOres)
+	local LowestHit
+
+	for _, Hit in TouchingOres do
+		if not LowestHit or Hit.Ore.Position.Y < LowestHit.Ore.Position.Y then
+			LowestHit = Hit
+		end
+	end
+
+	return LowestHit
 end
 
 local function UpdateDrillSound(DrillBit, IsDrilling)
@@ -103,16 +144,19 @@ local function UpdateDrill(DrillModel, CurrentTime)
 		return
 	end
 
-	local DrillBit = DrillModel:FindFirstChild("DrillBit", true)
+	local DrillBits = GetDrillBits(DrillModel)
 
-	if not DrillBit or not DrillBit:IsA("BasePart") then
+	if #DrillBits == 0 then
 		return
 	end
 
-	local TouchingOres = GetTouchingOres(DrillBit)
+	local MainDrillBit = DrillModel:FindFirstChild("DrillBit", true)
+	local TouchingOres = GetTouchingOres(DrillBits)
 	local IsDrilling = #TouchingOres > 0
 
-	UpdateDrillSound(DrillBit, IsDrilling)
+	if MainDrillBit and MainDrillBit:IsA("BasePart") then
+		UpdateDrillSound(MainDrillBit, IsDrilling)
+	end
 
 	if not IsDrilling then
 		return
@@ -124,8 +168,7 @@ local function UpdateDrill(DrillModel, CurrentTime)
 		return
 	end
 
-	local Speed =
-		tonumber(DrillModel:GetAttribute("Speed"))
+	local Speed = tonumber(DrillModel:GetAttribute("Speed"))
 		or tonumber(DrillModel:GetAttribute("DrillSpeed"))
 		or 1
 
@@ -134,9 +177,7 @@ local function UpdateDrill(DrillModel, CurrentTime)
 	-- Schedule first so an error cannot create a rapid retry loop.
 	NextMineTimes[DrillModel] = CurrentTime + Speed
 
-	local Damage = tonumber(
-		DrillModel:GetAttribute("Damage")
-	)
+	local Damage = tonumber(DrillModel:GetAttribute("Damage"))
 
 	if not Damage or Damage <= 0 then
 		return
@@ -148,18 +189,18 @@ local function UpdateDrill(DrillModel, CurrentTime)
 		return
 	end
 
-	local Ore = TouchingOres[1]
+	local Hit = GetLowestTouchingOre(TouchingOres)
 
-	if not Ore then
+	if not Hit then
 		return
 	end
 
 	DrillMiningEvent:Fire(
 		Player,
-		Ore,
+		Hit.Ore,
 		Damage,
 		DrillModel,
-		DrillBit
+		Hit.DrillBit
 	)
 end
 
