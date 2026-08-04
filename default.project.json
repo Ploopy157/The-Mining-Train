@@ -2,6 +2,11 @@
 	"name": "TheMiningTrain",
 	"servePort": 34872,
 
+	"globIgnorePaths": [
+		"**/*.rbxm",
+		"**/*.rbxmx"
+	],
+
 	"tree": {
 		"$className": "DataModel",
 
