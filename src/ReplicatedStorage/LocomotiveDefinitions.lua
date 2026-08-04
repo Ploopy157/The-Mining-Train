@@ -10,7 +10,7 @@ LocomotiveDefinitions.Order = {
 LocomotiveDefinitions.Data = {
 	PushCart = {
 		DisplayName = "Motor Cart",
-		Description = "A manually pushed starter cart.",
+		Description = "A lawn mower engine strapped to a flat bed.",
 
 		Tier = 1,
 		PurchaseCost = 0,
@@ -23,7 +23,7 @@ LocomotiveDefinitions.Data = {
 
 	MotorCart = {
 		DisplayName = "0-4-2ST",
-		Description = "A compact powered cart for early mining operations.",
+		Description = "A small steam locomotive early mining operations.",
 
 		Tier = 2,
 		PurchaseCost = 750,
