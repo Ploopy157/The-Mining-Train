@@ -27,6 +27,9 @@ local MaximumMineDepth = 5024
 local MaximumMiningDistance = 15
 local MineDepthAxis = "X"
 local MineDepthDirection = 1
+local MineClearBatchSize = 150 -- How many ores to clear per frame during a mine reset.
+
+local DrillPadding = Vector3.new(0.05, 0, 0.05)
 
 local MineResetInterval = 45 * 60 --(45 minutes)
 local MineResetWarningTimes = {
@@ -43,6 +46,45 @@ local MineResetWarningTimes = {
 	[2] = "2",
 	[1] = "1",
 }
+
+--build the ore table
+local OreEntries = {}
+
+local function BuildOreEntries()
+	table.clear(OreEntries)
+
+	for _, Template in OreTemplates:GetChildren() do
+		if not Template:IsA("BasePart") then
+			continue
+		end
+
+		local Health = Template:GetAttribute("Health")
+		local Value = Template:GetAttribute("Value")
+		local Rarity = Template:GetAttribute("Rarity")
+
+		if typeof(Health) ~= "number"
+			or typeof(Value) ~= "number"
+			or typeof(Rarity) ~= "number"
+			or Rarity <= 0 then
+
+			warn(
+				Template:GetFullName(),
+				"must have numeric Health, Value, and positive Rarity attributes."
+			)
+
+			continue
+		end
+
+		table.insert(OreEntries, {
+			Template = Template,
+			MinimumDepth = tonumber(Template:GetAttribute("MinimumDepth")) or 0,
+			MaximumDepth = tonumber(Template:GetAttribute("MaximumDepth")) or math.huge,
+			Weight = 1 / Rarity,
+		})
+	end
+end
+
+BuildOreEntries()
 
 -- The first pre-placed block establishes the mine grid origin.
 local FirstBlock = MineFolder:FindFirstChildWhichIsA("BasePart", true)
@@ -131,8 +173,14 @@ local function ClearCellTracking()
 end
 
 local function ClearMineContents()
-	for _, Object in MineFolder:GetChildren() do
+	local Objects = MineFolder:GetChildren()
+
+	for Index, Object in Objects do
 		Object:Destroy()
+
+		if Index % MineClearBatchSize == 0 then
+			task.wait()
+		end
 	end
 end
 
@@ -225,12 +273,9 @@ local function ReturnPlayersAndTrainsToStations()
 				Player.Name,
 				ResetResult
 			)
-
-			OreInfoEvent:FireClient(
-				Player,
-				"Your train could not be returned to its station."
-			)
 		end
+
+		task.wait()
 	end
 end
 
@@ -284,35 +329,8 @@ local function GetMineDepth(WorldPosition)
 	return math.max(0, AxisOffset * MineDepthDirection)
 end
 
-local function GetOreTemplates()
-	local Templates = {}
-
-	for _, Template in OreTemplates:GetChildren() do
-		if Template:IsA("BasePart") then
-			local Health = Template:GetAttribute("Health")
-			local Value = Template:GetAttribute("Value")
-			local Rarity = Template:GetAttribute("Rarity")
-
-			if typeof(Health) == "number"
-				and typeof(Value) == "number"
-				and typeof(Rarity) == "number"
-				and Rarity > 0 then
-
-				table.insert(Templates, Template)
-			else
-				warn(
-					Template:GetFullName(),
-					"must have numeric Health, Value, and Rarity attributes."
-				)
-			end
-		end
-	end
-
-	return Templates
-end
-
 local function SelectRandomOre(Depth)
-	local Templates = GetOreTemplates()
+	local Templates = OreEntries
 
 	if #Templates == 0 then
 		warn("No valid ore templates were found in ServerStorage.Ores.")
@@ -372,18 +390,6 @@ local function SelectRandomOre(Depth)
 	return WeightedTemplates[#WeightedTemplates].Template
 end
 
-local function IsCellPhysicallyEmpty(GridPosition)
-	local WorldPosition = GridToPosition(GridPosition)
-	local CheckSize = Vector3.one * (BlockSize * 0.8)
-	local Parts = Workspace:GetPartBoundsInBox(
-		CFrame.new(WorldPosition),
-		CheckSize,
-		MineOverlapParameters
-	)
-
-	return #Parts == 0
-end
-
 local function CanGenerateAt(GridPosition)
 	local GridKey = GridToKey(GridPosition)
 
@@ -395,7 +401,7 @@ local function CanGenerateAt(GridPosition)
 		return false
 	end
 
-	return IsCellPhysicallyEmpty(GridPosition)
+	return true
 end
 
 local function CreateOre(GridPosition)
@@ -445,11 +451,19 @@ local function IsDrillTouchingOre(DrillBit, Ore)
 		return false
 	end
 
+	if not Ore or not Ore:IsA("BasePart") then
+		return false
+	end
+
 	if not DrillBit:IsDescendantOf(SpawnedTrains) then
 		return false
 	end
 
-	for _, TouchingPart in Workspace:GetPartsInPart(DrillBit, MineOverlapParameters) do
+	for _, TouchingPart in Workspace:GetPartBoundsInBox(
+		DrillBit.CFrame,
+		DrillBit.Size + DrillPadding,
+		MineOverlapParameters
+	) do
 		if TouchingPart == Ore then
 			return true
 		end

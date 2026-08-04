@@ -32,6 +32,41 @@ MineOverlapParameters.FilterDescendantsInstances = {
 	MineFolder,
 }
 
+local DrillBitCache = {}
+
+local function GetDrillBits(DrillModel)
+	local Cached = DrillBitCache[DrillModel]
+
+	if Cached then
+		return Cached
+	end
+
+	local DrillBits = {}
+
+	for _, DrillBitName in {
+		"DrillBit",
+		"LowerDrillBit",
+	} do
+		local DrillBit = DrillModel:FindFirstChild(DrillBitName, true)
+
+		if DrillBit and DrillBit:IsA("BasePart") then
+			table.insert(DrillBits, DrillBit)
+		end
+	end
+
+	DrillBitCache[DrillModel] = DrillBits
+	return DrillBits
+end
+
+local function CleanupDestroyedDrills()
+	for DrillModel in NextMineTimes do
+		if not DrillModel.Parent then
+			NextMineTimes[DrillModel] = nil
+			DrillBitCache[DrillModel] = nil
+		end
+	end
+end
+
 local NextMineTimes = {}
 
 local MinimumSpeed = 0.05
@@ -147,13 +182,22 @@ local function UpdateDrill(DrillModel, CurrentTime)
 		return
 	end
 
+	if Workspace:GetAttribute("MineResetInProgress") then
+		return
+	end
+
+	local NextMineTime = NextMineTimes[DrillModel] or 0
+
+	if CurrentTime < NextMineTime then
+		return
+	end
+
 	local DrillBits = GetDrillBits(DrillModel)
 
 	if #DrillBits == 0 then
 		return
 	end
 
-	local MainDrillBit = DrillModel:FindFirstChild("DrillBit", true)
 	local TouchingOres = GetTouchingOres(DrillBits)
 	local IsDrilling = #TouchingOres > 0
 

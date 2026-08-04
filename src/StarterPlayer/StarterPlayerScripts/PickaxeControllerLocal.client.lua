@@ -7,10 +7,11 @@ local PlayerGui = Player:WaitForChild("PlayerGui")
 local InfoGui = PlayerGui:WaitForChild("HighLightInfo")
 local InfoLabel = InfoGui:WaitForChild("TextLabel")
 local Mouse = Player:GetMouse()
+local Workspace = game:GetService("Workspace")
 
 local MiningEvent = ReplicatedStorage:WaitForChild("Mining Event")
 
-local MaximumClickDistance = 10
+local DefaultPickaxeRange = 10
 
 -- The animation finishes before the full cooldown completes,
 -- giving each swing a shorter visual recovery.
@@ -31,6 +32,9 @@ local HitDebounce = false
 
 local ToolConnections = {}
 local CharacterConnections = {}
+
+local HighlightUpdateInterval = 0.05
+local HighlightElapsed = 0
 
 ---------------------------------------------------------------------
 -- TARGET HIGHLIGHT
@@ -134,7 +138,16 @@ local function ClearTargetHighlight()
 	InfoGui.Enabled = false
 end
 
-RunService.RenderStepped:Connect(UpdateTargetHighlight)
+RunService.RenderStepped:Connect(function(DeltaTime)
+	HighlightElapsed += DeltaTime
+
+	if HighlightElapsed < HighlightUpdateInterval then
+		return
+	end
+
+	HighlightElapsed = 0
+	UpdateTargetHighlight()
+end)
 
 ---------------------------------------------------------------------
 -- CONNECTION MANAGEMENT
@@ -268,6 +281,9 @@ end
 ---------------------------------------------------------------------
 
 local function TryMineTarget(Target)
+	if Workspace:GetAttribute("MineResetInProgress") then
+		return
+	end
 	if not EquippedTool
 		or not Target
 		or HitDebounce then
