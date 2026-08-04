@@ -28,7 +28,7 @@ local MaximumMiningDistance = 15
 local MineDepthAxis = "X"
 local MineDepthDirection = 1
 
-local MineResetInterval = 5 * 60 --(45 minutes)
+local MineResetInterval = 45 * 60 --(45 minutes)
 local MineResetWarningTimes = {
 	[1800] = "The mine will reset in 30 minutes!",
 	[1200] = "The mine will reset in 20 minutes!",
