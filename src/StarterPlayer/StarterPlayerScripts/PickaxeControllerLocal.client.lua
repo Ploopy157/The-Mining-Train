@@ -19,7 +19,7 @@ local AnimationDurationRatio = 0.85
 
 -- The pickaxe contacts the block at this point in the cooldown.
 -- Keep this aligned with the animation's visual impact frame.
-local HitDelayRatio = 0.75
+local HitDelayRatio = 0.5
 
 local EquippedTool = nil
 local HitSound = nil
@@ -311,13 +311,19 @@ local function TryMineTarget(Target)
 		return
 	end
 
-	local Distance = (HumanoidRootPart.Position - Target.Position).Magnitude
+	local Distance = (
+		HumanoidRootPart.Position - Target.Position
+	).Magnitude
 
 	if Distance > GetRange() then
-	return
-end
+		return
+	end
 
 	HitDebounce = true
+
+	if HitSound then
+		HitSound:Play()
+	end
 
 	MiningEvent:FireServer(Target)
 
@@ -362,10 +368,6 @@ local function StartSwinging()
 			or ActiveTool.Parent ~= Player.Character then
 
 			break
-		end
-
-		if HitSound then
-			HitSound:Play()
 		end
 
 		TryMineTarget(ClickedTarget)

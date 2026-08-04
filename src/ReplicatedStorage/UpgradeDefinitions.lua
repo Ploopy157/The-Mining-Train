@@ -94,7 +94,7 @@ local UpgradeDefinitions = {
 		-- Level 2: Locomotive
 		BaseCost = 200,
 		CostGrowth = 6,
-		MaximumLevel = #(game.ServerStorage.TrainTemplates.Locomotives:GetChildren())-1,
+		MaximumLevel = 3,
 
 		BaseValue = 1,
 		ValuePerLevel = 1,

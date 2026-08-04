@@ -432,15 +432,17 @@ local function WithdrawAllFromCar(Player, CarId)
 	}
 end
 
-function TrainInventoryService.Transfer(Player, Direction, CarId, OreName, RequestedQuantity)
+function TrainInventoryService.Transfer(
+	Player,
+	Direction,
+	CarId,
+	OreName,
+	RequestedQuantity
+)
 	local Data = EnsureTrainData(Player)
 
 	if not Data then
 		return false, "Player data is not loaded."
-	end
-
-	if Direction ~= "BackpackToCar" and Direction ~= "CarToBackpack" then
-		return false, "Invalid transfer direction."
 	end
 
 	if Direction == "CarToBackpackAll" then
@@ -448,6 +450,12 @@ function TrainInventoryService.Transfer(Player, Direction, CarId, OreName, Reque
 			Player,
 			CarId
 		)
+	end
+
+	if Direction ~= "BackpackToCar"
+		and Direction ~= "CarToBackpack" then
+
+		return false, "Invalid transfer direction."
 	end
 
 	if typeof(CarId) ~= "string"

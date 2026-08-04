@@ -24,7 +24,7 @@ local MinimumMineX = 53
 local MinimumMineY = -260
 local MaximumMineY = 30
 local MaximumMineDepth = 5024
-local MaximumMiningDistance = 15
+-- local MaximumMiningDistance = 15
 local MineDepthAxis = "X"
 local MineDepthDirection = 1
 local MineClearBatchSize = 150 -- How many ores to clear per frame during a mine reset.
@@ -415,7 +415,11 @@ local function GenerateOreAroundGridPosition(CenterGridPosition)
 	end
 end
 
-local function IsPlayerNearOre(Player, Ore)
+local function IsPlayerNearOre(Player, Ore, MiningRange)
+	if typeof(MiningRange) ~= "number" or MiningRange <= 0 then
+		return false
+	end
+
 	local Character = Player.Character
 	local HumanoidRootPart = Character and Character:FindFirstChild("HumanoidRootPart")
 
@@ -423,7 +427,11 @@ local function IsPlayerNearOre(Player, Ore)
 		return false
 	end
 
-	return (HumanoidRootPart.Position - Ore.Position).Magnitude <= MaximumMiningDistance
+	local Distance = (
+		HumanoidRootPart.Position - Ore.Position
+	).Magnitude
+
+	return Distance <= MiningRange
 end
 
 local function IsDrillTouchingOre(DrillBit, Ore)
@@ -493,11 +501,8 @@ local function ValidateDrillHit(Player, Ore, Damage, DrillModel, DrillBit)
 	return IsDrillTouchingOre(DrillBit, Ore)
 end
 
-local function GetPickaxeDamage(Player)
-	local PickaxeStats, PickaxeError = PickaxeService.GetEquippedStats(Player)
-
-	if not PickaxeStats then
-		OreInfoEvent:FireClient(Player, PickaxeError or "Equip a pickaxe first")
+local function GetPickaxeDamage(Player, PickaxeStats)
+	if typeof(PickaxeStats) ~= "table" then
 		return nil
 	end
 
@@ -586,11 +591,30 @@ local function MineOre(Player, Ore, DrillDamage, DrillModel, DrillBit)
 
 		Damage = DrillDamage
 	else
-		if not IsPlayerNearOre(Player, Ore) then
+		local PickaxeStats, PickaxeError =
+			PickaxeService.GetEquippedStats(Player)
+
+		if not PickaxeStats then
+			OreInfoEvent:FireClient(
+				Player,
+				PickaxeError or "Equip a pickaxe first."
+			)
+
 			return
 		end
 
-		Damage = GetPickaxeDamage(Player)
+		if not IsPlayerNearOre(
+			Player,
+			Ore,
+			PickaxeStats.Range
+		) then
+			return
+		end
+
+		Damage = GetPickaxeDamage(
+			Player,
+			PickaxeStats
+		)
 
 		if not Damage then
 			return
