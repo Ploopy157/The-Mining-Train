@@ -20,9 +20,9 @@ local SpawnedTrains = Workspace:WaitForChild("SpawnedTrains")
 
 local BlockSize = 4
 local MinimumMineX = 53
-local MinimumMineY = 0.05
+local MinimumMineY = -260
 local MaximumMineY = 30
-local MaximumMineDepth = 5000
+local MaximumMineDepth = 5024
 local MaximumMiningDistance = 15
 local MineDepthAxis = "X"
 local MineDepthDirection = 1

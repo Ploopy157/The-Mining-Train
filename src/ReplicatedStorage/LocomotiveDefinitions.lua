@@ -9,7 +9,7 @@ LocomotiveDefinitions.Order = {
 
 LocomotiveDefinitions.Data = {
 	PushCart = {
-		DisplayName = "Push Cart",
+		DisplayName = "Motor Cart",
 		Description = "A manually pushed starter cart.",
 
 		Tier = 1,
@@ -18,11 +18,11 @@ LocomotiveDefinitions.Data = {
 		MaximumSpeed = 7,
 		Acceleration = 3,
 
-		TemplateName = "Push Cart",
+		TemplateName = "Motor Cart",
 	},
 
 	MotorCart = {
-		DisplayName = "Motor Cart",
+		DisplayName = "0-4-2ST",
 		Description = "A compact powered cart for early mining operations.",
 
 		Tier = 2,
@@ -31,8 +31,9 @@ LocomotiveDefinitions.Data = {
 		MaximumSpeed = 3,
 		Acceleration = 5,
 
-		TemplateName = "Motor Cart",
+		TemplateName = "0-4-2ST",
 	},
+
 
 	StarterLocomotive = {
 		DisplayName = "Baby Diesel",
