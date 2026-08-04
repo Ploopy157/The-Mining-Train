@@ -293,6 +293,145 @@ function TrainInventoryService.GetOverview(Player)
 	}
 end
 
+local function WithdrawAllFromCar(Player, CarId)
+	local Data = EnsureTrainData(Player)
+
+	if not Data then
+		return false, "Player data is not loaded."
+	end
+
+	if typeof(CarId) ~= "string" or CarId == "" then
+		return false, "Invalid car."
+	end
+
+	local CarData = FindCarData(Player, CarId)
+
+	if not CarData then
+		return false, "Car was not found."
+	end
+
+	if typeof(CarData.Inventory) ~= "table" then
+		return false, "The car inventory is invalid."
+	end
+
+	if typeof(Data.Inventory) ~= "table" then
+		return false, "The backpack inventory is invalid."
+	end
+
+	local BackpackCapacity = math.max(
+		math.floor(
+			tonumber(Data.Stats.BackpackCapacity)
+			or StartingBackpackCapacity
+		),
+		0
+	)
+
+	local BackpackLoad = GetInventoryLoad(Data.Inventory)
+	local RemainingSpace = math.max(
+		BackpackCapacity - BackpackLoad,
+		0
+	)
+
+	if RemainingSpace <= 0 then
+		return false, "Your backpack is full."
+	end
+
+	local OreNames = {}
+
+	for OreName, Quantity in CarData.Inventory do
+		if typeof(OreName) == "string"
+			and typeof(Quantity) == "number"
+			and Quantity > 0 then
+
+			table.insert(OreNames, OreName)
+		end
+	end
+
+	if #OreNames == 0 then
+		return false, "This train car is empty."
+	end
+
+	-- Keep the withdrawal order predictable.
+	table.sort(OreNames, function(First, Second)
+		return First:lower() < Second:lower()
+	end)
+
+	local TotalTransferred = 0
+
+	for _, OreName in OreNames do
+		if RemainingSpace <= 0 then
+			break
+		end
+
+		local AvailableQuantity = math.max(
+			math.floor(
+				tonumber(CarData.Inventory[OreName]) or 0
+			),
+			0
+		)
+
+		if AvailableQuantity <= 0 then
+			continue
+		end
+
+		local TransferQuantity = math.min(
+			AvailableQuantity,
+			RemainingSpace
+		)
+
+		if TransferQuantity <= 0 then
+			continue
+		end
+
+		local RemainingInCar =
+			AvailableQuantity - TransferQuantity
+
+		if RemainingInCar <= 0 then
+			CarData.Inventory[OreName] = nil
+		else
+			CarData.Inventory[OreName] =
+				RemainingInCar
+		end
+
+		Data.Inventory[OreName] =
+			(tonumber(Data.Inventory[OreName]) or 0)
+			+ TransferQuantity
+
+		TotalTransferred += TransferQuantity
+		RemainingSpace -= TransferQuantity
+	end
+
+	if TotalTransferred <= 0 then
+		return false, "Nothing could be withdrawn."
+	end
+
+	local CarStillHasOre =
+		GetInventoryLoad(CarData.Inventory) > 0
+
+	local Message
+
+	if CarStillHasOre then
+		Message = string.format(
+			"Withdrew %d ore. Your backpack is now full.",
+			TotalTransferred
+		)
+	else
+		Message = string.format(
+			"Withdrew all %d ore from the car.",
+			TotalTransferred
+		)
+	end
+
+	return true, {
+		Transferred = TotalTransferred,
+		Direction = "CarToBackpackAll",
+		CarId = CarId,
+		Partial = CarStillHasOre,
+		Message = Message,
+		Overview = TrainInventoryService.GetOverview(Player),
+	}
+end
+
 function TrainInventoryService.Transfer(Player, Direction, CarId, OreName, RequestedQuantity)
 	local Data = EnsureTrainData(Player)
 
@@ -302,6 +441,13 @@ function TrainInventoryService.Transfer(Player, Direction, CarId, OreName, Reque
 
 	if Direction ~= "BackpackToCar" and Direction ~= "CarToBackpack" then
 		return false, "Invalid transfer direction."
+	end
+
+	if Direction == "CarToBackpackAll" then
+		return WithdrawAllFromCar(
+			Player,
+			CarId
+		)
 	end
 
 	if typeof(CarId) ~= "string"

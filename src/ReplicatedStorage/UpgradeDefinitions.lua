@@ -86,7 +86,7 @@ local UpgradeDefinitions = {
 
 	LocomotiveTier = {
 		DisplayName = "Locomotive",
-		Description = "Upgrade from a PushCart to a MotorCart, then to a true locomotive.",
+		Description = "Upgrade to a stronger locomotive, allowing you to pull more cars.",
 		Category = "Train",
 
 		-- Level 0: PushCart

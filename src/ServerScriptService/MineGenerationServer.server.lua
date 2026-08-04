@@ -330,56 +330,36 @@ local function GetMineDepth(WorldPosition)
 end
 
 local function SelectRandomOre(Depth)
-	local Templates = OreEntries
-
-	if #Templates == 0 then
+	if #OreEntries == 0 then
 		warn("No valid ore templates were found in ServerStorage.Ores.")
 		return nil
 	end
 
-	local EligibleTemplates = {}
+	local TotalWeight = 0
 
-	for _, Template in Templates do
-		local MinimumDepth = Template:GetAttribute("MinimumDepth")
-		local MaximumDepth = Template:GetAttribute("MaximumDepth")
+	for _, OreEntry in OreEntries do
+		if Depth >= OreEntry.MinimumDepth
+			and Depth < OreEntry.MaximumDepth then
 
-		if typeof(MinimumDepth) ~= "number" then
-			MinimumDepth = 0
-		end
-
-		if typeof(MaximumDepth) ~= "number" then
-			MaximumDepth = math.huge
-		end
-
-		if Depth >= MinimumDepth and Depth < MaximumDepth then
-			table.insert(EligibleTemplates, Template)
+			TotalWeight += OreEntry.Weight
 		end
 	end
 
-	if #EligibleTemplates == 0 then
+	if TotalWeight <= 0 then
 		warn("No ore templates are eligible at depth:", Depth)
 		return nil
-	end
-
-	local TotalWeight = 0
-	local WeightedTemplates = {}
-
-	for _, Template in EligibleTemplates do
-		local Rarity = Template:GetAttribute("Rarity")
-		local Weight = 1 / Rarity
-
-		TotalWeight += Weight
-
-		table.insert(WeightedTemplates, {
-			Template = Template,
-			Weight = Weight,
-		})
 	end
 
 	local Roll = math.random() * TotalWeight
 	local CurrentWeight = 0
 
-	for _, OreEntry in WeightedTemplates do
+	for _, OreEntry in OreEntries do
+		if Depth < OreEntry.MinimumDepth
+			or Depth >= OreEntry.MaximumDepth then
+
+			continue
+		end
+
 		CurrentWeight += OreEntry.Weight
 
 		if Roll <= CurrentWeight then
@@ -387,7 +367,7 @@ local function SelectRandomOre(Depth)
 		end
 	end
 
-	return WeightedTemplates[#WeightedTemplates].Template
+	return nil
 end
 
 local function CanGenerateAt(GridPosition)
