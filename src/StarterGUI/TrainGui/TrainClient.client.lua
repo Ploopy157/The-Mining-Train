@@ -31,6 +31,11 @@ local SelectedTitle = SelectedPanel:WaitForChild("SelectedTitle")
 local OreList = SelectedPanel:WaitForChild("OreList")
 local OreRowTemplate = OreList:WaitForChild("OreRowTemplate")
 
+local MobileTabs = TrainFrame:WaitForChild("MobileTabs")
+local CarsButton = MobileTabs:WaitForChild("CarsButton")
+local LoadButton = MobileTabs:WaitForChild("LoadButton")
+local EquipmentButton = MobileTabs:WaitForChild("EquipmentButton")
+
 local TransferFrame = Gui:WaitForChild("TransferFrame")
 local TransferTitle = TransferFrame:WaitForChild("TransferTitle")
 local TransferClose = TransferFrame:WaitForChild("CloseButton")
@@ -759,9 +764,9 @@ local MobilePages = {
 }
 
 local MobileButtons = {
-	Cars = MobileTabs.CarsButton,
-	Load = MobileTabs.LoadButton,
-	Equipment = MobileTabs.EquipmentButton,
+	Cars = CarsButton,
+	Load = LoadButton,
+	Equipment = EquipmentButton,
 }
 
 local function ShowMobilePage(PageName)

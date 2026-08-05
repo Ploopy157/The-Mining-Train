@@ -13,6 +13,8 @@ local PlayerGui =
 local HomeGui =
 	PlayerGui:WaitForChild("HomeGui")
 
+local HudLayout = MainHudContainer:WaitForChild("UIListLayout")
+
 local MainHudContainer =
 	HomeGui:WaitForChild(
 		"MainHudContainer"
@@ -167,15 +169,15 @@ ResponsiveGui.Bind(function(Layout)
 		MainHudContainer.Position = UDim2.new(0.5, 0, 1, -12)
 		MainHudContainer.Size = UDim2.fromOffset(330, 58)
 
-		MainHudContainer.UIListLayout.FillDirection = Enum.FillDirection.Horizontal
-		MainHudContainer.UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-		MainHudContainer.UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+		HudLayout.FillDirection = Enum.FillDirection.Horizontal
+		HudLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+		HudLayout.VerticalAlignment = Enum.VerticalAlignment.Center
 	else
 		MainHudContainer.AnchorPoint = Vector2.new(1, 0.5)
 		MainHudContainer.Position = UDim2.new(1, -18, 0.5, 0)
 		MainHudContainer.Size = UDim2.fromOffset(156, 290)
 
-		MainHudContainer.UIListLayout.FillDirection = Enum.FillDirection.Vertical
+		HudLayout.FillDirection = Enum.FillDirection.Vertical
 	end
 end)
 
