@@ -360,8 +360,8 @@ local function PrepareTrainData(
 	if typeof(Data.Train.LocomotiveId)
 		~= "string" then
 
-		Data.Train.LocomotiveId =
-			"PushCart"
+		Data.Train.LocomotiveId =	
+			"MotorCart"
 	end
 
 	local EffectiveCapacity =
@@ -819,36 +819,20 @@ local function BuildPlayerTrain(
 	end
 
 -----------------------------------------------------------------
--- LOCOMOTIVE: PUSHCART BEHIND CARS, POWERED LOCOMOTIVES IN FRONT
+-- LOCOMOTIVE: ALWAYS IN FRONT OF THE ORE CARS
 -----------------------------------------------------------------
 
-	local LocomotiveId =
-		PreparedData.Train.LocomotiveId
-		or "PushCart"
+	local LocomotiveId = PreparedData.Train.LocomotiveId
+	local LocomotiveLength = GetTrainLength(Locomotive)
 
-	local LocomotiveLength =
-		GetTrainLength(
-			Locomotive
-		)
-
-	local LocomotiveOffset
-
-	if LocomotiveId == "PushCart" then
-		LocomotiveOffset = -(
-			(FirstCarLength or 0) / 2
+	if PreviousLength then
+		TotalOffset +=
+			PreviousLength / 2
 			+ CarGap
 			+ LocomotiveLength / 2
-		)
-	else
-		if PreviousLength then
-			TotalOffset +=
-				PreviousLength / 2
-				+ CarGap
-				+ LocomotiveLength / 2
-		end
-
-		LocomotiveOffset = TotalOffset
 	end
+
+	local LocomotiveOffset = TotalOffset
 
 	Locomotive.Parent = TrainModel
 
@@ -877,10 +861,10 @@ local function BuildPlayerTrain(
 		LocomotiveLength
 
 	-----------------------------------------------------------------
-	-- DRILL: OPTIONAL, AND ONLY IN FRONT OF NON-PUSHCART LOCOMOTIVES
+	-- DRILL: OPTIONAL
 	-----------------------------------------------------------------
 
-	if LocomotiveId ~= "PushCart" then
+	
 		local DrillModel, DrillResult =
 			DrillService.CreateDrill(
 				Player,
@@ -914,17 +898,7 @@ local function BuildPlayerTrain(
 				return nil,
 					DrillPositionError
 			end
-		else
-			local IsValidNoDrillState =
-				typeof(DrillResult) == "table"
-				and DrillResult.NoPhysicalDrill == true
-
-			if not IsValidNoDrillState then
-				TrainModel:Destroy()
-
-				return nil,
-					DrillResult
-			end
+		
 		end
 	end
 

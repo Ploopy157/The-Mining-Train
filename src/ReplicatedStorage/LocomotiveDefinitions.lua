@@ -1,14 +1,14 @@
 local LocomotiveDefinitions = {}
 
 LocomotiveDefinitions.Order = {
-	"PushCart",
 	"MotorCart",
-	"StarterLocomotive",
-	"IntermediateLocomotive",
+	"0-4-2ST",
+	"BabyDiesel",
+	"MiningDiesel",
 }
 
 LocomotiveDefinitions.Data = {
-	PushCart = {
+	MotorCart = {
 		DisplayName = "Motor Cart",
 		Description = "A lawn mower engine strapped to a flat bed.",
 
@@ -21,7 +21,7 @@ LocomotiveDefinitions.Data = {
 		TemplateName = "Motor Cart",
 	},
 
-	MotorCart = {
+	0-4-2ST = {
 		DisplayName = "0-4-2ST",
 		Description = "A small steam locomotive early mining operations.",
 
@@ -35,7 +35,7 @@ LocomotiveDefinitions.Data = {
 	},
 
 
-	StarterLocomotive = {
+	BabyDiesel = {
 		DisplayName = "Baby Diesel",
 		Description = "A small locomotive capable of moving a larger train.",
 
@@ -48,7 +48,7 @@ LocomotiveDefinitions.Data = {
 		TemplateName = "Baby Diesel",
 	},
 	
-	IntermediateLocomotive = {
+	MiningDiesel = {
 		DisplayName = "Mining Diesel",
 		Description = "A Rugged industrial locomotive with a nice top speed.",
 
