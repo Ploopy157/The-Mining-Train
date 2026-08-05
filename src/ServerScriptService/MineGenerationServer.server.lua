@@ -32,7 +32,7 @@ local MineClearBatchSize = 150 -- How many ores to clear per frame during a mine
 
 local DrillPadding = Vector3.new(0.05, 0, 0.05)
 
-local MineResetInterval = 45 * 60 --(45 minutes)
+local MineResetInterval = 90 * 60 --(1h 30 minutes)
 local MineResetWarningTimes = {
 	[1800] = "The mine will reset in 30 minutes!",
 	[1200] = "The mine will reset in 20 minutes!",

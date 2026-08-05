@@ -699,7 +699,7 @@ ItemDefinitions.Lights = {
 		["PointBrightness"] = 0.55,
 		["PointRange"] = 12,
 
-		["SpotBrightness"] = 1.5,
+		["SpotBrightness"] = 2,
 		["SpotRange"] = 30,
 		["SpotAngle"] = 72,
 
@@ -719,7 +719,7 @@ ItemDefinitions.Lights = {
 		["PointBrightness"] = 0.6,
 		["PointRange"] = 14,
 
-		["SpotBrightness"] = 1.9,
+		["SpotBrightness"] = 2.5,
 		["SpotRange"] = 38,
 		["SpotAngle"] = 76,
 
@@ -739,7 +739,7 @@ ItemDefinitions.Lights = {
 		["PointBrightness"] = 0.65,
 		["PointRange"] = 15,
 
-		["SpotBrightness"] = 2.4,
+		["SpotBrightness"] = 3,
 		["SpotRange"] = 46,
 		["SpotAngle"] = 80,
 
@@ -759,7 +759,7 @@ ItemDefinitions.Lights = {
 		["PointBrightness"] = 0.7,
 		["PointRange"] = 17,
 
-		["SpotBrightness"] = 3,
+		["SpotBrightness"] = 4.5,
 		["SpotRange"] = 55,
 		["SpotAngle"] = 83,
 
@@ -779,7 +779,7 @@ ItemDefinitions.Lights = {
 		["PointBrightness"] = 0.75,
 		["PointRange"] = 18,
 
-		["SpotBrightness"] = 3.5,
+		["SpotBrightness"] = 6,
 		["SpotRange"] = 64,
 		["SpotAngle"] = 85,
 

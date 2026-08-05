@@ -58,7 +58,7 @@ local function ApplySpeed()
 	if CurrentSpeed == 0 then
 		for _, Hinge in Motors do
 			Hinge.AngularVelocity = 0
-			Hinge.MotorMaxTorque = 10000
+			Hinge.MotorMaxTorque = 1000000
 			Runsound.Playing = false
 			IdleSound.Playing = true
 		end

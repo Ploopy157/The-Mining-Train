@@ -15,7 +15,7 @@ LocomotiveDefinitions.Data = {
 		Tier = 1,
 		PurchaseCost = 0,
 
-		MaximumSpeed = 7,
+		MaximumSpeed = 3,
 		Acceleration = 3,
 
 		TemplateName = "Motor Cart",
@@ -28,7 +28,7 @@ LocomotiveDefinitions.Data = {
 		Tier = 2,
 		PurchaseCost = 750,
 
-		MaximumSpeed = 3,
+		MaximumSpeed = 5,
 		Acceleration = 5,
 
 		TemplateName = "0-4-2ST",
