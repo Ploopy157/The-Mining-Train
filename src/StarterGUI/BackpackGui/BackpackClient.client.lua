@@ -20,6 +20,20 @@ local BackpackKey = Enum.KeyCode.B
 local IsOpen = false
 local IsLoading = false
 
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ResponsiveGui = require(ReplicatedStorage:WaitForChild("ResponsiveGui"))
+
+ResponsiveGui.Bind(function(Layout)
+	if Layout == ResponsiveGui.Layout.Compact then
+		MainFrame.Size = UDim2.new(1, -24, 1, -24)
+	elseif Layout == ResponsiveGui.Layout.Medium then
+		MainFrame.Size = UDim2.new(0.9, 0, 0.88, 0)
+	else
+		MainFrame.Size = UDim2.fromOffset(DesktopWidth, DesktopHeight)
+	end
+end)
+
 local function FormatNumber(Number)
 	local Formatted = tostring(math.floor(tonumber(Number) or 0))
 	local Replaced
@@ -128,34 +142,6 @@ local function ToggleBag()
 	SetBagOpen(not IsOpen)
 end
 
-local function UpdateResponsiveSizing()
-	local Camera = Workspace.CurrentCamera
-
-	if not Camera then
-		return
-	end
-
-	local ViewportSize = Camera.ViewportSize
-	local IsSmallScreen = ViewportSize.X < 720 or ViewportSize.Y < 560
-
-	if IsSmallScreen then
-		InventoryFrame.Size = UDim2.new(0.8, -24, 1, -50)
-	else
-		InventoryFrame.Size = UDim2.fromOffset(630, 500)
-	end
-end
-
-local function ConnectCamera()
-	local Camera = Workspace.CurrentCamera
-
-	if Camera then
-		Camera:GetPropertyChangedSignal("ViewportSize"):Connect(
-			UpdateResponsiveSizing
-		)
-	end
-
-	UpdateResponsiveSizing()
-end
 
 BagButton.Activated:Connect(ToggleBag)
 
@@ -173,8 +159,3 @@ UserInputService.InputBegan:Connect(function(Input, GameProcessed)
 	end
 end)
 
-Workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(
-	ConnectCamera
-)
-
-ConnectCamera()
