@@ -1,24 +1,13 @@
 local Players = game:GetService("Players")
-
-local ReplicatedStorage =
-	game:GetService("ReplicatedStorage")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local ResponsiveGui = require(ReplicatedStorage:WaitForChild("ResponsiveGui"))
 
 local Player = Players.LocalPlayer
-
-local PlayerGui =
-	Player:WaitForChild("PlayerGui")
-
-local HomeGui =
-	PlayerGui:WaitForChild("HomeGui")
-
+local PlayerGui = Player:WaitForChild("PlayerGui")
+local HomeGui = PlayerGui:WaitForChild("HomeGui")
+local MainHudContainer = HomeGui:WaitForChild("MainHudContainer")
 local HudLayout = MainHudContainer:WaitForChild("UIListLayout")
-
-local MainHudContainer =
-	HomeGui:WaitForChild(
-		"MainHudContainer"
-	)
 
 local CashDisplay =
 	MainHudContainer:WaitForChild(
