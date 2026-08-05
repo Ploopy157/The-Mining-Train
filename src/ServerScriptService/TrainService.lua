@@ -357,11 +357,19 @@ local function PrepareTrainData(
 		Data.Train.Cars = {}
 	end
 
-	if typeof(Data.Train.LocomotiveId)
-		~= "string" then
+	--Remove old loco names in ~4 months (December)
+	if typeof(Data.Train.LocomotiveId) ~= "string"
+		or Data.Train.LocomotiveId == "PushCart"
+		or not LocomotiveDefinitions.Get(Data.Train.LocomotiveId) then
 
-		Data.Train.LocomotiveId =	
-			"MotorCart"
+		Data.Train.LocomotiveId = "MotorCart"
+	end
+
+	if Data.Train.LocomotiveId == "StarterLocomotive" then
+		Data.Train.LocomotiveId = "BabyDiesel"
+	end
+	if Data.Train.LocomotiveId == "IntermediateLocomotive" then
+		Data.Train.LocomotiveId = "MiningDiesel"
 	end
 
 	local EffectiveCapacity =
