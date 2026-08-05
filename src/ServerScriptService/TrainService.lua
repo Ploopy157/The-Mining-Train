@@ -358,18 +358,22 @@ local function PrepareTrainData(
 	end
 
 	--Remove old loco names in ~4 months (December)
+
+	local LegacyLocomotiveIds = {
+		PushCart = "MotorCart",
+		StarterLocomotive = "BabyDiesel",
+		IntermediateLocomotive = "MiningDiesel",
+	}
+	local LegacyReplacement = LegacyLocomotiveIds[Data.Train.LocomotiveId]
+
+	if LegacyReplacement then
+		Data.Train.LocomotiveId = LegacyReplacement
+	end
+
 	if typeof(Data.Train.LocomotiveId) ~= "string"
-		or Data.Train.LocomotiveId == "PushCart"
 		or not LocomotiveDefinitions.Get(Data.Train.LocomotiveId) then
 
-		Data.Train.LocomotiveId = "MotorCart"
-	end
-
-	if Data.Train.LocomotiveId == "StarterLocomotive" then
-		Data.Train.LocomotiveId = "Midlander"
-	end
-	if Data.Train.LocomotiveId == "IntermediateLocomotive" then
-		Data.Train.LocomotiveId = "MiningDiesel"
+		Data.Train.LocomotiveId = LocomotiveDefinitions.Order[1]
 	end
 
 	local EffectiveCapacity =
@@ -906,9 +910,7 @@ local function BuildPlayerTrain(
 				return nil,
 					DrillPositionError
 			end
-		
 		end
-	end
 
 	TrainService.StopTrainPhysics(
 		TrainModel

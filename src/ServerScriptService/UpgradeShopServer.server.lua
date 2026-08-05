@@ -95,59 +95,27 @@ local function ApplyDrillTierUpgrade(
 end
 
 local function ApplyLocomotiveTierUpgrade(
-	Data
+	Data,
+	NewLevel
 )
 	if typeof(Data.Train) ~= "table" then
 		Data.Train = {}
 	end
 
-	local CurrentLocomotiveId =
-		Data.Train.LocomotiveId
-		or "PushCart"
+	local NewLocomotiveTier = NewLevel + 1
+	local NewLocomotiveId = LocomotiveDefinitions.Order[NewLocomotiveTier]
+	local NewDefinition = NewLocomotiveId
+		and LocomotiveDefinitions.Get(NewLocomotiveId)
 
-	local NextLocomotiveId,
-		NextDefinition =
-		LocomotiveDefinitions.GetNext(
-			CurrentLocomotiveId
-		)
-
-	if not NextLocomotiveId
-		or not NextDefinition then
-
-		return false,
-			"No next locomotive tier was found."
+	if not NewLocomotiveId or not NewDefinition then
+		return false, "No locomotive was found for the new tier."
 	end
 
-	Data.Train.LocomotiveId =
-		NextLocomotiveId
-
-	if typeof(NextDefinition.MaximumCars)
-		== "number" then
-
-		Data.Train.MaximumCars =
-			NextDefinition.MaximumCars
-	end
-
-	if typeof(NextDefinition.MaximumSpeed)
-		== "number" then
-
-		Data.Train.MaximumSpeed =
-			NextDefinition.MaximumSpeed
-	end
-
-	if typeof(NextDefinition.Acceleration)
-		== "number" then
-
-		Data.Train.Acceleration =
-			NextDefinition.Acceleration
-	end
+	Data.Train.LocomotiveId = NewLocomotiveId
 
 	return true, {
-		LocomotiveId =
-			NextLocomotiveId,
-
-		Definition =
-			NextDefinition,
+		LocomotiveId = NewLocomotiveId,
+		Definition = NewDefinition,
 	}
 end
 
@@ -703,7 +671,7 @@ local function ApplyUpgrade(
 		local AppliedSuccessfully,
 			Result =
 			ApplyLocomotiveTierUpgrade(
-				Data
+				Data, NewLevel
 			)
 
 		if not AppliedSuccessfully then

@@ -19,6 +19,7 @@ local BlockBreakSoundTemplate = SoundsFolder:WaitForChild("BlockBreakSound")
 local MineFolder = Workspace:WaitForChild("MineContents")
 local SpawnedTrains = Workspace:WaitForChild("SpawnedTrains")
 
+
 local BlockSize = 4
 local MinimumMineX = 53
 local MinimumMineY = -260
@@ -725,6 +726,7 @@ task.spawn(function()
 					OreInfoEvent:FireAllClients(Message)
 				end
 			end
+			Workspace:SetAttribute("MineResetSecondsRemaining", SecondsRemaining)
 
 			task.wait(1)
 		end

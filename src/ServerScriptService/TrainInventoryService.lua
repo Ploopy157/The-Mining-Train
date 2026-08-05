@@ -3,6 +3,10 @@ local ServerStorage = game:GetService("ServerStorage")
 local ReplicatedStorage =
 	game:GetService("ReplicatedStorage")
 
+local LocomotiveDefinitions = require(
+	ReplicatedStorage:WaitForChild("LocomotiveDefinitions")
+)
+
 
 local PlayerDataService = require(
 	ServerScriptService:WaitForChild("PlayerDataService")
@@ -131,7 +135,7 @@ local function EnsureTrainData(Player)
 	end
 
 	if typeof(Data.Train.LocomotiveId) ~= "string" then
-		Data.Train.LocomotiveId = "PushCart"
+		Data.Train.LocomotiveId = LocomotiveDefinitions.Order[1]
 	end
 
 	if typeof(Data.Train.Cars) ~= "table" then

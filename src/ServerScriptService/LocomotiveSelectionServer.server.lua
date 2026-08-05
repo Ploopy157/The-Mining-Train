@@ -40,9 +40,33 @@ local function EnsureLocomotiveData(Data)
 		Data.Train = {}
 	end
 
-	if typeof(Data.Train.LocomotiveId) ~= "string" then
-		Data.Train.LocomotiveId = "PushCart"
-	end
+	local LegacyLocomotiveIds = {
+	PushCart = "MotorCart",
+	StarterLocomotive = "BabyDiesel",
+	IntermediateLocomotive = "MiningDiesel",
+}
+
+    local function EnsureLocomotiveData(Data)
+        if typeof(Data.Upgrades) ~= "table" then
+            Data.Upgrades = {}
+        end
+
+        if typeof(Data.Train) ~= "table" then
+            Data.Train = {}
+        end
+
+        local LegacyReplacement = LegacyLocomotiveIds[Data.Train.LocomotiveId]
+
+        if LegacyReplacement then
+            Data.Train.LocomotiveId = LegacyReplacement
+        end
+
+        if typeof(Data.Train.LocomotiveId) ~= "string"
+            or not LocomotiveDefinitions.Get(Data.Train.LocomotiveId) then
+
+            Data.Train.LocomotiveId = LocomotiveDefinitions.Order[1]
+        end
+    end
 end
 
 local function GetMaximumUnlockedTier(Data)
