@@ -27,7 +27,7 @@ local HomeGui =
 	PlayerGui:WaitForChild("HomeGui")
 
 local HomeButton =
-	HomeGui.MainHudContainer:WaitForChild("HomeButton")
+	HomeGui.MainHudContainer.NavigationRow:WaitForChild("HomeButton")
 
 local RequestInProgress = false
 

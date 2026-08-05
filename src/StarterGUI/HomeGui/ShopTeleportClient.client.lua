@@ -16,7 +16,7 @@ local TeleportToShop =
 local Gui = script.Parent
 
 local ShopButton =
-	Gui.MainHudContainer:WaitForChild("ShopButton")
+	Gui.MainHudContainer.NavigationRow:WaitForChild("ShopButton")
 
 local RequestInProgress = false
 

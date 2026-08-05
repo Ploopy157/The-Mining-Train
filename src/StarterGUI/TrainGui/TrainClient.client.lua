@@ -8,7 +8,7 @@ local TransferCarOre = TrainRemotes:WaitForChild("TransferTrainOre")
 local OpenCarMenu = TrainRemotes:WaitForChild("OpenCarMenu")
 local RefreshTrainGui = TrainRemotes:WaitForChild("RefreshTrainGui")
 local DepositAllToCar = TrainRemotes:WaitForChild("DepositAllToCar")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
 local ResponsiveGui = require(ReplicatedStorage:WaitForChild("ResponsiveGui"))
 
 
@@ -25,6 +25,11 @@ local LoadTag = Header:WaitForChild("LoadTag")
 local ValueTag = Header:WaitForChild("ValueTag")
 local StatusLabel = TrainFrame:WaitForChild("StatusLabel")
 local CarsList = TrainFrame:WaitForChild("CarsList")
+local SelectedPanel = TrainFrame:WaitForChild("SelectedPanel")
+local ActionBar = TrainFrame:WaitForChild("ActionBar")
+local LocomotiveSelector = TrainFrame:WaitForChild("LocomotiveSelector")
+local DrillSelector = TrainFrame:WaitForChild("DrillSelector")
+
 local CarButtonTemplate = CarsList:WaitForChild("CarButtonTemplate")
 local SelectedPanel = TrainFrame:WaitForChild("SelectedPanel")
 local SelectedTitle = SelectedPanel:WaitForChild("SelectedTitle")
@@ -40,8 +45,9 @@ local TransferFrame = Gui:WaitForChild("TransferFrame")
 local TransferTitle = TransferFrame:WaitForChild("TransferTitle")
 local TransferClose = TransferFrame:WaitForChild("CloseButton")
 local MessageLabel = TransferFrame:WaitForChild("MessageLabel")
-local BackpackList =
-	TransferFrame.BackpackPanel:WaitForChild("ItemList")
+local BackpackList = TransferFrame.BackpackPanel:WaitForChild("ItemList")
+
+	
 
 local CarList =
 	TransferFrame.CarPanel:WaitForChild("ItemList")

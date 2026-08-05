@@ -1,5 +1,6 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TweenService = game:GetService("TweenService")
 
 local ResponsiveGui = require(ReplicatedStorage:WaitForChild("ResponsiveGui"))
 
@@ -9,49 +10,60 @@ local HomeGui = PlayerGui:WaitForChild("HomeGui")
 local MainHudContainer = HomeGui:WaitForChild("MainHudContainer")
 local HudLayout = MainHudContainer:WaitForChild("UIListLayout")
 
-local CashDisplay =
-	MainHudContainer:WaitForChild(
-		"CashDisplay"
-	)
+local CashDisplay = MainHudContainer:WaitForChild("CashDisplay")
+local NavigationRow = MainHudContainer:WaitForChild("NavigationRow")
+local HomeButton = NavigationRow:WaitForChild("HomeButton")
+local ShopButton = NavigationRow:WaitForChild("ShopButton")
 
-local HomeButton =
-	MainHudContainer:WaitForChild(
-		"HomeButton"
-	)
+local BagButton = MainHudContainer:WaitForChild("BagButton")
+local TrainButton = MainHudContainer:WaitForChild("TrainButton")
 
-local ShopButton =
-	MainHudContainer:WaitForChild(
-		"ShopButton"
-	)
+local HudStatusRemotes = ReplicatedStorage:WaitForChild("HudStatusRemotes")
+local GetHudStatus = HudStatusRemotes:WaitForChild("GetHudStatus")
 
-local BagButton =
-	MainHudContainer:FindFirstChild(
-		"BagButton"
-	)
-	or MainHudContainer:FindFirstChild(
-		"BackpackButton"
-	)
-	or MainHudContainer:FindFirstChild(
-		"InventoryButton"
-	)
+local HudButtons = { HomeButton, ShopButton, BagButton, TrainButton }
 
-local TrainButton =
-	MainHudContainer:FindFirstChild(
-		"TrainButton"
-	)
-	or MainHudContainer:FindFirstChild(
-		"TrainInventoryButton"
-	)
+local DefaultColor = Color3.fromRGB(164, 126, 66)
+local HoverColor = Color3.fromRGB(224, 181, 91)
+local PressedColor = Color3.fromRGB(121, 91, 47)
 
-local HudStatusRemotes =
-	ReplicatedStorage:WaitForChild(
-		"HudStatusRemotes"
-	)
+local function Tween(Object, Properties, Duration)
+	TweenService:Create(
+		Object,
+		TweenInfo.new(Duration, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+		Properties
+	):Play()
+end
 
-local GetHudStatus =
-	HudStatusRemotes:WaitForChild(
-		"GetHudStatus"
-	)
+local function BindButtonEffects(Button)
+	local Scale = Button:WaitForChild("InteractionScale")
+	local Stroke = Button:WaitForChild("BrassStroke")
+
+	Button.MouseEnter:Connect(function()
+		Tween(Scale, { Scale = 1.035 }, 0.12)
+		Tween(Stroke, { Color = HoverColor, Transparency = 0 }, 0.12)
+	end)
+
+	Button.MouseLeave:Connect(function()
+		Tween(Scale, { Scale = 1 }, 0.12)
+		Tween(Stroke, { Color = DefaultColor, Transparency = 0.2 }, 0.12)
+	end)
+
+	Button.MouseButton1Down:Connect(function()
+		Tween(Scale, { Scale = 0.965 }, 0.06)
+		Tween(Stroke, { Color = PressedColor }, 0.06)
+	end)
+
+	Button.MouseButton1Up:Connect(function()
+		Tween(Scale, { Scale = 1.035 }, 0.08)
+		Tween(Stroke, { Color = HoverColor }, 0.08)
+	end)
+end
+
+for _, Button in HudButtons do
+	BindButtonEffects(Button)
+end
+
 
 local function GetTextObject(Button)
 	if not Button then
@@ -155,18 +167,27 @@ end
 ResponsiveGui.Bind(function(Layout)
 	if Layout == ResponsiveGui.Layout.Compact then
 		MainHudContainer.AnchorPoint = Vector2.new(0.5, 1)
-		MainHudContainer.Position = UDim2.new(0.5, 0, 1, -12)
-		MainHudContainer.Size = UDim2.fromOffset(330, 58)
+		MainHudContainer.Position = UDim2.new(0.5, 0, 1, -115)
+		MainHudContainer.Size = UDim2.new(1, -180, 0, 54)
 
 		HudLayout.FillDirection = Enum.FillDirection.Horizontal
 		HudLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 		HudLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-	else
-		MainHudContainer.AnchorPoint = Vector2.new(1, 0.5)
-		MainHudContainer.Position = UDim2.new(1, -18, 0.5, 0)
-		MainHudContainer.Size = UDim2.fromOffset(156, 290)
+		HudLayout.Padding = UDim.new(0, 6)
 
-		HudLayout.FillDirection = Enum.FillDirection.Vertical
+		CashDisplay.Size = UDim2.fromOffset(130, 54)
+		HomeButton.Size = UDim2.fromOffset(70, 54)
+		ShopButton.Size = UDim2.fromOffset(70, 54)
+
+		if BagButton then
+			BagButton.Size = UDim2.fromOffset(105, 54)
+		end
+
+		if TrainButton then
+			TrainButton.Size = UDim2.fromOffset(125, 54)
+		end
+	else
+		-- Keep the current working desktop layout here.
 	end
 end)
 
