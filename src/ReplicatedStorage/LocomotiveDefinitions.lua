@@ -2,8 +2,8 @@ local LocomotiveDefinitions = {}
 
 LocomotiveDefinitions.Order = {
 	"MotorCart",
-	"0-4-2ST",
-	"BabyDiesel",
+	"Talyllyn",
+	"Midlander",
 	"MiningDiesel",
 }
 
@@ -21,7 +21,7 @@ LocomotiveDefinitions.Data = {
 		TemplateName = "Motor Cart",
 	},
 
-	0-4-2ST = {
+	Talyllyn = {
 		DisplayName = "0-4-2ST",
 		Description = "A small steam locomotive early mining operations.",
 
@@ -35,7 +35,7 @@ LocomotiveDefinitions.Data = {
 	},
 
 
-	BabyDiesel = {
+	Midlander = {
 		DisplayName = "Baby Diesel",
 		Description = "A small locomotive capable of moving a larger train.",
 

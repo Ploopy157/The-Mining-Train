@@ -366,7 +366,7 @@ local function PrepareTrainData(
 	end
 
 	if Data.Train.LocomotiveId == "StarterLocomotive" then
-		Data.Train.LocomotiveId = "BabyDiesel"
+		Data.Train.LocomotiveId = "Midlander"
 	end
 	if Data.Train.LocomotiveId == "IntermediateLocomotive" then
 		Data.Train.LocomotiveId = "MiningDiesel"
