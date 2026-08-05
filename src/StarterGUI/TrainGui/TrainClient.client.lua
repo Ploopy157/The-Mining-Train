@@ -8,6 +8,8 @@ local TransferCarOre = TrainRemotes:WaitForChild("TransferTrainOre")
 local OpenCarMenu = TrainRemotes:WaitForChild("OpenCarMenu")
 local RefreshTrainGui = TrainRemotes:WaitForChild("RefreshTrainGui")
 local DepositAllToCar = TrainRemotes:WaitForChild("DepositAllToCar")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ResponsiveGui = require(ReplicatedStorage:WaitForChild("ResponsiveGui"))
 
 
 
@@ -747,55 +749,80 @@ UserInputService.InputBegan:Connect(function(
 	end
 end)
 
-local function UpdateResponsiveSizing()
-	local Camera = Workspace.CurrentCamera
+local CurrentMobilePage = "Cars"
+local IsCompactLayout = false
 
-	if not Camera then
+local MobilePages = {
+	Cars = CarsPage,
+	Load = LoadPage,
+	Equipment = EquipmentPage,
+}
+
+local MobileButtons = {
+	Cars = MobileTabs.CarsButton,
+	Load = MobileTabs.LoadButton,
+	Equipment = MobileTabs.EquipmentButton,
+}
+
+local function ShowMobilePage(PageName)
+	CurrentMobilePage = PageName
+
+	for Name, Page in MobilePages do
+		Page.Visible = not IsCompactLayout or Name == PageName
+	end
+
+	for Name, Button in MobileButtons do
+		Button.BackgroundColor3 = Name == PageName
+			and Color3.fromRGB(71, 92, 125)
+			or Color3.fromRGB(45, 50, 61)
+	end
+end
+
+for Name, Button in MobileButtons do
+	Button.Activated:Connect(function()
+		ShowMobilePage(Name)
+	end)
+end
+
+ResponsiveGui.Bind(function(Layout)
+	IsCompactLayout = Layout == ResponsiveGui.Layout.Compact
+	MobileTabs.Visible = IsCompactLayout
+
+	if IsCompactLayout then
+		TrainFrame.Size = UDim2.new(1, -24, 1, -24)
+		Header.Size = UDim2.new(1, 0, 0, 52)
+		MobileTabs.Position = UDim2.fromOffset(12, 58)
+		StatusLabel.Position = UDim2.fromOffset(12, 108)
+		StatusLabel.Size = UDim2.new(1, -24, 0, 24)
+
+		local PagePosition = UDim2.fromOffset(12, 138)
+		local PageSize = UDim2.new(1, -24, 1, -204)
+
+		for _, Page in MobilePages do
+			Page.Position = PagePosition
+			Page.Size = PageSize
+		end
+
+		LocomotiveSelector.Position = UDim2.fromOffset(0, 0)
+		LocomotiveSelector.Size = UDim2.new(1, 0, 0.5, -6)
+		DrillSelector.Position = UDim2.new(0, 0, 0.5, 6)
+		DrillSelector.Size = UDim2.new(1, 0, 0.5, -6)
+
+		ActionBar.Position = UDim2.new(0, 12, 1, -58)
+		ActionBar.Size = UDim2.new(1, -24, 0, 48)
+
+		ShowMobilePage(CurrentMobilePage)
 		return
 	end
 
-	local ViewportSize = Camera.ViewportSize
-	local IsSmall =
-		ViewportSize.X < 760
-		or ViewportSize.Y < 600
+	MobileTabs.Visible = false
 
-	if IsSmall then
-		--TrainButton.Size = UDim2.fromOffset(60, 60)
-		--TrainButton.Position =
-		--	UDim2.new(1, -10, 0.5, 70)
-
-		TrainFrame.Size =
-			UDim2.new(.8, -24, 1, -50)
-
-		TransferFrame.Size =
-			UDim2.new(.8, -24, 1, -50)
-	else
-		--TrainButton.Size = UDim2.fromOffset(72, 72)
-		--TrainButton.Position =
-		--	UDim2.new(1, -16, 0.5, 82)
-
-		TrainFrame.Size =
-			UDim2.fromOffset(700, 530)
-
-		TransferFrame.Size =
-			UDim2.fromOffset(620, 440)
-	end
-end
-
-local function ConnectCamera()
-	local Camera = Workspace.CurrentCamera
-
-	if Camera then
-		Camera:GetPropertyChangedSignal(
-			"ViewportSize"
-		):Connect(UpdateResponsiveSizing)
+	for _, Page in MobilePages do
+		Page.Visible = true
 	end
 
-	UpdateResponsiveSizing()
-end
-
-Workspace:GetPropertyChangedSignal(
-	"CurrentCamera"
-):Connect(ConnectCamera)
-
-ConnectCamera()
+	-- Restore your present desktop positions here.
+	TrainFrame.Size = Layout == ResponsiveGui.Layout.Medium
+		and UDim2.new(0.94, 0, 0.9, 0)
+		or UDim2.fromOffset(920, 620)
+end)

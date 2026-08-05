@@ -3,6 +3,8 @@ local Players = game:GetService("Players")
 local ReplicatedStorage =
 	game:GetService("ReplicatedStorage")
 
+local ResponsiveGui = require(ReplicatedStorage:WaitForChild("ResponsiveGui"))
+
 local Player = Players.LocalPlayer
 
 local PlayerGui =
@@ -158,6 +160,24 @@ local function UpdateHud()
 			)
 	end
 end
+
+ResponsiveGui.Bind(function(Layout)
+	if Layout == ResponsiveGui.Layout.Compact then
+		MainHudContainer.AnchorPoint = Vector2.new(0.5, 1)
+		MainHudContainer.Position = UDim2.new(0.5, 0, 1, -12)
+		MainHudContainer.Size = UDim2.fromOffset(330, 58)
+
+		MainHudContainer.UIListLayout.FillDirection = Enum.FillDirection.Horizontal
+		MainHudContainer.UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+		MainHudContainer.UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+	else
+		MainHudContainer.AnchorPoint = Vector2.new(1, 0.5)
+		MainHudContainer.Position = UDim2.new(1, -18, 0.5, 0)
+		MainHudContainer.Size = UDim2.fromOffset(156, 290)
+
+		MainHudContainer.UIListLayout.FillDirection = Enum.FillDirection.Vertical
+	end
+end)
 
 while true do
 	UpdateHud()
