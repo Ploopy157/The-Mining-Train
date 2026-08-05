@@ -8,6 +8,14 @@ local DrillDefinitions = require(ReplicatedStorage:WaitForChild("DrillDefinition
 local TrainRemotes = ReplicatedStorage:WaitForChild("TrainRemotes")
 local RefreshTrainGui = TrainRemotes:WaitForChild("RefreshTrainGui")
 
+local TestDrillUserIds = {
+	[79091366] = true,
+}
+
+local function CanUseTestDrill(Player)
+	return TestDrillUserIds[Player.UserId] == true
+end
+
 local function GetOrCreateRemoteFunction(Name)
 	local ExistingRemote = TrainRemotes:FindFirstChild(Name)
 
@@ -61,9 +69,18 @@ local function GetMaximumUnlockedTier(Data)
 	)
 end
 
-local function IsDrillUnlocked(Data, DrillId, Definition)
+local function IsDrillUnlocked(
+	Player,
+	Data,
+	DrillId,
+	Definition
+)
 	if DrillId == "NoDrill" then
 		return true
+	end
+
+	if DrillId == "TESTDRILL" then
+		return CanUseTestDrill(Player)
 	end
 
 	local DefinitionTier = tonumber(Definition.Tier) or math.huge
@@ -105,11 +122,41 @@ local function BuildSelectionData(Player)
 			Speed = tonumber(Definition.Speed) or 0,
 			Width = tonumber(Definition.Width) or 0,
 			Height = tonumber(Definition.Height) or 0,
-			IsUnlocked = IsDrillUnlocked(Data, DrillId, Definition),
+			IsUnlocked = IsDrillUnlocked(
+                Player,
+                Data,
+                DrillId,
+                Definition
+            ),
 			IsSelected = DrillId == CurrentDrillId,
 			LayoutOrder = LayoutOrder,
 		})
 	end
+
+    if CanUseTestDrill(Player) then
+        local TestDrillDefinition = DrillDefinitions.Get("TESTDRILL")
+
+        if TestDrillDefinition then
+            table.insert(Drills, {
+                DrillId = "TESTDRILL",
+                DisplayName = TestDrillDefinition.DisplayName
+                    or "TESTDRILL",
+
+                Description = TestDrillDefinition.Description
+                    or "Developer test drill.",
+
+                Tier = tonumber(TestDrillDefinition.Tier) or 999,
+                Damage = tonumber(TestDrillDefinition.Damage) or 0,
+                Speed = tonumber(TestDrillDefinition.Speed) or 0,
+                Width = tonumber(TestDrillDefinition.Width) or 0,
+                Height = tonumber(TestDrillDefinition.Height) or 0,
+
+                IsUnlocked = true,
+                IsSelected = CurrentDrillId == "TESTDRILL",
+                LayoutOrder = #DrillDefinitions.Order + 1,
+            })
+        end
+    end
 
 	return {
 		Success = true,
@@ -148,9 +195,21 @@ SelectDrill.OnServerInvoke = function(Player, RequestedDrillId)
 		return false, "That drill does not exist."
 	end
 
-	if not IsDrillUnlocked(Data, RequestedDrillId, Definition) then
-		return false, "That drill has not been unlocked."
-	end
+	if RequestedDrillId == "TESTDRILL"
+        and not CanUseTestDrill(Player) then
+
+        return false, "You do not have access to that drill."
+    end
+
+    if not IsDrillUnlocked(
+        Player,
+        Data,
+        RequestedDrillId,
+        Definition
+    ) then
+
+        return false, "That drill has not been unlocked."
+    end
 
 	if Data.Train.DrillId == RequestedDrillId then
 		return true, {
