@@ -13,6 +13,7 @@ local RemoveQueueItem = FurnaceRemotes:WaitForChild("RemoveQueueItem")
 local CollectIngots = FurnaceRemotes:WaitForChild("CollectIngots")
 local OpenFurnace = FurnaceRemotes:WaitForChild("OpenFurnace")
 local FurnaceUpdated = FurnaceRemotes:WaitForChild("FurnaceUpdated")
+local ResponsiveGui = require(ReplicatedStorage:WaitForChild("ResponsiveGui"))
 
 local CurrentMode = "Load"
 local CurrentState
@@ -615,4 +616,106 @@ FurnaceUpdated.OnClientEvent:Connect(function(State)
 	if Gui.Enabled and State then
 		Render(State)
 	end
+end)
+
+
+ResponsiveGui.Bind(function(Layout)
+	local IsCompact = Layout == ResponsiveGui.Layout.Compact
+	local IsMedium = Layout == ResponsiveGui.Layout.Medium
+
+	Frame.AnchorPoint = Vector2.new(0.5, 0.5)
+	Frame.Position = UDim2.fromScale(0.5, 0.5)
+
+	if IsCompact then
+		print ("Compact layout applied")
+		Frame.Size = UDim2.fromScale(0.94, 0.9)
+
+		Header.Size = UDim2.new(1, 0, 0, 48)
+
+		Title.Position = UDim2.fromOffset(12, 0)
+		Title.Size = UDim2.new(1, -68, 1, 0)
+		Title.TextSize = 19
+
+		Close.Position = UDim2.new(1, -8, 0.5, 0)
+		Close.Size = UDim2.fromOffset(38, 34)
+
+		Status.Position = UDim2.fromOffset(12, 52)
+		Status.Size = UDim2.new(1, -24, 0, 26)
+		Status.TextSize = 12
+
+		SummaryFrame.Position = UDim2.fromOffset(12, 60)
+		SummaryFrame.Size = UDim2.new(1, -24, 0, 34)
+		Summary.TextSize = 12
+
+		CoalFrame.Position = UDim2.fromOffset(12, 100)
+		CoalFrame.Size = UDim2.new(1, -24, 0, 46)
+
+		CoalQuantity.Position = UDim2.fromOffset(7, 6)
+		CoalQuantity.Size = UDim2.new(0.24, -3, 1, -12)
+		CoalQuantity.TextSize = 12
+
+		StoreButton.Position = UDim2.new(0.24, 4, 0, 6)
+		StoreButton.Size = UDim2.new(0.38, -7, 1, -12)
+		StoreButton.TextSize = 11
+
+		WithdrawButton.Position = UDim2.new(0.62, 0, 0, 6)
+		WithdrawButton.Size = UDim2.new(0.38, -7, 1, -12)
+		WithdrawButton.TextSize = 11
+
+		List.Position = UDim2.fromOffset(12, 150)
+		List.Size = UDim2.new(1, -24, 1, -210)
+		List.ScrollBarThickness = 6
+
+		Action.Position = UDim2.new(0.5, 0, 1, -8)
+		Action.Size = UDim2.new(1, -24, 0, 46)
+		Action.TextSize = 14
+
+		return
+	else 
+		print ("Medium or Large layout applied")
+	end
+
+	Frame.Size = IsMedium
+		and UDim2.fromScale(0.94, 0.9)
+		or UDim2.fromOffset(650, 520)
+
+	Header.Size = UDim2.new(1, 0, 0, 72)
+
+	Title.Position = UDim2.fromOffset(16, 0)
+	Title.Size = UDim2.new(1, -76, 1, 0)
+	Title.TextSize = 23
+
+	Close.Position = UDim2.new(1, -14, 0.5, 0)
+	Close.Size = UDim2.fromOffset(42, 42)
+
+	Status.Position = UDim2.fromOffset(16, 78)
+	Status.Size = UDim2.new(1, -32, 0, 28)
+	Status.TextSize = 14
+
+	SummaryFrame.Position = UDim2.fromOffset(16, 110)
+	SummaryFrame.Size = UDim2.new(1, -32, 0, 42)
+	Summary.TextSize = 14
+
+	CoalFrame.Position = UDim2.fromOffset(16, 160)
+	CoalFrame.Size = UDim2.new(1, -32, 0, 52)
+
+	CoalQuantity.Position = UDim2.fromOffset(8, 8)
+	CoalQuantity.Size = UDim2.new(0.25, -4, 0, 36)
+	CoalQuantity.TextSize = 14
+
+	StoreButton.Position = UDim2.new(0.25, 4, 0, 8)
+	StoreButton.Size = UDim2.new(0.375, -8, 0, 36)
+	StoreButton.TextSize = 13
+
+	WithdrawButton.Position = UDim2.new(0.625, 0, 0, 8)
+	WithdrawButton.Size = UDim2.new(0.375, -8, 0, 36)
+	WithdrawButton.TextSize = 13
+
+	List.Position = UDim2.fromOffset(16, 220)
+	List.Size = UDim2.new(1, -32, 1, -288)
+	List.ScrollBarThickness = 7
+
+	Action.Position = UDim2.new(0.5, 0, 1, -10)
+	Action.Size = UDim2.new(1, -32, 0, 48)
+	Action.TextSize = 16
 end)
