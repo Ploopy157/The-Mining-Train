@@ -627,7 +627,6 @@ ResponsiveGui.Bind(function(Layout)
 	Frame.Position = UDim2.fromScale(0.5, 0.5)
 
 	if IsCompact then
-		print ("Compact layout applied")
 		Frame.Size = UDim2.fromScale(0.94, 0.9)
 
 		Header.Size = UDim2.new(1, 0, 0, 48)
@@ -672,7 +671,6 @@ ResponsiveGui.Bind(function(Layout)
 
 		return
 	else 
-		print ("Medium or Large layout applied")
 	end
 
 	Frame.Size = IsMedium

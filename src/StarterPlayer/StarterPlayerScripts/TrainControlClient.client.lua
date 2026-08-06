@@ -59,6 +59,9 @@ local function HandleKeyboard(Input, GameProcessed)
 		SendControl("Reverse")
 	elseif Input.KeyCode == Enum.KeyCode.Space then
 		SendControl("Stop")
+
+	elseif Input.KeyCode == Enum.KeyCode.H then
+		SendControl("Whistle")
 	end
 end
 
