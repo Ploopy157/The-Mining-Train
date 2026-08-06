@@ -103,19 +103,3 @@ HomeButton.Activated:Connect(function()
 	end
 end)
 
-ResponsiveGui.Bind(function(Layout)	
-	IsCompactLayout = Layout == ResponsiveGui.Layout.Compact
-
-	if IsCompactLayout then
-		TransferFrame.Size = UDim2.new(.9, 0, .85, 0)
-		TransferFrame.Position = UDim2.new(.5, 0, 0.4, 0)
-
-		TransferControls.Size = UDim2.new(0, 90, .85, 0)
-		TransferControls.Position = UDim2.new(0, 0.5, 0, .45)
-
-		TransferTitle.TextSize = 20
-		
-	else
-		-- TrainFrame.Size = UDim2.new(0, 400, 0, 300)
-	end
-end)

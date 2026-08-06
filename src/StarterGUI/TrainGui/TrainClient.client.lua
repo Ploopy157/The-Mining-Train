@@ -801,6 +801,8 @@ ResponsiveGui.Bind(function(Layout)
 	MobileTabs.Visible = IsCompactLayout
 
 	if IsCompactLayout then
+
+		-- TRAIN MENU
 		MobileTabs.Visible = false
 		-- TrainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 		-- TrainFrame.Position = UDim2.fromScale(0.5, 0.48)
@@ -824,6 +826,15 @@ ResponsiveGui.Bind(function(Layout)
 		-- ActionBar.Size = UDim2.new(1, -16, 0, 48)
 
 		-- ShowMobilePage(CurrentMobilePage)
+
+		-- TRANSFER MENU
+		TransferFrame.Size = UDim2.new(.9, 0, .85, 0)
+		TransferFrame.Position = UDim2.new(.5, 0, 0.4, 0)
+
+		TransferControls.Size = UDim2.new(0, 90, .85, 0)
+		TransferControls.Position = UDim2.new(0, 0.5, 0, .45)
+
+		TransferTitle.TextSize = 20
 		return
 	end
 

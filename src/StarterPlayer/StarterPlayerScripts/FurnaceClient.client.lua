@@ -21,144 +21,235 @@ local ActiveQueueEntry
 local ActiveFinishTime
 local SelectedOreName
 
+local Colors = {
+	Background = Color3.fromRGB(39, 30, 27),
+	Header = Color3.fromRGB(58, 40, 34),
+	Panel = Color3.fromRGB(50, 38, 34),
+	PanelLight = Color3.fromRGB(66, 49, 42),
+	Row = Color3.fromRGB(61, 45, 39),
+	RowSelected = Color3.fromRGB(91, 61, 40),
+	Input = Color3.fromRGB(34, 27, 25),
+	Copper = Color3.fromRGB(166, 103, 54),
+	CopperBright = Color3.fromRGB(221, 151, 78),
+	Brass = Color3.fromRGB(190, 145, 75),
+	Cream = Color3.fromRGB(255, 239, 211),
+	MutedText = Color3.fromRGB(211, 188, 159),
+	Danger = Color3.fromRGB(151, 60, 51),
+	DangerBright = Color3.fromRGB(207, 91, 76),
+	Success = Color3.fromRGB(60, 121, 76),
+	Secondary = Color3.fromRGB(91, 68, 55),
+	StrokeDark = Color3.fromRGB(22, 16, 15),
+}
+
+local function AddCorner(Object, Radius)
+	local Corner = Instance.new("UICorner")
+	Corner.CornerRadius = UDim.new(0, Radius)
+	Corner.Parent = Object
+	return Corner
+end
+
+local function AddStroke(Object, Color, Thickness, Transparency)
+	local Stroke = Instance.new("UIStroke")
+	Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	Stroke.Color = Color
+	Stroke.Thickness = Thickness
+	Stroke.Transparency = Transparency
+	Stroke.Parent = Object
+	return Stroke
+end
+
+local function StyleText(Object, Color)
+	Object.Font = Enum.Font.GothamBold
+	Object.TextColor3 = Color or Colors.Cream
+	Object.TextStrokeColor3 = Colors.StrokeDark
+	Object.TextStrokeTransparency = 0.78
+end
+
+local function StyleButton(Button, BackgroundColor, StrokeColor)
+	Button.AutoButtonColor = true
+	Button.BackgroundColor3 = BackgroundColor
+	Button.BorderSizePixel = 0
+
+	StyleText(Button)
+	AddCorner(Button, 7)
+	AddStroke(Button, StrokeColor or Colors.Copper, 1.4, 0.15)
+end
+
 local Gui = Instance.new("ScreenGui")
 Gui.Name = "FurnaceGui"
 Gui.ResetOnSpawn = false
+Gui.IgnoreGuiInset = false
+Gui.DisplayOrder = 10
 Gui.Enabled = false
 Gui.Parent = PlayerGui
-Gui.DisplayOrder = 10
 
 local Frame = Instance.new("Frame")
+Frame.Name = "FurnaceFrame"
 Frame.AnchorPoint = Vector2.new(0.5, 0.5)
 Frame.Position = UDim2.fromScale(0.5, 0.5)
-Frame.Size = UDim2.new(0.8	, 0, 0.78, 0)
-Frame.BackgroundColor3 = Color3.fromRGB(35, 30, 27)
+Frame.Size = UDim2.fromScale(0.94, 0.9)
+Frame.BackgroundColor3 = Colors.Background
 Frame.BorderSizePixel = 0
+Frame.ClipsDescendants = true
 Frame.Parent = Gui
 
 local SizeConstraint = Instance.new("UISizeConstraint")
-SizeConstraint.MaxSize = Vector2.new(620, 560)
-SizeConstraint.MinSize = Vector2.new(290, 340)
+SizeConstraint.MaxSize = Vector2.new(650, 520)
+SizeConstraint.MinSize = Vector2.new(300, 300)
 SizeConstraint.Parent = Frame
 
-local FrameCorner = Instance.new("UICorner")
-FrameCorner.CornerRadius = UDim.new(0, 10)
-FrameCorner.Parent = Frame
+AddCorner(Frame, 10)
+AddStroke(Frame, Colors.CopperBright, 1.6, 0.1)
+
+local Header = Instance.new("Frame")
+Header.Name = "Header"
+Header.Position = UDim2.fromScale(0, 0)
+Header.Size = UDim2.new(1, 0, 0, 72)
+Header.BackgroundColor3 = Colors.Header
+Header.BorderSizePixel = 0
+Header.Parent = Frame
+
+AddCorner(Header, 10)
+
+local HeaderBottomCover = Instance.new("Frame")
+HeaderBottomCover.Name = "BottomCover"
+HeaderBottomCover.AnchorPoint = Vector2.new(0, 1)
+HeaderBottomCover.Position = UDim2.fromScale(0, 1)
+HeaderBottomCover.Size = UDim2.new(1, 0, 0, 12)
+HeaderBottomCover.BackgroundColor3 = Colors.Header
+HeaderBottomCover.BorderSizePixel = 0
+HeaderBottomCover.Parent = Header
 
 local Title = Instance.new("TextLabel")
-Title.Position = UDim2.fromOffset(14, 0)
-Title.Size = UDim2.new(1, -64, 0, 46)
+Title.Name = "Title"
+Title.Position = UDim2.fromOffset(16, 0)
+Title.Size = UDim2.new(1, -76, 1, 0)
 Title.BackgroundTransparency = 1
-Title.Font = Enum.Font.GothamBold
 Title.Text = "FURNACE"
-Title.TextColor3 = Color3.new(1, 1, 1)
-Title.TextSize = 22
+Title.TextSize = 23
 Title.TextXAlignment = Enum.TextXAlignment.Left
-Title.Parent = Frame
+Title.Parent = Header
+
+StyleText(Title)
 
 local Close = Instance.new("TextButton")
-Close.AnchorPoint = Vector2.new(1, 0)
-Close.Position = UDim2.new(1, -8, 0, 8)
-Close.Size = UDim2.fromOffset(40, 32)
-Close.BackgroundColor3 = Color3.fromRGB(75, 63, 56)
+Close.Name = "CloseButton"
+Close.AnchorPoint = Vector2.new(1, 0.5)
+Close.Position = UDim2.new(1, -14, 0.5, 0)
+Close.Size = UDim2.fromOffset(42, 42)
 Close.Text = "X"
-Close.TextColor3 = Color3.new(1, 1, 1)
-Close.Font = Enum.Font.GothamBold
 Close.TextSize = 18
-Close.Parent = Frame
+Close.Parent = Header
 
-local CloseCorner = Instance.new("UICorner")
-CloseCorner.CornerRadius = UDim.new(0, 7)
-CloseCorner.Parent = Close
+StyleButton(Close, Colors.Danger, Colors.DangerBright)
 
 local Status = Instance.new("TextLabel")
-Status.Position = UDim2.fromOffset(14, 43)
-Status.Size = UDim2.new(1, -28, 0, 38)
+Status.Name = "StatusLabel"
+Status.Position = UDim2.fromOffset(16, 78)
+Status.Size = UDim2.new(1, -32, 0, 28)
 Status.BackgroundTransparency = 1
 Status.Font = Enum.Font.Gotham
 Status.Text = ""
-Status.TextColor3 = Color3.fromRGB(225, 210, 180)
+Status.TextColor3 = Colors.MutedText
 Status.TextSize = 14
 Status.TextWrapped = true
+Status.TextXAlignment = Enum.TextXAlignment.Left
 Status.Parent = Frame
 
+local SummaryFrame = Instance.new("Frame")
+SummaryFrame.Name = "SummaryFrame"
+SummaryFrame.Position = UDim2.fromOffset(16, 110)
+SummaryFrame.Size = UDim2.new(1, -32, 0, 42)
+SummaryFrame.BackgroundColor3 = Colors.PanelLight
+SummaryFrame.BorderSizePixel = 0
+SummaryFrame.Parent = Frame
+
+AddCorner(SummaryFrame, 8)
+AddStroke(SummaryFrame, Colors.Brass, 1.2, 0.3)
+
 local Summary = Instance.new("TextLabel")
-Summary.Position = UDim2.fromOffset(14, 80)
-Summary.Size = UDim2.new(1, -28, 0, 26)
+Summary.Name = "Summary"
+Summary.Position = UDim2.fromOffset(12, 0)
+Summary.Size = UDim2.new(1, -24, 1, 0)
 Summary.BackgroundTransparency = 1
-Summary.Font = Enum.Font.GothamBold
-Summary.TextColor3 = Color3.new(1, 1, 1)
+Summary.Text = ""
 Summary.TextSize = 14
 Summary.TextXAlignment = Enum.TextXAlignment.Left
-Summary.Parent = Frame
+Summary.Parent = SummaryFrame
+
+StyleText(Summary)
 
 local CoalFrame = Instance.new("Frame")
-CoalFrame.Position = UDim2.fromOffset(14, 108)
-CoalFrame.Size = UDim2.new(1, -28, 0, 52)
-CoalFrame.BackgroundColor3 = Color3.fromRGB(46, 40, 36)
+CoalFrame.Name = "CoalControls"
+CoalFrame.Position = UDim2.fromOffset(16, 160)
+CoalFrame.Size = UDim2.new(1, -32, 0, 52)
+CoalFrame.BackgroundColor3 = Colors.Panel
 CoalFrame.BorderSizePixel = 0
 CoalFrame.Visible = false
 CoalFrame.Parent = Frame
 
-local CoalCorner = Instance.new("UICorner")
-CoalCorner.CornerRadius = UDim.new(0, 8)
-CoalCorner.Parent = CoalFrame
+AddCorner(CoalFrame, 8)
+AddStroke(CoalFrame, Colors.Copper, 1.2, 0.32)
 
 local CoalQuantity = Instance.new("TextBox")
+CoalQuantity.Name = "CoalQuantity"
 CoalQuantity.Position = UDim2.fromOffset(8, 8)
-CoalQuantity.Size = UDim2.new(0.28, -4, 0, 36)
-CoalQuantity.BackgroundColor3 = Color3.fromRGB(66, 58, 52)
-CoalQuantity.PlaceholderText = "Coal"
+CoalQuantity.Size = UDim2.new(0.25, -4, 0, 36)
+CoalQuantity.BackgroundColor3 = Colors.Input
+CoalQuantity.BorderSizePixel = 0
+CoalQuantity.PlaceholderText = "COAL"
+CoalQuantity.PlaceholderColor3 = Colors.MutedText
 CoalQuantity.Text = ""
 CoalQuantity.ClearTextOnFocus = false
-CoalQuantity.TextColor3 = Color3.new(1, 1, 1)
-CoalQuantity.PlaceholderColor3 = Color3.fromRGB(180, 170, 160)
-CoalQuantity.Font = Enum.Font.Gotham
+CoalQuantity.TextColor3 = Colors.Cream
+CoalQuantity.Font = Enum.Font.GothamBold
 CoalQuantity.TextSize = 14
 CoalQuantity.Parent = CoalFrame
 
+AddCorner(CoalQuantity, 6)
+AddStroke(CoalQuantity, Colors.Brass, 1, 0.45)
+
 local StoreButton = Instance.new("TextButton")
-StoreButton.Position = UDim2.new(0.28, 4, 0, 8)
-StoreButton.Size = UDim2.new(0.36, -8, 0, 36)
-StoreButton.BackgroundColor3 = Color3.fromRGB(120, 78, 39)
+StoreButton.Name = "StoreCoalButton"
+StoreButton.Position = UDim2.new(0.25, 4, 0, 8)
+StoreButton.Size = UDim2.new(0.375, -8, 0, 36)
 StoreButton.Text = "STORE COAL"
-StoreButton.TextColor3 = Color3.new(1, 1, 1)
-StoreButton.Font = Enum.Font.GothamBold
 StoreButton.TextSize = 13
 StoreButton.Parent = CoalFrame
 
+StyleButton(StoreButton, Colors.Copper, Colors.CopperBright)
+
 local WithdrawButton = Instance.new("TextButton")
-WithdrawButton.Position = UDim2.new(0.64, 0, 0, 8)
-WithdrawButton.Size = UDim2.new(0.36, -8, 0, 36)
-WithdrawButton.BackgroundColor3 = Color3.fromRGB(91, 68, 55)
+WithdrawButton.Name = "WithdrawCoalButton"
+WithdrawButton.Position = UDim2.new(0.625, 0, 0, 8)
+WithdrawButton.Size = UDim2.new(0.375, -8, 0, 36)
 WithdrawButton.Text = "WITHDRAW"
-WithdrawButton.TextColor3 = Color3.new(1, 1, 1)
-WithdrawButton.Font = Enum.Font.GothamBold
 WithdrawButton.TextSize = 13
 WithdrawButton.Parent = CoalFrame
 
-for _, Button in {StoreButton, WithdrawButton} do
-	local Corner = Instance.new("UICorner")
-	Corner.CornerRadius = UDim.new(0, 6)
-	Corner.Parent = Button
-end
+StyleButton(WithdrawButton, Colors.Secondary, Colors.Brass)
 
 local List = Instance.new("ScrollingFrame")
-List.Position = UDim2.fromOffset(14, 166)
-List.Size = UDim2.new(1, -28, 1, -226)
-List.BackgroundColor3 = Color3.fromRGB(46, 40, 36)
+List.Name = "InventoryList"
+List.Position = UDim2.fromOffset(16, 220)
+List.Size = UDim2.new(1, -32, 1, -288)
+List.BackgroundColor3 = Colors.Panel
 List.BorderSizePixel = 0
+List.Active = true
+List.ClipsDescendants = true
+List.ScrollingDirection = Enum.ScrollingDirection.Y
+List.ScrollBarImageColor3 = Colors.CopperBright
+List.ScrollBarImageTransparency = 0.1
 List.ScrollBarThickness = 7
 List.AutomaticCanvasSize = Enum.AutomaticSize.Y
-List.CanvasSize = UDim2.new()
+List.CanvasSize = UDim2.fromOffset(0, 0)
 List.Parent = Frame
 
-local ListCorner = Instance.new("UICorner")
-ListCorner.CornerRadius = UDim.new(0, 8)
-ListCorner.Parent = List
+AddCorner(List, 8)
+AddStroke(List, Colors.Copper, 1.2, 0.4)
 
 local Layout = Instance.new("UIListLayout")
-Layout.Padding = UDim.new(0, 6)
+Layout.Padding = UDim.new(0, 7)
 Layout.SortOrder = Enum.SortOrder.LayoutOrder
 Layout.Parent = List
 
@@ -170,19 +261,15 @@ Padding.PaddingRight = UDim.new(0, 8)
 Padding.Parent = List
 
 local Action = Instance.new("TextButton")
+Action.Name = "ActionButton"
 Action.AnchorPoint = Vector2.new(0.5, 1)
 Action.Position = UDim2.new(0.5, 0, 1, -10)
-Action.Size = UDim2.new(1, -28, 0, 44)
-Action.BackgroundColor3 = Color3.fromRGB(132, 84, 42)
+Action.Size = UDim2.new(1, -32, 0, 48)
 Action.Text = "ADD TO QUEUE"
-Action.TextColor3 = Color3.new(1, 1, 1)
-Action.Font = Enum.Font.GothamBold
-Action.TextSize = 17
+Action.TextSize = 16
 Action.Parent = Frame
 
-local ActionCorner = Instance.new("UICorner")
-ActionCorner.CornerRadius = UDim.new(0, 8)
-ActionCorner.Parent = Action
+StyleButton(Action, Colors.Copper, Colors.CopperBright)
 
 local function ClearRows()
 	for _, Child in List:GetChildren() do
@@ -197,47 +284,50 @@ end
 
 local function MakeRow(Text, ButtonText, Callback, IsSelected)
 	local Row = Instance.new("Frame")
-	Row.Size = UDim2.new(1, 0, 0, 48)
-	Row.BackgroundColor3 = IsSelected
-		and Color3.fromRGB(100, 72, 48)
-		or Color3.fromRGB(61, 53, 47)
-
+	Row.Name = "InventoryRow"
+	Row.Size = UDim2.new(1, 0, 0, 52)
+	Row.BackgroundColor3 = IsSelected and Colors.RowSelected or Colors.Row
 	Row.BorderSizePixel = 0
 	Row.Parent = List
 
-	local RowCorner = Instance.new("UICorner")
-	RowCorner.CornerRadius = UDim.new(0, 6)
-	RowCorner.Parent = Row
+	AddCorner(Row, 7)
+	AddStroke(
+		Row,
+		IsSelected and Colors.CopperBright or Colors.Copper,
+		IsSelected and 1.4 or 1,
+		IsSelected and 0.1 or 0.55
+	)
 
 	local Label = Instance.new("TextLabel")
-	Label.Position = UDim2.fromOffset(10, 0)
-	Label.Size = ButtonText
-		and UDim2.new(1, -98, 1, 0)
-		or UDim2.new(1, -20, 1, 0)
-
+	Label.Name = "ItemLabel"
+	Label.Position = UDim2.fromOffset(12, 0)
+	Label.Size = ButtonText and UDim2.new(1, -116, 1, 0) or UDim2.new(1, -24, 1, 0)
 	Label.BackgroundTransparency = 1
 	Label.Font = Enum.Font.Gotham
 	Label.Text = Text
-	Label.TextColor3 = Color3.new(1, 1, 1)
+	Label.TextColor3 = Colors.Cream
 	Label.TextSize = 14
+	Label.TextWrapped = true
 	Label.TextXAlignment = Enum.TextXAlignment.Left
 	Label.Parent = Row
 
 	if ButtonText then
 		local Button = Instance.new("TextButton")
+		Button.Name = ButtonText == "REMOVE" and "RemoveButton" or "RowActionButton"
 		Button.AnchorPoint = Vector2.new(1, 0.5)
-		Button.Position = UDim2.new(1, -7, 0.5, 0)
-		Button.Size = UDim2.fromOffset(80, 32)
-		Button.BackgroundColor3 = Color3.fromRGB(91, 68, 55)
+		Button.Position = UDim2.new(1, -8, 0.5, 0)
+		Button.Size = UDim2.fromOffset(92, 34)
 		Button.Text = ButtonText
-		Button.TextColor3 = Color3.new(1, 1, 1)
-		Button.Font = Enum.Font.GothamBold
 		Button.TextSize = 12
 		Button.Parent = Row
 
-		local Corner = Instance.new("UICorner")
-		Corner.CornerRadius = UDim.new(0, 6)
-		Corner.Parent = Button
+		if ButtonText == "REMOVE" then
+			StyleButton(Button, Colors.Danger, Colors.DangerBright)
+		elseif IsSelected then
+			StyleButton(Button, Colors.Success, Colors.CopperBright)
+		else
+			StyleButton(Button, Colors.Secondary, Colors.Brass)
+		end
 
 		Button.Activated:Connect(Callback)
 	end

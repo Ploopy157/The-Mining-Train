@@ -364,9 +364,6 @@ ResponsiveGui.Bind(function(Layout)
 
 	if IsCompact then
 		ShopFrame.Size = UDim2.new(0.9, 0, 0.9, 0)
-
-
-
 	else
 
 		--Special things for Desktop.
