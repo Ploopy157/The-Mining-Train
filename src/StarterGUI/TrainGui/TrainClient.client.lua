@@ -801,29 +801,29 @@ ResponsiveGui.Bind(function(Layout)
 	MobileTabs.Visible = IsCompactLayout
 
 	if IsCompactLayout then
-		TrainFrame.Size = UDim2.new(1, -24, 1, -24)
-		Header.Size = UDim2.new(1, 0, 0, 52)
-		MobileTabs.Position = UDim2.fromOffset(12, 58)
-		StatusLabel.Position = UDim2.fromOffset(12, 108)
-		StatusLabel.Size = UDim2.new(1, -24, 0, 24)
+		MobileTabs.Visible = false
+		-- TrainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+		-- TrainFrame.Position = UDim2.fromScale(0.5, 0.48)
+		TrainFrame.Size = UDim2.fromScale(0.9, 0.8)
 
-		local PagePosition = UDim2.fromOffset(12, 138)
-		local PageSize = UDim2.new(1, -24, 1, -204)
+		CarsTag.Size = UDim2.fromOffset(105, 36)
+		LoadTag.Size = UDim2.fromOffset(135, 36)
+		ValueTag.Size = UDim2.fromOffset(145, 36)
 
-		for _, Page in MobilePages do
-			Page.Position = PagePosition
-			Page.Size = PageSize
-		end
+		DrillSelector.Position = UDim2.new(0, 400,0, 87)
+		DrillSelector.Size = UDim2.new(0, 150, 0, 36)
+		LocomotiveSelector.Size = UDim2.new(0, 150, 0, 36)
 
-		LocomotiveSelector.Position = UDim2.fromOffset(0, 0)
-		LocomotiveSelector.Size = UDim2.new(1, 0, 0.5, -6)
-		DrillSelector.Position = UDim2.new(0, 0, 0.5, 6)
-		DrillSelector.Size = UDim2.new(1, 0, 0.5, -6)
+		-- MobileTabs.Position = UDim2.new(0, 8, 0, 48)
+		-- MobileTabs.Size = UDim2.new(1, -16, 0, 42)
 
-		ActionBar.Position = UDim2.new(0, 12, 1, -58)
-		ActionBar.Size = UDim2.new(1, -24, 0, 48)
+		-- MobilePageContainer.Position = UDim2.new(0, 8, 0, 98)
+		-- MobilePageContainer.Size = UDim2.new(1, -16, 1, -162)
 
-		ShowMobilePage(CurrentMobilePage)
+		ActionBar.Position = UDim2.new(0, 8, .975, 0)
+		-- ActionBar.Size = UDim2.new(1, -16, 0, 48)
+
+		-- ShowMobilePage(CurrentMobilePage)
 		return
 	end
 

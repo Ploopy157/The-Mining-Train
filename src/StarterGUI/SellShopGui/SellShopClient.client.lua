@@ -20,7 +20,6 @@ local OpenSellShop =
 local RefreshSellShop =
 	Remotes:WaitForChild("RefreshSellShop")
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ResponsiveGui = require(ReplicatedStorage:WaitForChild("ResponsiveGui"))
 
 local Gui = script.Parent
@@ -358,4 +357,18 @@ UserInputService.InputChanged:Connect(function(Input)
 end)
 
 
+ResponsiveGui.Bind(function(Layout)
+	CurrentLayout = Layout
 
+	local IsCompact = Layout == ResponsiveGui.Layout.Compact
+
+	if IsCompact then
+		ShopFrame.Size = UDim2.new(0.9, 0, 0.9, 0)
+
+
+
+	else
+
+		--Special things for Desktop.
+	end
+end)

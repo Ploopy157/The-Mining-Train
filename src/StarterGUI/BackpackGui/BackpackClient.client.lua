@@ -102,9 +102,21 @@ ResponsiveGui.Bind(function(Layout)
 	local IsCompact = Layout == ResponsiveGui.Layout.Compact
 
 	if IsCompact then
-		InventoryFrame.Size = UDim2.new(1, -24, 1, -24)
+		InventoryFrame.Size = UDim2.new(1, -50, 1, -100)
 
-		Header.Size = UDim2.new(1, 0, 0, 56)
+		Header.Size = UDim2.new(1, 0, 0, 36)
+		Header.Title.Size = UDim2.fromOffset(165, 36)
+		Header.CloseButton.Size = UDim2.fromOffset(36, 36)
+
+		TotalOresTag.Position = UDim2.fromOffset(142, 2)
+		TotalOresTag.Size = UDim2.fromOffset(120, 36)
+
+		TotalOresTag.TagTitle.Size = UDim2.fromScale(0.5, 1)
+		TotalOresTag.TagTitle.Position = UDim2.fromScale(0, 0)
+
+		TotalOresTag.TagValue.Size = UDim2.fromScale(0.5, 1)
+		TotalOresTag.TagValue.Position = UDim2.fromScale(0.5, 0)
+		TotalOresTag.TagValue.TextXAlignment = Enum.TextXAlignment.Center
 
 		StatusLabel.Position = UDim2.fromOffset(12, 62)
 		StatusLabel.Size = UDim2.new(1, -24, 0, 24)

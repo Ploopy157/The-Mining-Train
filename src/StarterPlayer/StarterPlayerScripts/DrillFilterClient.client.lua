@@ -18,6 +18,7 @@ local Gui = Instance.new("ScreenGui")
 Gui.Name = "DrillFilterGui"
 Gui.ResetOnSpawn = false
 Gui.Parent = PlayerGui
+Gui.DisplayOrder = 10
 
 local Panel = Instance.new("Frame")
 Panel.AnchorPoint = Vector2.new(0.5, 0.5)

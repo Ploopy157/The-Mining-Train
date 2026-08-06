@@ -1,4 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local ResponsiveGui = require(ReplicatedStorage:WaitForChild("ResponsiveGui"))
 local Workspace = game:GetService("Workspace")
 
 local TrainRemotes =
@@ -101,57 +103,19 @@ HomeButton.Activated:Connect(function()
 	end
 end)
 
-local function UpdateResponsiveSizing()
-	local Camera = Workspace.CurrentCamera
+ResponsiveGui.Bind(function(Layout)	
+	IsCompactLayout = Layout == ResponsiveGui.Layout.Compact
 
-	if not Camera then
-		return
-	end
+	if IsCompactLayout then
+		TransferFrame.Size = UDim2.new(.9, 0, .85, 0)
+		TransferFrame.Position = UDim2.new(.5, 0, 0.4, 0)
 
-	local ViewportSize = Camera.ViewportSize
-	local IsSmallScreen =
-		ViewportSize.X < 760
-		or ViewportSize.Y < 600
+		TransferControls.Size = UDim2.new(0, 90, .85, 0)
+		TransferControls.Position = UDim2.new(0, 0.5, 0, .45)
 
-	if IsSmallScreen then
-		--HomeButton.Size = UDim2.fromOffset(60, 60)
-		--HomeButton.Position =
-		--	UDim2.new(1, -10, 0.5, -70)
-
-		TeleportTrainButton.TextSize = 11
-		ReturnTrainButton.TextSize = 11
+		TransferTitle.TextSize = 20
+		
 	else
-		--HomeButton.Size = UDim2.fromOffset(72, 72)
-		--HomeButton.Position =
-		--	UDim2.new(1, -16, 0.5, -82)
-
-		TeleportTrainButton.TextSize = 14
-		ReturnTrainButton.TextSize = 14
+		-- TrainFrame.Size = UDim2.new(0, 400, 0, 300)
 	end
-end
-
-local ViewportConnection
-
-local function ConnectCamera()
-	if ViewportConnection then
-		ViewportConnection:Disconnect()
-		ViewportConnection = nil
-	end
-
-	local Camera = Workspace.CurrentCamera
-
-	if Camera then
-		ViewportConnection =
-			Camera:GetPropertyChangedSignal(
-				"ViewportSize"
-			):Connect(UpdateResponsiveSizing)
-	end
-
-	UpdateResponsiveSizing()
-end
-
-Workspace:GetPropertyChangedSignal(
-	"CurrentCamera"
-):Connect(ConnectCamera)
-
-ConnectCamera()
+end)

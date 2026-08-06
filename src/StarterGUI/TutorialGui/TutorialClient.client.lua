@@ -6,17 +6,15 @@ local Workspace = game:GetService("Workspace")
 local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
 
-local Remotes =
-	ReplicatedStorage:WaitForChild("TutorialRemotes")
+local Remotes = ReplicatedStorage:WaitForChild("TutorialRemotes")
 
-local GetTutorialData =
-	Remotes:WaitForChild("GetTutorialData")
+local ResponsiveGui = require(ReplicatedStorage:WaitForChild("ResponsiveGui"))
 
-local UpdateTutorialStep =
-	Remotes:WaitForChild("UpdateTutorialStep")
+local GetTutorialData = Remotes:WaitForChild("GetTutorialData")
 
-local ResetTutorial =
-	Remotes:WaitForChild("ResetTutorial")
+local UpdateTutorialStep = Remotes:WaitForChild("UpdateTutorialStep")
+
+local ResetTutorial = Remotes:WaitForChild("ResetTutorial")
 
 local Gui = script.Parent
 local TutorialFrame = Gui:WaitForChild("TutorialFrame")
@@ -547,4 +545,13 @@ else
 	task.wait(1)
 	SetOpen(true)
 end
+
+ResponsiveGui.Bind(function(Layout)
+	if Layout == ResponsiveGui.Layout.Compact then
+		TutorialButton.Visible = false --disable re-playing tutorial on mobile.
+	else
+		-- Keep the current working desktop layout here.
+	end
+end)
+
 

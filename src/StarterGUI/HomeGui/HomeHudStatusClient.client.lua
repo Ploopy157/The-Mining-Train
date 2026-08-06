@@ -166,25 +166,25 @@ end
 
 ResponsiveGui.Bind(function(Layout)
 	if Layout == ResponsiveGui.Layout.Compact then
-		MainHudContainer.AnchorPoint = Vector2.new(0.5, 1)
-		MainHudContainer.Position = UDim2.new(0.5, 0, 1, -115)
-		MainHudContainer.Size = UDim2.new(1, -180, 0, 54)
+		-- MainHudContainer.AnchorPoint = Vector2.new(0.5, 1)
+		MainHudContainer.Position = UDim2.new(1,-24, 0.4, 0)
+		-- MainHudContainer.Size = UDim2.new(0.92, 0, 0, 58)
 
-		HudLayout.FillDirection = Enum.FillDirection.Horizontal
-		HudLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-		HudLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-		HudLayout.Padding = UDim.new(0, 6)
+		-- HudLayout.FillDirection = Enum.FillDirection.Horizontal
+		-- HudLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+		-- HudLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+		-- HudLayout.Padding = UDim.new(0, 6)
 
 		CashDisplay.Size = UDim2.fromOffset(130, 54)
-		HomeButton.Size = UDim2.fromOffset(70, 54)
-		ShopButton.Size = UDim2.fromOffset(70, 54)
+		HomeButton.Size = UDim2.fromOffset(50, 50)
+		ShopButton.Size = UDim2.fromOffset(50, 50)
 
 		if BagButton then
 			BagButton.Size = UDim2.fromOffset(105, 54)
 		end
 
 		if TrainButton then
-			TrainButton.Size = UDim2.fromOffset(125, 54)
+			TrainButton.Size = UDim2.fromOffset(105, 54)
 		end
 	else
 		-- Keep the current working desktop layout here.
