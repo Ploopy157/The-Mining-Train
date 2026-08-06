@@ -345,6 +345,7 @@ local function CreateTransferItem(
 	)
 
 	Button.ItemName.Text = OreData.Name
+	Button.Size = UDim2.new(0.95, 0, 0, 36)
 	Button.Quantity.Text =
 		"x" .. FormatNumber(OreData.Quantity)
 

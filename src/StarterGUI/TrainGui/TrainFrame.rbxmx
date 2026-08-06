@@ -168,7 +168,7 @@
 				</UDim2>
 				<token name="SizeConstraint">0</token>
 				<bool name="Visible">true</bool>
-				<int name="ZIndex">21</int>
+				<int name="ZIndex">1</int>
 				<bool name="AutoLocalize">true</bool>
 				<Ref name="RootLocalizationTable">null</Ref>
 				<token name="SelectionBehaviorDown">0</token>
@@ -258,7 +258,7 @@
 					</UDim2>
 					<token name="SizeConstraint">0</token>
 					<bool name="Visible">true</bool>
-					<int name="ZIndex">21</int>
+					<int name="ZIndex">1</int>
 					<bool name="AutoLocalize">true</bool>
 					<Ref name="RootLocalizationTable">null</Ref>
 					<token name="SelectionBehaviorDown">0</token>
@@ -353,7 +353,7 @@
 					</UDim2>
 					<token name="SizeConstraint">0</token>
 					<bool name="Visible">true</bool>
-					<int name="ZIndex">22</int>
+					<int name="ZIndex">1</int>
 					<bool name="AutoLocalize">true</bool>
 					<Ref name="RootLocalizationTable">null</Ref>
 					<token name="SelectionBehaviorDown">0</token>
@@ -418,7 +418,7 @@
 					</UDim2>
 					<token name="SizeConstraint">0</token>
 					<bool name="Visible">true</bool>
-					<int name="ZIndex">22</int>
+					<int name="ZIndex">1</int>
 					<bool name="AutoLocalize">true</bool>
 					<Ref name="RootLocalizationTable">null</Ref>
 					<token name="SelectionBehaviorDown">0</token>
@@ -538,7 +538,7 @@
 						</UDim2>
 						<token name="SizeConstraint">0</token>
 						<bool name="Visible">true</bool>
-						<int name="ZIndex">23</int>
+						<int name="ZIndex">1</int>
 						<bool name="AutoLocalize">true</bool>
 						<Ref name="RootLocalizationTable">null</Ref>
 						<token name="SelectionBehaviorDown">0</token>
@@ -633,7 +633,7 @@
 						</UDim2>
 						<token name="SizeConstraint">0</token>
 						<bool name="Visible">true</bool>
-						<int name="ZIndex">23</int>
+						<int name="ZIndex">1</int>
 						<bool name="AutoLocalize">true</bool>
 						<Ref name="RootLocalizationTable">null</Ref>
 						<token name="SelectionBehaviorDown">0</token>
@@ -699,7 +699,7 @@
 					</UDim2>
 					<token name="SizeConstraint">0</token>
 					<bool name="Visible">true</bool>
-					<int name="ZIndex">22</int>
+					<int name="ZIndex">1</int>
 					<bool name="AutoLocalize">true</bool>
 					<Ref name="RootLocalizationTable">null</Ref>
 					<token name="SelectionBehaviorDown">0</token>
@@ -819,7 +819,7 @@
 						</UDim2>
 						<token name="SizeConstraint">0</token>
 						<bool name="Visible">true</bool>
-						<int name="ZIndex">23</int>
+						<int name="ZIndex">1</int>
 						<bool name="AutoLocalize">true</bool>
 						<Ref name="RootLocalizationTable">null</Ref>
 						<token name="SelectionBehaviorDown">0</token>
@@ -914,7 +914,7 @@
 						</UDim2>
 						<token name="SizeConstraint">0</token>
 						<bool name="Visible">true</bool>
-						<int name="ZIndex">23</int>
+						<int name="ZIndex">1</int>
 						<bool name="AutoLocalize">true</bool>
 						<Ref name="RootLocalizationTable">null</Ref>
 						<token name="SelectionBehaviorDown">0</token>
@@ -980,7 +980,7 @@
 					</UDim2>
 					<token name="SizeConstraint">0</token>
 					<bool name="Visible">true</bool>
-					<int name="ZIndex">22</int>
+					<int name="ZIndex">1</int>
 					<bool name="AutoLocalize">true</bool>
 					<Ref name="RootLocalizationTable">null</Ref>
 					<token name="SelectionBehaviorDown">0</token>
@@ -1100,7 +1100,7 @@
 						</UDim2>
 						<token name="SizeConstraint">0</token>
 						<bool name="Visible">true</bool>
-						<int name="ZIndex">23</int>
+						<int name="ZIndex">1</int>
 						<bool name="AutoLocalize">true</bool>
 						<Ref name="RootLocalizationTable">null</Ref>
 						<token name="SelectionBehaviorDown">0</token>
@@ -1195,7 +1195,7 @@
 						</UDim2>
 						<token name="SizeConstraint">0</token>
 						<bool name="Visible">true</bool>
-						<int name="ZIndex">23</int>
+						<int name="ZIndex">1</int>
 						<bool name="AutoLocalize">true</bool>
 						<Ref name="RootLocalizationTable">null</Ref>
 						<token name="SelectionBehaviorDown">0</token>
@@ -1297,7 +1297,7 @@
 					</UDim2>
 					<token name="SizeConstraint">0</token>
 					<bool name="Visible">true</bool>
-					<int name="ZIndex">23</int>
+					<int name="ZIndex">1</int>
 					<bool name="AutoLocalize">true</bool>
 					<Ref name="RootLocalizationTable">null</Ref>
 					<token name="SelectionBehaviorDown">0</token>
@@ -1576,7 +1576,7 @@
 				</UDim2>
 				<token name="SizeConstraint">0</token>
 				<bool name="Visible">true</bool>
-				<int name="ZIndex">21</int>
+				<int name="ZIndex">1</int>
 				<bool name="AutoLocalize">true</bool>
 				<Ref name="RootLocalizationTable">null</Ref>
 				<token name="SelectionBehaviorDown">0</token>
@@ -1661,13 +1661,13 @@
 				<int name="SelectionOrder">0</int>
 				<UDim2 name="Size">
 					<XS>0</XS>
-					<XO>230</XO>
+					<XO>220</XO>
 					<YS>1</YS>
 					<YO>-184</YO>
 				</UDim2>
 				<token name="SizeConstraint">0</token>
 				<bool name="Visible">true</bool>
-				<int name="ZIndex">2</int>
+				<int name="ZIndex">1</int>
 				<bool name="AutoLocalize">true</bool>
 				<Ref name="RootLocalizationTable">null</Ref>
 				<token name="SelectionBehaviorDown">0</token>
@@ -1842,7 +1842,7 @@
 					</UDim2>
 					<token name="SizeConstraint">0</token>
 					<bool name="Visible">false</bool>
-					<int name="ZIndex">2</int>
+					<int name="ZIndex">1</int>
 					<bool name="AutoLocalize">true</bool>
 					<Ref name="RootLocalizationTable">null</Ref>
 					<token name="SelectionBehaviorDown">0</token>
@@ -1962,7 +1962,7 @@
 						</UDim2>
 						<token name="SizeConstraint">0</token>
 						<bool name="Visible">true</bool>
-						<int name="ZIndex">2</int>
+						<int name="ZIndex">1</int>
 						<bool name="AutoLocalize">true</bool>
 						<Ref name="RootLocalizationTable">null</Ref>
 						<token name="SelectionBehaviorDown">0</token>
@@ -2058,7 +2058,7 @@
 						</UDim2>
 						<token name="SizeConstraint">0</token>
 						<bool name="Visible">true</bool>
-						<int name="ZIndex">2</int>
+						<int name="ZIndex">1</int>
 						<bool name="AutoLocalize">true</bool>
 						<Ref name="RootLocalizationTable">null</Ref>
 						<token name="SelectionBehaviorDown">0</token>
@@ -2228,7 +2228,7 @@
 				</UDim2>
 				<token name="SizeConstraint">0</token>
 				<bool name="Visible">true</bool>
-				<int name="ZIndex">2</int>
+				<int name="ZIndex">1</int>
 				<bool name="AutoLocalize">true</bool>
 				<Ref name="RootLocalizationTable">null</Ref>
 				<token name="SelectionBehaviorDown">0</token>
@@ -2348,7 +2348,7 @@
 					</UDim2>
 					<token name="SizeConstraint">0</token>
 					<bool name="Visible">true</bool>
-					<int name="ZIndex">2</int>
+					<int name="ZIndex">1</int>
 					<bool name="AutoLocalize">true</bool>
 					<Ref name="RootLocalizationTable">null</Ref>
 					<token name="SelectionBehaviorDown">0</token>
@@ -2413,7 +2413,7 @@
 					</UDim2>
 					<token name="SizeConstraint">0</token>
 					<bool name="Visible">true</bool>
-					<int name="ZIndex">2</int>
+					<int name="ZIndex">1</int>
 					<bool name="AutoLocalize">true</bool>
 					<Ref name="RootLocalizationTable">null</Ref>
 					<token name="SelectionBehaviorDown">0</token>
@@ -2507,7 +2507,7 @@
 						</UDim2>
 						<token name="SizeConstraint">0</token>
 						<bool name="Visible">true</bool>
-						<int name="ZIndex">2</int>
+						<int name="ZIndex">1</int>
 						<bool name="AutoLocalize">true</bool>
 						<Ref name="RootLocalizationTable">null</Ref>
 						<token name="SelectionBehaviorDown">0</token>
@@ -2602,7 +2602,7 @@
 						</UDim2>
 						<token name="SizeConstraint">0</token>
 						<bool name="Visible">true</bool>
-						<int name="ZIndex">2</int>
+						<int name="ZIndex">1</int>
 						<bool name="AutoLocalize">true</bool>
 						<Ref name="RootLocalizationTable">null</Ref>
 						<token name="SelectionBehaviorDown">0</token>
@@ -2697,7 +2697,7 @@
 						</UDim2>
 						<token name="SizeConstraint">0</token>
 						<bool name="Visible">true</bool>
-						<int name="ZIndex">2</int>
+						<int name="ZIndex">1</int>
 						<bool name="AutoLocalize">true</bool>
 						<Ref name="RootLocalizationTable">null</Ref>
 						<token name="SelectionBehaviorDown">0</token>
@@ -2792,7 +2792,7 @@
 						</UDim2>
 						<token name="SizeConstraint">0</token>
 						<bool name="Visible">true</bool>
-						<int name="ZIndex">2</int>
+						<int name="ZIndex">1</int>
 						<bool name="AutoLocalize">true</bool>
 						<Ref name="RootLocalizationTable">null</Ref>
 						<token name="SelectionBehaviorDown">0</token>
@@ -2884,7 +2884,7 @@
 					</UDim2>
 					<token name="SizeConstraint">0</token>
 					<bool name="Visible">true</bool>
-					<int name="ZIndex">2</int>
+					<int name="ZIndex">1</int>
 					<bool name="AutoLocalize">true</bool>
 					<Ref name="RootLocalizationTable">null</Ref>
 					<token name="SelectionBehaviorDown">0</token>
@@ -2970,7 +2970,7 @@
 						</UDim2>
 						<token name="SizeConstraint">0</token>
 						<bool name="Visible">false</bool>
-						<int name="ZIndex">2</int>
+						<int name="ZIndex">1</int>
 						<bool name="AutoLocalize">true</bool>
 						<Ref name="RootLocalizationTable">null</Ref>
 						<token name="SelectionBehaviorDown">0</token>
@@ -3091,7 +3091,7 @@
 							</UDim2>
 							<token name="SizeConstraint">0</token>
 							<bool name="Visible">true</bool>
-							<int name="ZIndex">2</int>
+							<int name="ZIndex">1</int>
 							<bool name="AutoLocalize">true</bool>
 							<Ref name="RootLocalizationTable">null</Ref>
 							<token name="SelectionBehaviorDown">0</token>
@@ -3187,7 +3187,7 @@
 							</UDim2>
 							<token name="SizeConstraint">0</token>
 							<bool name="Visible">true</bool>
-							<int name="ZIndex">2</int>
+							<int name="ZIndex">1</int>
 							<bool name="AutoLocalize">true</bool>
 							<Ref name="RootLocalizationTable">null</Ref>
 							<token name="SelectionBehaviorDown">0</token>
@@ -3283,7 +3283,7 @@
 							</UDim2>
 							<token name="SizeConstraint">0</token>
 							<bool name="Visible">true</bool>
-							<int name="ZIndex">2</int>
+							<int name="ZIndex">1</int>
 							<bool name="AutoLocalize">true</bool>
 							<Ref name="RootLocalizationTable">null</Ref>
 							<token name="SelectionBehaviorDown">0</token>
@@ -3379,7 +3379,7 @@
 							</UDim2>
 							<token name="SizeConstraint">0</token>
 							<bool name="Visible">true</bool>
-							<int name="ZIndex">2</int>
+							<int name="ZIndex">1</int>
 							<bool name="AutoLocalize">true</bool>
 							<Ref name="RootLocalizationTable">null</Ref>
 							<token name="SelectionBehaviorDown">0</token>
@@ -3485,7 +3485,7 @@
 				<UDim2 name="Position">
 					<XS>0</XS>
 					<XO>4</XO>
-					<YS>1</YS>
+					<YS>1.09000003</YS>
 					<YO>-62</YO>
 				</UDim2>
 				<float name="Rotation">0</float>
@@ -3674,7 +3674,7 @@
 					</UDim2>
 					<token name="SizeConstraint">0</token>
 					<bool name="Visible">true</bool>
-					<int name="ZIndex">5</int>
+					<int name="ZIndex">1</int>
 					<bool name="AutoLocalize">true</bool>
 					<Ref name="RootLocalizationTable">null</Ref>
 					<token name="SelectionBehaviorDown">0</token>
@@ -3904,7 +3904,7 @@
 					</UDim2>
 					<token name="SizeConstraint">0</token>
 					<bool name="Visible">true</bool>
-					<int name="ZIndex">5</int>
+					<int name="ZIndex">1</int>
 					<bool name="AutoLocalize">true</bool>
 					<Ref name="RootLocalizationTable">null</Ref>
 					<token name="SelectionBehaviorDown">0</token>
@@ -4111,7 +4111,7 @@
 					<XS>0</XS>
 					<XO>245</XO>
 					<YS>0</YS>
-					<YO>82</YO>
+					<YO>87</YO>
 				</UDim2>
 				<float name="Rotation">0</float>
 				<bool name="Selectable">false</bool>
@@ -4125,7 +4125,7 @@
 				</UDim2>
 				<token name="SizeConstraint">0</token>
 				<bool name="Visible">true</bool>
-				<int name="ZIndex">20</int>
+				<int name="ZIndex">10</int>
 				<bool name="AutoLocalize">true</bool>
 				<Ref name="RootLocalizationTable">null</Ref>
 				<token name="SelectionBehaviorDown">0</token>
@@ -4219,7 +4219,7 @@
 					</UDim2>
 					<token name="SizeConstraint">0</token>
 					<bool name="Visible">true</bool>
-					<int name="ZIndex">20</int>
+					<int name="ZIndex">1</int>
 					<bool name="AutoLocalize">true</bool>
 					<Ref name="RootLocalizationTable">null</Ref>
 					<token name="SelectionBehaviorDown">0</token>
@@ -4320,7 +4320,7 @@
 					</UDim2>
 					<token name="SizeConstraint">0</token>
 					<bool name="Visible">true</bool>
-					<int name="ZIndex">20</int>
+					<int name="ZIndex">1</int>
 					<bool name="AutoLocalize">true</bool>
 					<Ref name="RootLocalizationTable">null</Ref>
 					<token name="SelectionBehaviorDown">0</token>
@@ -4467,7 +4467,7 @@
 						</UDim2>
 						<token name="SizeConstraint">0</token>
 						<bool name="Visible">true</bool>
-						<int name="ZIndex">20</int>
+						<int name="ZIndex">1</int>
 						<bool name="AutoLocalize">true</bool>
 						<Ref name="RootLocalizationTable">null</Ref>
 						<token name="SelectionBehaviorDown">0</token>
@@ -4562,7 +4562,7 @@
 						</UDim2>
 						<token name="SizeConstraint">0</token>
 						<bool name="Visible">true</bool>
-						<int name="ZIndex">20</int>
+						<int name="ZIndex">1</int>
 						<bool name="AutoLocalize">true</bool>
 						<Ref name="RootLocalizationTable">null</Ref>
 						<token name="SelectionBehaviorDown">0</token>
@@ -4757,7 +4757,7 @@
 					</UDim2>
 					<token name="SizeConstraint">0</token>
 					<bool name="Visible">false</bool>
-					<int name="ZIndex">21</int>
+					<int name="ZIndex">1</int>
 					<bool name="AutoLocalize">true</bool>
 					<Ref name="RootLocalizationTable">null</Ref>
 					<token name="SelectionBehaviorDown">0</token>
@@ -4959,7 +4959,7 @@
 						</UDim2>
 						<token name="SizeConstraint">0</token>
 						<bool name="Visible">false</bool>
-						<int name="ZIndex">20</int>
+						<int name="ZIndex">1</int>
 						<bool name="AutoLocalize">true</bool>
 						<Ref name="RootLocalizationTable">null</Ref>
 						<token name="SelectionBehaviorDown">0</token>
@@ -5079,7 +5079,7 @@
 							</UDim2>
 							<token name="SizeConstraint">0</token>
 							<bool name="Visible">true</bool>
-							<int name="ZIndex">20</int>
+							<int name="ZIndex">1</int>
 							<bool name="AutoLocalize">true</bool>
 							<Ref name="RootLocalizationTable">null</Ref>
 							<token name="SelectionBehaviorDown">0</token>
@@ -5175,7 +5175,7 @@
 							</UDim2>
 							<token name="SizeConstraint">0</token>
 							<bool name="Visible">true</bool>
-							<int name="ZIndex">20</int>
+							<int name="ZIndex">1</int>
 							<bool name="AutoLocalize">true</bool>
 							<Ref name="RootLocalizationTable">null</Ref>
 							<token name="SelectionBehaviorDown">0</token>
@@ -5270,7 +5270,7 @@
 							</UDim2>
 							<token name="SizeConstraint">0</token>
 							<bool name="Visible">true</bool>
-							<int name="ZIndex">20</int>
+							<int name="ZIndex">1</int>
 							<bool name="AutoLocalize">true</bool>
 							<Ref name="RootLocalizationTable">null</Ref>
 							<token name="SelectionBehaviorDown">0</token>
@@ -5480,7 +5480,7 @@
 					<XS>0</XS>
 					<XO>463</XO>
 					<YS>0</YS>
-					<YO>82</YO>
+					<YO>87</YO>
 				</UDim2>
 				<float name="Rotation">0</float>
 				<bool name="Selectable">false</bool>
@@ -5494,7 +5494,7 @@
 				</UDim2>
 				<token name="SizeConstraint">0</token>
 				<bool name="Visible">true</bool>
-				<int name="ZIndex">20</int>
+				<int name="ZIndex">10</int>
 				<bool name="AutoLocalize">true</bool>
 				<Ref name="RootLocalizationTable">null</Ref>
 				<token name="SelectionBehaviorDown">0</token>
@@ -5588,7 +5588,7 @@
 					</UDim2>
 					<token name="SizeConstraint">0</token>
 					<bool name="Visible">true</bool>
-					<int name="ZIndex">20</int>
+					<int name="ZIndex">1</int>
 					<bool name="AutoLocalize">true</bool>
 					<Ref name="RootLocalizationTable">null</Ref>
 					<token name="SelectionBehaviorDown">0</token>
@@ -5689,7 +5689,7 @@
 					</UDim2>
 					<token name="SizeConstraint">0</token>
 					<bool name="Visible">true</bool>
-					<int name="ZIndex">20</int>
+					<int name="ZIndex">1</int>
 					<bool name="AutoLocalize">true</bool>
 					<Ref name="RootLocalizationTable">null</Ref>
 					<token name="SelectionBehaviorDown">0</token>
@@ -5836,7 +5836,7 @@
 						</UDim2>
 						<token name="SizeConstraint">0</token>
 						<bool name="Visible">true</bool>
-						<int name="ZIndex">20</int>
+						<int name="ZIndex">1</int>
 						<bool name="AutoLocalize">true</bool>
 						<Ref name="RootLocalizationTable">null</Ref>
 						<token name="SelectionBehaviorDown">0</token>
@@ -5931,7 +5931,7 @@
 						</UDim2>
 						<token name="SizeConstraint">0</token>
 						<bool name="Visible">true</bool>
-						<int name="ZIndex">20</int>
+						<int name="ZIndex">1</int>
 						<bool name="AutoLocalize">true</bool>
 						<Ref name="RootLocalizationTable">null</Ref>
 						<token name="SelectionBehaviorDown">0</token>
@@ -6126,7 +6126,7 @@
 					</UDim2>
 					<token name="SizeConstraint">0</token>
 					<bool name="Visible">false</bool>
-					<int name="ZIndex">21</int>
+					<int name="ZIndex">1</int>
 					<bool name="AutoLocalize">true</bool>
 					<Ref name="RootLocalizationTable">null</Ref>
 					<token name="SelectionBehaviorDown">0</token>
@@ -6328,7 +6328,7 @@
 						</UDim2>
 						<token name="SizeConstraint">0</token>
 						<bool name="Visible">false</bool>
-						<int name="ZIndex">20</int>
+						<int name="ZIndex">1</int>
 						<bool name="AutoLocalize">true</bool>
 						<Ref name="RootLocalizationTable">null</Ref>
 						<token name="SelectionBehaviorDown">0</token>
@@ -6448,7 +6448,7 @@
 							</UDim2>
 							<token name="SizeConstraint">0</token>
 							<bool name="Visible">true</bool>
-							<int name="ZIndex">20</int>
+							<int name="ZIndex">1</int>
 							<bool name="AutoLocalize">true</bool>
 							<Ref name="RootLocalizationTable">null</Ref>
 							<token name="SelectionBehaviorDown">0</token>
@@ -6544,7 +6544,7 @@
 							</UDim2>
 							<token name="SizeConstraint">0</token>
 							<bool name="Visible">true</bool>
-							<int name="ZIndex">20</int>
+							<int name="ZIndex">1</int>
 							<bool name="AutoLocalize">true</bool>
 							<Ref name="RootLocalizationTable">null</Ref>
 							<token name="SelectionBehaviorDown">0</token>
@@ -6639,7 +6639,7 @@
 							</UDim2>
 							<token name="SizeConstraint">0</token>
 							<bool name="Visible">true</bool>
-							<int name="ZIndex">20</int>
+							<int name="ZIndex">1</int>
 							<bool name="AutoLocalize">true</bool>
 							<Ref name="RootLocalizationTable">null</Ref>
 							<token name="SelectionBehaviorDown">0</token>
@@ -6863,7 +6863,7 @@
 				</UDim2>
 				<token name="SizeConstraint">0</token>
 				<bool name="Visible">false</bool>
-				<int name="ZIndex">30</int>
+				<int name="ZIndex">1</int>
 				<bool name="AutoLocalize">true</bool>
 				<Ref name="RootLocalizationTable">null</Ref>
 				<token name="SelectionBehaviorDown">0</token>
@@ -6986,7 +6986,7 @@
 					</UDim2>
 					<token name="SizeConstraint">0</token>
 					<bool name="Visible">true</bool>
-					<int name="ZIndex">31</int>
+					<int name="ZIndex">1</int>
 					<bool name="AutoLocalize">true</bool>
 					<Ref name="RootLocalizationTable">null</Ref>
 					<token name="SelectionBehaviorDown">0</token>
@@ -7199,7 +7199,7 @@
 					</UDim2>
 					<token name="SizeConstraint">0</token>
 					<bool name="Visible">true</bool>
-					<int name="ZIndex">31</int>
+					<int name="ZIndex">1</int>
 					<bool name="AutoLocalize">true</bool>
 					<Ref name="RootLocalizationTable">null</Ref>
 					<token name="SelectionBehaviorDown">0</token>
@@ -7412,7 +7412,7 @@
 					</UDim2>
 					<token name="SizeConstraint">0</token>
 					<bool name="Visible">true</bool>
-					<int name="ZIndex">31</int>
+					<int name="ZIndex">1</int>
 					<bool name="AutoLocalize">true</bool>
 					<Ref name="RootLocalizationTable">null</Ref>
 					<token name="SelectionBehaviorDown">0</token>
