@@ -409,28 +409,6 @@ function PlayerDataService.Start()
 		end
 	end)
 	
-	function PlayerDataService.AddCash(Player, Amount)
-		local Data = PlayerData[Player]
-
-		if not Data then
-			return false
-		end
-
-		if typeof(Amount) ~= "number" then
-			return false
-		end
-
-		Data.Stats.Cash += Amount
-
-		local Leaderstats = Player:FindFirstChild("leaderstats")
-		local CashValue = Leaderstats and Leaderstats:FindFirstChild("Cash")
-
-		if CashValue then
-			CashValue.Value = Data.Stats.Cash
-		end
-
-		return true
-	end
 	
 	function PlayerDataService.SetCash(Player, Amount)
 		local Data = PlayerData[Player]
