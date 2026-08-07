@@ -20,7 +20,7 @@ local MineFolder = Workspace:WaitForChild("MineContents")
 local SpawnedTrains = Workspace:WaitForChild("SpawnedTrains")
 
 
-local BlockSize = 4
+local BlockSize = 5
 local MinimumMineX = 53
 local MinimumMineY = -260
 local MaximumMineY = 30

@@ -5,6 +5,7 @@ DrillDefinitions.Order = {
 	"Drill3x2",
 	"Drill3x3",
 	"Drill5x3",
+	"Drill5x4",
 	"Drill5x5",
 }
 
@@ -78,7 +79,7 @@ DrillDefinitions.Data = {
 
 	Drill5x3 = {
 		DisplayName = "5x3 Drill",
-		Description = "An advanced wide drill covering a 5 by 3 block face.",
+		Description = "An advanced, wide drill covering a 5 by 3 block face.",
 
 		Tier = 4,
 		PurchaseCost = 350000,
@@ -93,15 +94,31 @@ DrillDefinitions.Data = {
 		IsUnlocked = true,
 	},
 
-	Drill5x5 = {
-		DisplayName = "5x5 Drill",
-		Description = "A massive end-game drill covering a 5 by 5 block face.",
+	Drill5x4 = {
+		DisplayName = "5x4 Drill",
+		Description = "A massive drill covering a 5 by 4 block face.",
 
 		Tier = 5,
 		PurchaseCost = 1500000,
 
 		Damage = 100,
 		Speed = 0.1,
+
+		Width = 5,
+		Height = 4,
+
+		TemplateName = "5x4 Drill",
+		IsUnlocked = true,
+	},
+	Drill5x5 = {
+		DisplayName = "5x5 Drill",
+		Description = "An end-game drill covering a 5 by 5 block face.",
+
+		Tier = 6,
+		PurchaseCost = 5000000,
+
+		Damage = 1000,
+		Speed = 0.05,
 
 		Width = 5,
 		Height = 5,
