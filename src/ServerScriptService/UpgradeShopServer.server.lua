@@ -432,6 +432,13 @@ local function GetLightRangeFromLevel(Level)
 		or 0
 end
 
+local function GetMaximumCarUpgradeLevel(Data)
+	local LocomotiveLevel = tonumber(Data.Upgrades.LocomotiveTier) or 0
+	local MaximumCarsByLocomotiveLevel = {2, 4, 6, 9} --Max Cars Level Per Upgrade. (So +1)
+
+	return MaximumCarsByLocomotiveLevel[LocomotiveLevel + 1] or 2
+end
+
 local function BuildShopData(Player)
 
 	local Data = PlayerDataService.GetData(Player)
@@ -454,9 +461,26 @@ local function BuildShopData(Player)
 		if Definition then
 			local Level =
 				Data.Upgrades[UpgradeId] or 0
+			
 
 			local IsMaximumLevel =
 				Level >= Definition.MaximumLevel
+
+			local LocomotiveLocked = false
+			local RequiredLocomotiveName = nil
+
+			if UpgradeId == "MaximumCars" then
+				local MaximumAllowedLevel = GetMaximumCarUpgradeLevel(Data)
+
+				if Level >= MaximumAllowedLevel and Level < Definition.MaximumLevel then
+					LocomotiveLocked = true
+
+					local LocomotiveId = Data.Train.LocomotiveId or LocomotiveDefinitions.Order[1]
+					local _, NextLocomotive = LocomotiveDefinitions.GetNext(LocomotiveId)
+
+					RequiredLocomotiveName = NextLocomotive and NextLocomotive.DisplayName or nil
+				end
+			end
 
 			local Cost =
 				IsMaximumLevel
@@ -481,6 +505,10 @@ local function BuildShopData(Player)
 				Level = Level,
 				MaximumLevel =
 					Definition.MaximumLevel,
+				LocomotiveLocked = LocomotiveLocked,
+				RequiredLocomotiveName = RequiredLocomotiveName,
+
+
 
 				Cost = Cost,
 				IsMaximumLevel = IsMaximumLevel,
@@ -756,10 +784,7 @@ local function GetCarModelTier(
 	) + 1
 end
 
-PurchaseUpgrade.OnServerInvoke = function(
-	Player,
-	UpgradeId
-)
+PurchaseUpgrade.OnServerInvoke = function(Player, UpgradeId)
 	if not IsNearShop(Player) then
 		return false, "Move closer to the upgrade shop."
 	end
@@ -768,8 +793,7 @@ PurchaseUpgrade.OnServerInvoke = function(
 		return false, "Invalid upgrade."
 	end
 
-	local Definition =
-		UpgradeDefinitions[UpgradeId]
+	local Definition = UpgradeDefinitions[UpgradeId]
 
 	if typeof(Definition) ~= "table" then
 		return false, "Upgrade was not found."
@@ -783,18 +807,28 @@ PurchaseUpgrade.OnServerInvoke = function(
 
 	EnsurePlayerUpgradeData(Data)
 
-	local CurrentLevel =
-		Data.Upgrades[UpgradeId] or 0
+	local CurrentLevel = Data.Upgrades[UpgradeId] or 0
 
 	if CurrentLevel >= Definition.MaximumLevel then
 		return false, "This upgrade is already at maximum level."
 	end
 
-	local Cost =
-		UpgradeDefinitions.GetCost(
-			UpgradeId,
-			CurrentLevel
-		)
+	if UpgradeId == "MaximumCars" then
+		local MaximumAllowedLevel = GetMaximumCarUpgradeLevel(Data)
+
+		if CurrentLevel >= MaximumAllowedLevel then
+			local LocomotiveId = Data.Train.LocomotiveId or LocomotiveDefinitions.Order[1]
+			local NextLocomotiveId, NextLocomotive = LocomotiveDefinitions.GetNext(LocomotiveId)
+
+			if NextLocomotive then
+				return false, "Upgrade to " .. NextLocomotive.DisplayName .. " to pull more cars."
+			end
+
+			return false, "Your locomotive cannot pull any more cars."
+		end
+	end
+
+	local Cost = UpgradeDefinitions.GetCost(UpgradeId, CurrentLevel)
 
 	if Data.Stats.Cash < Cost then
 		return false, "You do not have enough cash."
@@ -803,59 +837,27 @@ PurchaseUpgrade.OnServerInvoke = function(
 	local PreviousCarCapacity
 
 	if UpgradeId == "CarCapacity" then
-		PreviousCarCapacity =
-			UpgradeDefinitions.GetValue(
-				"CarCapacity",
-				CurrentLevel
-			)
+		PreviousCarCapacity = UpgradeDefinitions.GetValue("CarCapacity", CurrentLevel)
 	end
+
 	Data.Stats.Cash -= Cost
 
 	local NewLevel = CurrentLevel + 1
 	Data.Upgrades[UpgradeId] = NewLevel
-	
-		if UpgradeId == "CarCapacity" then
-		
+
+	if UpgradeId == "CarCapacity" then
 		ApplyCarCapacityUpgrade(Data)
 	end
 
-	local AppliedSuccessfully,
-		ApplyError =
-		ApplyUpgrade(
-			Player,
-			Data,
-			UpgradeId,
-			NewLevel
-		)
+	local AppliedSuccessfully, ApplyError = ApplyUpgrade(Player, Data, UpgradeId, NewLevel)
+
 	if UpgradeId == "CarCapacity" then
-		local NewCarCapacity =
-			UpgradeDefinitions.GetValue(
-				"CarCapacity",
-				NewLevel
-			)
+		local NewCarCapacity = UpgradeDefinitions.GetValue("CarCapacity", NewLevel)
+		local PreviousModelTier = GetCarModelTier(PreviousCarCapacity)
+		local NewModelTier = GetCarModelTier(NewCarCapacity)
 
-		local PreviousModelTier =
-			GetCarModelTier(
-				PreviousCarCapacity
-			)
-
-		local NewModelTier =
-			GetCarModelTier(
-				NewCarCapacity
-			)
-
-		-- Only rebuild when the physical model actually changes.
-		-- Capacity and cargo transparency can update normally between tiers.
-		if NewModelTier ~= PreviousModelTier
-			and TrainService.GetPlayerTrain(
-				Player
-			) then
-
-			local RebuiltSuccessfully,
-				RebuildMessage =
-				TrainService.RebuildPlayerTrain(
-					Player
-				)
+		if NewModelTier ~= PreviousModelTier and TrainService.GetPlayerTrain(Player) then
+			local RebuiltSuccessfully, RebuildMessage = TrainService.RebuildPlayerTrain(Player)
 
 			if not RebuiltSuccessfully then
 				warn(
@@ -868,29 +870,16 @@ PurchaseUpgrade.OnServerInvoke = function(
 	end
 
 	if AppliedSuccessfully == false then
-		-- Roll back the purchase if applying the upgrade failed.
-		Data.Upgrades[UpgradeId] =
-			CurrentLevel
-
+		Data.Upgrades[UpgradeId] = CurrentLevel
 		Data.Stats.Cash += Cost
 
-		return false,
-			ApplyError
-			or "The upgrade could not be applied."
+		return false, ApplyError or "The upgrade could not be applied."
 	end
-	
-	local ShouldReturnTrain =
-		UpgradeId == "MaximumCars"
-		or UpgradeId == "LocomotiveTier"
 
-	if ShouldReturnTrain
-		and TrainService.GetPlayerTrain(Player) then
+	local ShouldReturnTrain = UpgradeId == "MaximumCars" or UpgradeId == "LocomotiveTier"
 
-		local RebuiltSuccessfully,
-			RebuildMessage =
-			TrainService.RebuildPlayerTrain(
-				Player
-			)
+	if ShouldReturnTrain and TrainService.GetPlayerTrain(Player) then
+		local RebuiltSuccessfully, RebuildMessage = TrainService.RebuildPlayerTrain(Player)
 
 		if not RebuiltSuccessfully then
 			warn(
@@ -911,28 +900,19 @@ PurchaseUpgrade.OnServerInvoke = function(
 			)
 		end
 	end
-	
-	local Leaderstats =
-		Player:FindFirstChild("leaderstats")
 
-	local CashValue =
-		Leaderstats
-		and Leaderstats:FindFirstChild("Cash")
+	local Leaderstats = Player:FindFirstChild("leaderstats")
+	local CashValue = Leaderstats and Leaderstats:FindFirstChild("Cash")
 
 	if CashValue then
-		CashValue.Value =
-			Data.Stats.Cash
+		CashValue.Value = Data.Stats.Cash
 	end
 
 	RefreshUpgradeShop:FireClient(Player)
 
 	return true, {
 		NewLevel = NewLevel,
-		NewValue =
-			UpgradeDefinitions.GetValue(
-				UpgradeId,
-				NewLevel
-			),
+		NewValue = UpgradeDefinitions.GetValue(UpgradeId, NewLevel),
 		RemainingCash = Data.Stats.Cash,
 	}
 end

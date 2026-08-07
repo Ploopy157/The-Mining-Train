@@ -77,7 +77,7 @@ local UpgradeDefinitions = {
 
 		BaseCost = 500,
 		CostGrowth = 3.4,
-		MaximumLevel = 10,
+		MaximumLevel = 9,
 
 		BaseValue = 1,
 		ValuePerLevel = 1,

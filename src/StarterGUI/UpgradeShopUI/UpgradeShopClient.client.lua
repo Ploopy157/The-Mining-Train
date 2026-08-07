@@ -135,17 +135,17 @@ local function RefreshShop()
 				.. UpgradeData.FormattedValue
 
 			if UpgradeData.IsMaximumLevel then
-				Row.PurchaseButton.Text =
-					"MAXIMUM\nLEVEL"
-
-				Row.PurchaseButton.BackgroundColor3 =
-					Color3.fromRGB(79, 83, 94)
-
+				Row.PurchaseButton.Text = "MAXIMUM\nLEVEL"
+				Row.PurchaseButton.BackgroundColor3 = Color3.fromRGB(79, 83, 94)
 				Row.PurchaseButton.Active = false
+
+			elseif UpgradeData.LocomotiveLocked then
+				Row.PurchaseButton.Text = "REQUIRES\n" .. (UpgradeData.RequiredLocomotiveName or "LOCOMOTIVE")
+				Row.PurchaseButton.BackgroundColor3 = Color3.fromRGB(79, 83, 94)
+				Row.PurchaseButton.Active = false
+
 			else
-				Row.PurchaseButton.Text =
-					"BUY\n"
-					.. FormatMoney(UpgradeData.Cost)
+				Row.PurchaseButton.Text = "BUY\n" .. FormatMoney(UpgradeData.Cost)
 
 				Row.PurchaseButton.BackgroundColor3 =
 					UpgradeData.CanAfford
@@ -154,43 +154,29 @@ local function RefreshShop()
 
 				Row.PurchaseButton.Active = true
 
-				Row.PurchaseButton.Activated:Connect(
-					function()
-						local RequestSuccess,
-							Purchased,
-							Result =
-							pcall(function()
-								return PurchaseUpgrade:InvokeServer(
-									UpgradeData.UpgradeId
-								)
-							end)
+				Row.PurchaseButton.Activated:Connect(function()
+					local RequestSuccess, Purchased, Result = pcall(function()
+						return PurchaseUpgrade:InvokeServer(UpgradeData.UpgradeId)
+					end)
 
-						if not RequestSuccess then
-							StatusLabel.Text =
-								"Purchase request failed."
-
-							return
-						end
-
-						if not Purchased then
-							StatusLabel.Text =
-								tostring(
-									Result
-									or "Purchase failed."
-								)
-
-							return
-						end
-
-						StatusLabel.Text = string.format(
-							"Purchased %s level %d.",
-							UpgradeData.DisplayName,
-							Result.NewLevel
-						)
-
-						RefreshShop()
+					if not RequestSuccess then
+						StatusLabel.Text = "Purchase request failed."
+						return
 					end
-				)
+
+					if not Purchased then
+						StatusLabel.Text = tostring(Result or "Purchase failed.")
+						return
+					end
+
+					StatusLabel.Text = string.format(
+						"Purchased %s level %d.",
+						UpgradeData.DisplayName,
+						Result.NewLevel
+					)
+
+					RefreshShop()
+				end)
 			end
 
 			Row.Parent = UpgradeList
