@@ -18,12 +18,14 @@ local ResetTutorial = Remotes:WaitForChild("ResetTutorial")
 
 local Gui = script.Parent
 local TutorialFrame = Gui:WaitForChild("TutorialFrame")
-local TutorialButton = Gui:WaitForChild("TutorialButton")
+local TutorialButton = PlayerGui:WaitForChild("SettingsGui"):WaitForChild("Window"):WaitForChild("Content"):WaitForChild("TutorialSection"):WaitForChild("TutorialButton")
 local Pointer = Gui:WaitForChild("Pointer")
 
 local Header = TutorialFrame:WaitForChild("Header")
 local TitleLabel = Header:WaitForChild("TitleLabel")
 local StepLabel = Header:WaitForChild("StepLabel")
+
+
 
 local DescriptionLabel =
 	TutorialFrame:WaitForChild("DescriptionLabel")
@@ -530,6 +532,31 @@ local Success, TutorialData = pcall(function()
 	return GetTutorialData:InvokeServer()
 end)
 
+local function ReplayTutorial()
+	local Success, ResetData = pcall(function()
+		return ResetTutorial:InvokeServer()
+	end)
+
+	if not Success then
+		warn("Failed to reset tutorial.")
+		return
+	end
+
+	CurrentStep = 1
+	ObjectiveComplete = false
+	StartingCash = 0
+	SetOpen(true)
+end
+
+TutorialButton.Activated:Connect(function()
+	if IsOpen then
+		SetOpen(false)
+		return
+	end
+
+	ReplayTutorial()
+end)
+
 if Success and typeof(TutorialData) == "table" then
 	CurrentStep = math.clamp(
 		TutorialData.Step or 1,
@@ -546,12 +573,11 @@ else
 	SetOpen(true)
 end
 
-ResponsiveGui.Bind(function(Layout)
-	if Layout == ResponsiveGui.Layout.Compact then
-		TutorialButton.Visible = false --disable re-playing tutorial on mobile.
-	else
-		-- Keep the current working desktop layout here.
-	end
-end)
+-- ResponsiveGui.Bind(function(Layout)
+-- 	if Layout == ResponsiveGui.Layout.Compact then
+-- 	else
+-- 		-- Keep the current working desktop layout here.
+-- 	end
+-- end)
 
 

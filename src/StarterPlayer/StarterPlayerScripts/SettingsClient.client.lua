@@ -170,21 +170,6 @@ end
 
 local function OpenTutorial()
 	SetOpen(false)
-
-	local TutorialGui = PlayerGui:FindFirstChild("TutorialGui")
-
-	if TutorialGui and TutorialGui:IsA("ScreenGui") then
-		TutorialGui.Enabled = true
-	end
-
-	local OpenTutorialEvent = PlayerGui:FindFirstChild("OpenTutorial")
-
-	if OpenTutorialEvent and OpenTutorialEvent:IsA("BindableEvent") then
-		OpenTutorialEvent:Fire()
-		return
-	end
-
-	warn("Tutorial button is ready, but no PlayerGui.OpenTutorial BindableEvent or TutorialGui was found.")
 end
 
 local function SetResetConfirmationVisible(Visible)
