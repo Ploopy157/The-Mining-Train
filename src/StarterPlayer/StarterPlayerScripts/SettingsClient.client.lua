@@ -159,8 +159,9 @@ local function UpdateStats()
 
 		local StatName = Card.Name
 		local Value = Stats[StatName] or 0
+		print("StatName:", StatName, "Value:", Value)
 
-		Card.Value.Text =
+		Card.Value.Text = 
 			(Prefixes[StatName] or "")
 			.. FormatNumber(Value)
 			.. (Suffixes[StatName] or "")

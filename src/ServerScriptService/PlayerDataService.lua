@@ -29,6 +29,7 @@ local DefaultData = {
 		TotalOreMined = 0,
 		TotalValueMined = 0,
 		IngotsSmelted = 0,
+		LifetimeMoney = 0,
 
 		HighestMineDepth = 0,
 		TotalDistanceTraveled = 0,

@@ -659,11 +659,22 @@ local function MineOre(Player, Ore, DrillDamage, DrillModel, DrillBit)
 	local OreName = Ore.Name
 	local OreQuantity = 1
 
+	-- Stone should always be destroyed and never stored.
+	if Ore:GetAttribute("IsStone") then
+		DestroyMinedOre(Player, Ore)
+		return
+	end
 
+	-- Ores configured as Destroy on the drill are destroyed
+	-- instead of being added to the train.
 	local ShouldDestroyDrilledOre =
 		IsDrillMining
 		and DrillFilterService.ShouldDestroy(Player, OreName)
 
+	if ShouldDestroyDrilledOre then
+		DestroyMinedOre(Player, Ore)
+		return
+	end
 
 	local AddedSuccessfully
 
@@ -692,19 +703,19 @@ local function MineOre(Player, Ore, DrillDamage, DrillModel, DrillBit)
 				or "INVENTORY FULL"
 		)
 
-		return
-	end
+	return
+end
 
-	if not DestroyMinedOre(Player, Ore) then
-		warn("Ore was added to inventory but could not be destroyed:", OreName)
-		OreInfoEvent:FireClient(Player, "Ore collection error")
-		return
-	end
+if not DestroyMinedOre(Player, Ore) then
+	warn("Ore was added to inventory but could not be destroyed:", OreName)
+	OreInfoEvent:FireClient(Player, "Ore collection error")
+	return
+end
 
-	OreInfoEvent:FireClient(
-		Player,
-		"+" .. tostring(OreQuantity) .. " " .. OreName
-	)
+OreInfoEvent:FireClient(
+	Player,
+	"+" .. tostring(OreQuantity) .. " " .. OreName
+)
 end
 
 RegisterExistingBlocks()
