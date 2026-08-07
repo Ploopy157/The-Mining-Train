@@ -143,17 +143,27 @@ local function UpdateStats()
 		return
 	end
 
-	local Units = {
+	local Prefixes = {
+		LifetimeMoney = "$",
+	}
+
+	local Suffixes = {
 		HighestMineDepth = " studs",
 		TotalDistanceTraveled = " studs",
 	}
 
-	for StatName, Card in StatsGrid:GetChildren() do
+	for _, Card in StatsGrid:GetChildren() do
 		if not Card:IsA("Frame") then
 			continue
 		end
 
-		Card.Value.Text = FormatNumber(Stats[StatName]) .. (Units[StatName] or "")
+		local StatName = Card.Name
+		local Value = Stats[StatName] or 0
+
+		Card.Value.Text =
+			(Prefixes[StatName] or "")
+			.. FormatNumber(Value)
+			.. (Suffixes[StatName] or "")
 	end
 end
 

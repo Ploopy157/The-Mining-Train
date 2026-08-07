@@ -280,6 +280,7 @@ local function ReturnPlayersAndTrainsToStations()
 	end
 end
 
+
 local function ResetMine()
 	if MineResetInProgress then
 		return false
@@ -519,6 +520,19 @@ local function GetPickaxeDamage(Player, PickaxeStats)
 	return PickaxeStats.Damage
 end
 
+local function UpdateHighestMineDepth(Player, Ore)
+	if not Player or not Ore then
+		return
+	end
+
+	local Depth = math.floor(GetMineDepth(Ore.Position) + 0.5)
+	local CurrentDepth = PlayerDataService.GetStat(Player, "HighestMineDepth") or 0
+
+	if Depth > CurrentDepth then
+		PlayerDataService.SetStat(Player, "HighestMineDepth", Depth)
+	end
+end
+
 local function AttachBlockBreakSound(Ore)
 	if not BlockBreakSoundTemplate:IsA("Sound") then
 		warn("ServerStorage.Sounds.BlockBreakSound must be a Sound.")
@@ -530,13 +544,16 @@ local function AttachBlockBreakSound(Ore)
 	BreakSound.Name = "BlockBreakSound"
 	BreakSound.Looped = false
 	BreakSound.PlayOnRemove = true
+	BreakSound:SetAttribute("SoundCategory", "SFX")
 	BreakSound.Parent = Ore
 end
 
-local function DestroyMinedOre(Ore)
-	if not Ore or not Ore.Parent then
+local function DestroyMinedOre(Player, Ore)
+	if not Player or not Ore or not Ore.Parent then
 		return false
 	end
+
+	UpdateHighestMineDepth(Player, Ore)
 
 	Ore:SetAttribute("BeingDestroyed", true)
 
@@ -548,6 +565,8 @@ local function DestroyMinedOre(Ore)
 
 	AttachBlockBreakSound(Ore)
 	Ore:Destroy()
+
+	PlayerDataService.AddStat(Player, "BlocksMined", 1)
 
 	local GenerationSucceeded, GenerationError = pcall(
 		GenerateOreAroundGridPosition,
@@ -638,29 +657,13 @@ local function MineOre(Player, Ore, DrillDamage, DrillModel, DrillBit)
 	end
 
 	local OreName = Ore.Name
-	local OreValue = Ore:GetAttribute("Value") or 0
 	local OreQuantity = 1
 
-	-- Stone is destroyed without entering inventory.
-	if Ore:GetAttribute("IsStone") then
-		if DestroyMinedOre(Ore) then
-			PlayerDataService.AddStat(Player, "BlocksMined", 1)
-		end
-
-		return
-	end
 
 	local ShouldDestroyDrilledOre =
 		IsDrillMining
 		and DrillFilterService.ShouldDestroy(Player, OreName)
 
-	if ShouldDestroyDrilledOre then
-		if DestroyMinedOre(Ore) then
-			PlayerDataService.AddStat(Player, "BlocksMined", 1)
-		end
-
-		return
-	end
 
 	local AddedSuccessfully
 
@@ -692,14 +695,12 @@ local function MineOre(Player, Ore, DrillDamage, DrillModel, DrillBit)
 		return
 	end
 
-	if not DestroyMinedOre(Ore) then
+	if not DestroyMinedOre(Player, Ore) then
 		warn("Ore was added to inventory but could not be destroyed:", OreName)
 		OreInfoEvent:FireClient(Player, "Ore collection error")
 		return
 	end
 
-	PlayerDataService.AddStat(Player, "BlocksMined", 1)
-	PlayerDataService.AddStat(Player, "TotalValueMined", OreValue)
 	OreInfoEvent:FireClient(
 		Player,
 		"+" .. tostring(OreQuantity) .. " " .. OreName

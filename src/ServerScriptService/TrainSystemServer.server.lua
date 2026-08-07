@@ -21,11 +21,70 @@ local ReplicatedStorage =
 local ServerScriptService =
 	game:GetService("ServerScriptService")
 
+	local RunService = game:GetService("RunService")
+
+local TrainDistanceTrackers = {}
+local DistanceUpdateInterval = 0.5
+local MaximumValidDistancePerUpdate = 25
+local DistanceElapsed = 0
+
 local TrainInventoryService = require(
 	ServerScriptService:WaitForChild(
 		"TrainInventoryService"
 	)
 )
+
+local function GetTrainTrackingPosition(Player)
+	local Train = TrainService.GetPlayerTrain(Player)
+
+	if not Train then
+		return nil, nil
+	end
+
+	local Locomotive = TrainService.GetLocomotive(Train)
+
+	if not Locomotive then
+		return nil, Train
+	end
+
+	if Locomotive.PrimaryPart then
+		return Locomotive.PrimaryPart.Position, Train
+	end
+
+	return Locomotive:GetPivot().Position, Train
+end
+local function UpdateTrainDistance(Player)
+	local Position, Train = GetTrainTrackingPosition(Player)
+	local Tracker = TrainDistanceTrackers[Player]
+
+	if not Position or not Train then
+		TrainDistanceTrackers[Player] = nil
+		return
+	end
+
+	if not Tracker or Tracker.Train ~= Train then
+		TrainDistanceTrackers[Player] = {
+			Train = Train,
+			Position = Position,
+		}
+
+		return
+	end
+
+	local Distance = (Position - Tracker.Position).Magnitude
+
+	Tracker.Position = Position
+
+	if Distance <= 0 or Distance > MaximumValidDistancePerUpdate then
+		return
+	end
+
+	PlayerDataService.AddStat(
+		Player,
+		"TotalDistanceTraveled",
+		Distance
+	)
+end
 
 local TrainRemotes =
 	ReplicatedStorage:WaitForChild(
@@ -117,6 +176,7 @@ Players.PlayerAdded:Connect(
 )
 
 Players.PlayerRemoving:Connect(function(Player)
+	TrainDistanceTrackers[Player] = nil
 	TrainService.DestroyPlayerTrain(Player)
 end)
 
@@ -126,3 +186,13 @@ for _, Player in Players:GetPlayers() do
 		Player
 	)
 end
+
+task.spawn(function()
+	while true do
+		task.wait(1)
+
+		for _, Player in Players:GetPlayers() do
+			UpdateTrainDistance(Player)
+		end
+	end
+end)

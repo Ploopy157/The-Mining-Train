@@ -187,7 +187,7 @@ GetStats.OnServerInvoke = function(Player)
 	return {
 		BlocksMined = Data.Stats.BlocksMined or 0,
 		TotalOreMined = Data.Stats.TotalOreMined or 0,
-		TotalValueMined = Data.Stats.TotalValueMined or 0,
+		LifetimeMoney = Data.Stats.LifetimeMoney or 0,
 		IngotsSmelted = Data.Stats.IngotsSmelted or 0,
 		HighestMineDepth = Data.Stats.HighestMineDepth or 0,
 		TotalDistanceTraveled = Data.Stats.TotalDistanceTraveled or 0,

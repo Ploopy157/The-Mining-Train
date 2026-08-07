@@ -289,6 +289,17 @@ function PlayerDataService.AddCash(Player, Amount)
 
 	Data.Stats.Cash += Amount
 
+	if Amount > 0 then
+		Data.Stats.LifetimeMoney = (Data.Stats.LifetimeMoney or 0) + Amount
+	end
+
+	local Leaderstats = Player:FindFirstChild("leaderstats")
+	local CashValue = Leaderstats and Leaderstats:FindFirstChild("Cash")
+
+	if CashValue then
+		CashValue.Value = Data.Stats.Cash
+	end
+
 	return true
 end
 
