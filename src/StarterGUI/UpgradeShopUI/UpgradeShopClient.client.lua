@@ -140,7 +140,7 @@ local function RefreshShop()
 				Row.PurchaseButton.Active = false
 
 			elseif UpgradeData.LocomotiveLocked then
-				Row.PurchaseButton.Text = "REQUIRES\n" .. (UpgradeData.RequiredLocomotiveName or "LOCOMOTIVE")
+				Row.PurchaseButton.Text = "Larger Locomotive Required"
 				Row.PurchaseButton.BackgroundColor3 = Color3.fromRGB(79, 83, 94)
 				Row.PurchaseButton.Active = false
 
