@@ -1,7 +1,7 @@
 local DrillDefinitions = {}
 DrillDefinitions.Order = {
 	"NoDrill",
-	"Drill1x2",
+	"Drill2x2",
 	"Drill3x2",
 	"Drill3x3",
 	"Drill5x3",
@@ -26,20 +26,20 @@ DrillDefinitions.Data = {
 		IsUnlocked = false,
 	},
 
-	Drill1x2 = {
-		DisplayName = "1x2 Drill",
-		Description = "A narrow starter drill covering a 1 by 2 block face.",
+	Drill2x2 = {
+		DisplayName = "Mole Drill",
+		Description = "A narrow starter drill covering a 2 by 2 block face.",
 
 		Tier = 1,
 		PurchaseCost = 2500,
 
 		Damage = 4,
-		Speed = 1,
+		Speed = 2,
 
-		Width = 1,
+		Width = 2,
 		Height = 2,
 
-		TemplateName = "1x2 Drill",
+		TemplateName = "2x2 Drill",
 		IsUnlocked = true,
 	},
 

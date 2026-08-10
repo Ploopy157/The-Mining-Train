@@ -575,7 +575,7 @@ local function ConfigureCarInteraction(
 end
 
 local SlotsPerCarModelTier = 6
-local MaximumCarModelTier = 5
+local MaximumCarModelTier = 8
 
 local function GetCarModelTier(
 	Capacity
