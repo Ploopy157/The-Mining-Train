@@ -356,6 +356,16 @@ UserInputService.InputChanged:Connect(function(Input)
 	end
 end)
 
+UserInputService.InputBegan:Connect(function(Input, GameProcessed)
+	if GameProcessed or UserInputService:GetFocusedTextBox() then
+		return
+	end
+
+	if Input.KeyCode == Enum.KeyCode.Escape and IsOpen then
+		SetShopOpen(false)
+	end
+end)
+
 
 ResponsiveGui.Bind(function(Layout)
 	CurrentLayout = Layout

@@ -4,6 +4,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
 local FurnaceRemotes = ReplicatedStorage:WaitForChild("FurnaceRemotes")
+local UserInputService = game:GetService("UserInputService")
 
 local GetFurnaceState = FurnaceRemotes:WaitForChild("GetFurnaceState")
 local StoreCoal = FurnaceRemotes:WaitForChild("StoreCoal")
@@ -618,6 +619,15 @@ FurnaceUpdated.OnClientEvent:Connect(function(State)
 	end
 end)
 
+UserInputService.InputBegan:Connect(function(Input, GameProcessed)
+	if GameProcessed or UserInputService:GetFocusedTextBox() then
+		return
+	end
+
+	if Input.KeyCode == Enum.KeyCode.Escape and Gui.Enabled then
+		Gui.Enabled = false
+	end
+end)
 
 ResponsiveGui.Bind(function(Layout)
 	local IsCompact = Layout == ResponsiveGui.Layout.Compact

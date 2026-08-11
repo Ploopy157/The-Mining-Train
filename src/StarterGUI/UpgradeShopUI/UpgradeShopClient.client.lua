@@ -1,4 +1,5 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local UserInputService = game:GetService("UserInputService")
 local Workspace = game:GetService("Workspace")
 
 local Remotes =
@@ -256,5 +257,15 @@ ResponsiveGui.Bind(function(Layout)
 		UpgradeList.Position = UDim2.fromOffset(16, 160)
 		UpgradeList.Size = UDim2.new(1, -32, 1, -176)
 		CashTag.Visible = true
+	end
+end)
+
+UserInputService.InputBegan:Connect(function(Input, GameProcessed)
+	if GameProcessed or UserInputService:GetFocusedTextBox() then
+		return
+	end
+
+	if Input.KeyCode == Enum.KeyCode.Escape and IsOpen then
+		SetOpen(false)
 	end
 end)

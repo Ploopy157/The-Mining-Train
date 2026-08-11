@@ -744,15 +744,18 @@ RefreshTrainGui.OnClientEvent:Connect(function()
 	end
 end)
 
-UserInputService.InputBegan:Connect(function(
-	Input,
-	GameProcessed
-)
-	if GameProcessed then
+UserInputService.InputBegan:Connect(function(Input, GameProcessed)
+	if GameProcessed or UserInputService:GetFocusedTextBox() then
 		return
 	end
 
-	if UserInputService:GetFocusedTextBox() then
+	if Input.KeyCode == Enum.KeyCode.Escape then
+		if TransferFrame.Visible then
+			TransferFrame.Visible = false
+		elseif IsTrainOpen then
+			SetTrainOpen(false)
+		end
+
 		return
 	end
 

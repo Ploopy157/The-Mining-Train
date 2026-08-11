@@ -1,5 +1,6 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local UserInputService = game:GetService("UserInputService")
 
 local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
@@ -248,4 +249,14 @@ end)
 
 Close.Activated:Connect(function()
 	Panel.Visible = false
+end)
+
+UserInputService.InputBegan:Connect(function(Input, GameProcessed)
+	if GameProcessed or UserInputService:GetFocusedTextBox() then
+		return
+	end
+
+	if Input.KeyCode == Enum.KeyCode.Escape and Panel.Visible then
+		Panel.Visible = false
+	end
 end)

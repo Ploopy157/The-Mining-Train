@@ -288,7 +288,9 @@ UserInputService.InputBegan:Connect(function(Input, GameProcessed)
 		return
 	end
 
-	if Input.KeyCode == BackpackKey then
+	if Input.KeyCode == Enum.KeyCode.Escape and IsOpen then
+		SetBagOpen(false)
+	elseif Input.KeyCode == BackpackKey then
 		ToggleBag()
 	end
 end)
