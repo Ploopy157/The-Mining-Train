@@ -2,11 +2,11 @@ local DrillDefinitions = {}
 DrillDefinitions.Order = {
 	"NoDrill",
 	"Drill2x2",
-	"Drill3x2",
-	"Drill3x3",
-	"Drill5x3",
-	"Drill5x4",
-	"Drill5x5",
+	"Drill2x3",
+	"Drill4x3",
+	"Drill4x4",
+	"Drill4x5",
+	"Drill6x5",
 }
 
 DrillDefinitions.Data = {
@@ -28,7 +28,7 @@ DrillDefinitions.Data = {
 
 	Drill2x2 = {
 		DisplayName = "Mole Drill",
-		Description = "A narrow starter drill covering a 2 by 2 block face.",
+		Description = "A small starter drill covering a 2 by 2 block face.",
 
 		Tier = 1,
 		PurchaseCost = 2500,
@@ -43,9 +43,9 @@ DrillDefinitions.Data = {
 		IsUnlocked = true,
 	},
 
-	Drill3x2 = {
-		DisplayName = "3x2 Drill",
-		Description = "A wider drill covering a 3 by 2 block face.",
+	Drill2x3 = {
+		DisplayName = "Rabbit Drill",
+		Description = "A double-bit drill covering a 2 by 3 block face.",
 
 		Tier = 2,
 		PurchaseCost = 15000,
@@ -53,16 +53,16 @@ DrillDefinitions.Data = {
 		Damage = 10,
 		Speed = 0.5,
 
-		Width = 3,
-		Height = 2,
+		Width = 2,
+		Height = 3,
 
-		TemplateName = "3x2 Drill",
+		TemplateName = "2x3 Drill",
 		IsUnlocked = true,
 	},
 
-	Drill3x3 = {
-		DisplayName = "3x3 Drill",
-		Description = "A full-height drill covering a 3 by 3 block face.",
+	Drill4x3 = {
+		DisplayName = "Lion Drill",
+		Description = "A Double-bore drill covering a 4 by 3 block face.",
 
 		Tier = 3,
 		PurchaseCost = 75000,
@@ -70,16 +70,16 @@ DrillDefinitions.Data = {
 		Damage = 24,
 		Speed = 0.25,
 
-		Width = 3,
+		Width = 4,
 		Height = 3,
 
-		TemplateName = "3x3 Drill",
+		TemplateName = "4x3 Drill",
 		IsUnlocked = true,
 	},
 
-	Drill5x3 = {
-		DisplayName = "5x3 Drill",
-		Description = "An advanced, wide drill covering a 5 by 3 block face.",
+	Drill4x4 = {
+		DisplayName = "Frog Drill",
+		Description = "A massive, bore covering a 4 by 4 block face.",
 
 		Tier = 4,
 		PurchaseCost = 350000,
@@ -87,16 +87,16 @@ DrillDefinitions.Data = {
 		Damage = 48,
 		Speed = 0.25,
 
-		Width = 5,
-		Height = 3,
+		Width = 4,
+		Height = 4,
 
-		TemplateName = "5x3 Drill",
+		TemplateName = "4x4 Drill",
 		IsUnlocked = true,
 	},
 
-	Drill5x4 = {
-		DisplayName = "5x4 Drill",
-		Description = "A massive drill covering a 5 by 4 block face.",
+	Drill4x5 = {
+		DisplayName = "ROB Drill",
+		Description = "A massive Robotic drill covering a 4 by 5 block face.",
 
 		Tier = 5,
 		PurchaseCost = 1500000,
@@ -104,15 +104,15 @@ DrillDefinitions.Data = {
 		Damage = 100,
 		Speed = 0.1,
 
-		Width = 5,
-		Height = 4,
+		Width = 4,
+		Height = 5,
 
-		TemplateName = "5x4 Drill",
+		TemplateName = "4x5 Drill",
 		IsUnlocked = true,
 	},
-	Drill5x5 = {
-		DisplayName = "5x5 Drill",
-		Description = "An end-game drill covering a 5 by 5 block face.",
+	Drill6x5 = {
+		DisplayName = "Tunnel Bore",
+		Description = "If you get this reference, you're a true gamer.",
 
 		Tier = 6,
 		PurchaseCost = 5000000,
@@ -120,10 +120,10 @@ DrillDefinitions.Data = {
 		Damage = 1000,
 		Speed = 0.05,
 
-		Width = 5,
+		Width = 6,
 		Height = 5,
 
-		TemplateName = "5x5 Drill",
+		TemplateName = "6x5 Drill",
 		IsUnlocked = true,
 	},
 	
