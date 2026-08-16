@@ -1,3 +1,4 @@
+local AnalyticsService = game:GetService("AnalyticsService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 local Workspace = game:GetService("Workspace")
@@ -56,6 +57,24 @@ local OreInfoEvent =
 	ReplicatedStorage:WaitForChild(
 		"OreInfoEvent"
 	)
+
+
+local function LogUpgradePurchase(Player, UpgradeId, Cost, EndingCash)
+	if Cost <= 0 then
+		return
+	end
+
+	AnalyticsService:LogEconomyEvent(
+		Player,
+		Enum.AnalyticsEconomyFlowType.Sink,
+		"Cash",
+		Cost,
+		EndingCash,
+		Enum.AnalyticsEconomyTransactionType.Shop.Name,
+		"Upgrade_" .. UpgradeId
+	)
+end
+
 local function ApplyDrillTierUpgrade(
 	Data
 )
@@ -907,6 +926,13 @@ PurchaseUpgrade.OnServerInvoke = function(Player, UpgradeId)
 	if CashValue then
 		CashValue.Value = Data.Stats.Cash
 	end
+
+	LogUpgradePurchase(
+		Player,
+		UpgradeId,
+		Cost,
+		Data.Stats.Cash
+	)
 
 	RefreshUpgradeShop:FireClient(Player)
 

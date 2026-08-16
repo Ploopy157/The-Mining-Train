@@ -1,3 +1,4 @@
+local AnalyticsService = game:GetService("AnalyticsService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 local ServerStorage = game:GetService("ServerStorage")
@@ -125,6 +126,26 @@ local function AddCash(Player, Amount)
 
 	return true
 end
+
+
+local function LogItemSale(Player, ItemName, Quantity, CashEarned, EndingCash)
+	if Quantity <= 0 or CashEarned <= 0 then
+		return
+	end
+
+	local ItemSku = "Sell_" .. ItemName:gsub("%s+", "")
+
+	AnalyticsService:LogEconomyEvent(
+		Player,
+		Enum.AnalyticsEconomyFlowType.Source,
+		"Cash",
+		CashEarned,
+		EndingCash,
+		Enum.AnalyticsEconomyTransactionType.Shop.Name,
+		ItemSku
+	)
+end
+
 
 ---------------------------------------------------------------------
 -- SHOP PROXIMITY
@@ -831,6 +852,14 @@ SellOre.OnServerInvoke = function(
 	Data.Stats.TotalOreSold += ActualRemoved
 	Data.Stats.TotalMoneyEarned += CashEarned
 
+	LogItemSale(
+		Player,
+		ItemName,
+		ActualRemoved,
+		CashEarned,
+		Data.Stats.Cash
+	)
+
 	RefreshSellShop:FireClient(Player)
 
 	return true, {
@@ -860,20 +889,26 @@ SellAllOre.OnServerInvoke = function(Player)
 
 	local TotalQuantity = 0
 	local TotalCash = 0
+	local SoldItems = {}
 
 	for _, OreData in ShopData.Items do
-		local RemovedQuantity =
-			RemoveSellableItem(
-				Player,
-				OreData.Name,
-				OreData.Quantity
-			)
+		local RemovedQuantity = RemoveSellableItem(
+			Player,
+			OreData.Name,
+			OreData.Quantity
+		)
 
 		if RemovedQuantity > 0 then
+			local ItemCash = RemovedQuantity * OreData.Value
+
 			TotalQuantity += RemovedQuantity
-			TotalCash +=
-				RemovedQuantity
-				* OreData.Value
+			TotalCash += ItemCash
+
+			table.insert(SoldItems, {
+				Name = OreData.Name,
+				Quantity = RemovedQuantity,
+				Cash = ItemCash,
+			})
 		end
 	end
 
@@ -885,6 +920,16 @@ SellAllOre.OnServerInvoke = function(Player)
 
 	Data.Stats.TotalOreSold += TotalQuantity
 	Data.Stats.TotalMoneyEarned += TotalCash
+
+	for _, SoldItem in SoldItems do
+		LogItemSale(
+			Player,
+			SoldItem.Name,
+			SoldItem.Quantity,
+			SoldItem.Cash,
+			Data.Stats.Cash
+		)
+	end
 
 	RefreshSellShop:FireClient(Player)
 
