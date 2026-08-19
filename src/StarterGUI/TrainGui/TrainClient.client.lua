@@ -798,7 +798,6 @@ for Name, Button in MobileButtons do
 		ShowMobilePage(Name)
 	end)
 end
-
 ResponsiveGui.Bind(function(Layout)
 	IsCompactLayout = Layout == ResponsiveGui.Layout.Compact
 	MobileTabs.Visible = IsCompactLayout
@@ -834,9 +833,8 @@ ResponsiveGui.Bind(function(Layout)
 		TransferFrame.Size = UDim2.new(.9, 0, .85, 0)
 		TransferFrame.Position = UDim2.new(.5, 0, 0.4, 0)
 
-		TransferControls.Size = UDim2.new(0, 90, .85, 0)
-		TransferControls.Position = UDim2.new(0, 0.5, 0, .45)
-
+		TransferControls.Size = UDim2.new(0, 90, 0.85, 0)
+		TransferControls.Position = UDim2.fromScale(0.5, 0.45)
 		TransferTitle.TextSize = 20
 		return
 	end

@@ -281,7 +281,7 @@ ResponsiveGui.Bind(function(Layout)
 		Window.Size = UDim2.new(1, -16, 1, -16)
 		Window.Position = UDim2.fromScale(0.5, 0.5)
 		OpenButton.Size = UDim2.fromOffset(46, 46)
-		OpenButton.Position = UDim2.new(1, -12, 0.5, 118)
+		OpenButton.Position = UDim2.new(1, -120, 0.5, 118)
 		ConfirmFrame.Size = UDim2.new(1, -24, 0, 235)
 	elseif Layout == ResponsiveGui.Layout.Medium then
 		Window.Size = UDim2.new(0.88, 0, 0.88, 0)
